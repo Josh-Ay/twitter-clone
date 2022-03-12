@@ -1,0 +1,50 @@
+/***    USER NAVIGATION SIDEBAR    ***/
+.user-navigation-tabs-container{
+    @include displayFlexAndJustify(space-between);
+    flex-direction: column;
+    background: $white;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+    margin-right: auto;
+    width: 28.684%;
+    
+    .user-navigation-tab-item{
+        font-family: $poppinsFont;
+        font-weight: 600;
+        font-size: rem(14);
+        line-height: rem(21);
+        letter-spacing: -0.035rem;
+        color: $greyColor;
+        padding: 5.48162% 0 5.48162% 9%;
+        border-radius: 8px;
+        position: relative;
+        transition: 0.35s ease-in-out;
+
+        &:hover, &:focus{
+            cursor: pointer;
+            transform: translateY(-.1rem);
+            filter: brightness(1.4);
+        }
+        &.active-tab-item{
+            color: $blueLogoColor;
+            &::before{
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 20%;
+                height: 32px;
+                width: 0;
+                background: $blueLogoColor;
+                border: 3px solid $blueLogoColor;
+                border-radius: 0px 4px 4px 0px;
+            }
+        }
+    }
+    @media (prefers-color-scheme: dark){
+        background: $black;
+    }
+    @media screen and (max-width: 767px) {
+        width: 100%;
+        margin: 4% auto;
+    }
+}

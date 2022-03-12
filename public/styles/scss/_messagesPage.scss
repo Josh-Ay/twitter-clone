@@ -1,0 +1,111 @@
+/***    MESSAGES PAGE CONTAINER     **/
+.messages-page-container{
+    background: $white;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    padding: 2% 4%;
+    .title-text{
+        line-height: rem(36);
+        font-weight: 500;
+        letter-spacing: -0.035rem;
+        font-family: $poppinsFont;
+        text-align: center;
+        color: $darkGrey;
+
+        @media (prefers-color-scheme: dark){
+            color: $lightGreyColor;   
+        }
+    }
+
+    .normal-size{
+        font-size: rem(24);
+    }
+
+    .title-text.normal-size{
+        @media screen and (max-width: 767px) {
+            margin-bottom: 12%;
+        }
+    }
+
+    .get-started-message-container{
+        text-align: center;
+        margin: 10% 0;
+
+        .small-size{
+            font-size: rem(18);
+            font-weight: bold;
+        }
+        span{
+            font-size: rem(14);
+            color: $lightGreyColor;
+        }
+        @media screen and (max-width:767px) {
+            margin: 20% 0;
+        }
+    }
+
+    @media screen and (max-width: 767px) {
+        padding: 6% 0%;
+    }
+    @media (prefers-color-scheme: dark){
+        background: $black;
+    }
+}
+
+.user-message-item{
+    @include displayFlexCenterAndJustify(flex-start);
+    margin: 4% auto;
+    transition: 0.35s ease-in-out;
+    border-radius: 8px;
+    padding: 1% 2%;
+    .user-img{
+        display: block;
+        width: 5%;
+        margin-right: 5%;
+        @media screen and (max-width: 767px) {
+            width: 10%;
+        }
+    }
+    
+    &:hover, &:focus{
+        cursor: pointer;
+        background: $paleBlueGrey;
+        @media (prefers-color-scheme: dark){
+            background: $greyColor;
+            .current-user-details{
+                .current-user-display-name{
+                    color: $veryLightGrey;
+                }
+                .current-user-username{
+                    color: $lightGreyColor;
+                }
+            }
+        }    
+    }
+    .current-user-details{
+        .current-user-display-name, .current-user-username{
+            letter-spacing: -0.035rem;
+            line-height: rem(24);
+        }
+        .current-user-display-name{
+            font-family: $poppinsFont;
+            font-weight: 500;
+            font-size: rem(16);
+            color: $nativeBlackColor;
+            @media (prefers-color-scheme: dark){
+                color: $lightGreyColor;
+            }
+        }
+        .current-user-username{
+            font-size: rem(12);
+            color: $lightGreyColor;
+            @media (prefers-color-scheme: dark){
+                color: $greyColor;   
+            }
+        }
+
+    }
+    @media screen and (max-width: 767px) {
+        margin: 4% auto 8%;
+    }
+}

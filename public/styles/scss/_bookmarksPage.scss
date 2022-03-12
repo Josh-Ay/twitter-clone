@@ -1,0 +1,24 @@
+/***    BOOKMARKS PAGE    ****/
+.bookmarks-page-container{
+    .user-activity-details-container{
+        position: absolute;
+        right: 0;
+        width: calc(100% - 30.684%);
+        top: 0;
+        .user-tweet-container{
+            margin-top: 0;
+            margin-bottom: 5%;
+        }
+        .tweet-skeleton-screen.ss-1, .tweet-skeleton-screen.ss-2{
+            margin-left: 0;
+            width: 100%;
+        }
+        @media screen and (max-width: 767px) {
+            position: relative;
+            width: 100%;
+            .user-tweet-container{
+                margin-bottom: 35%;
+            }
+        }
+    }
+}

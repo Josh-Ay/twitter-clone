@@ -1,0 +1,85 @@
+/***    EXPLORE PAGE CONTAINER  ***/
+.explore-page-container{
+    position: relative;
+
+    .search-box-container{
+        background: $white;
+        border-radius: 8px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+        @include displayFlexCenterAndJustify(space-between);
+        margin: 0 0 3.3%;
+        padding: 1.48% 2.017%;
+        label{
+            display: none;
+        }
+        input[type=text], button{
+            border: none;
+            outline: none;
+        }
+        .search-icon{
+            color: $lightGreyColor;
+        }
+        input[type=text]{
+            flex-grow: 1;
+            font-weight: 500;
+            font-size: rem(16);
+            line-height: rem(22);
+            letter-spacing: -0.035em;
+            color: $darkGrey;
+            padding: 0 3%;
+            caret-color: $blueLogoColor;
+            &::placeholder{
+                color: $lightGreyColor;
+                @media (prefers-color-scheme: dark){
+                    color: $greyColor;
+                }
+            }
+            @media (prefers-color-scheme: dark){
+                background: $nativeBlackColor;
+                color: $lightGreyColor;
+            }
+        }
+        button{
+            padding: 1.12% 3.15%;
+            background-color: $blueLogoColor;
+            border-radius: 4px;
+            color: $white;
+            cursor: pointer;
+            transition: 0.35s ease-in-out;
+            &:hover, &:focus{
+                filter: brightness(1.25);
+            }
+            @media screen and (max-width: 767px) {
+                padding: 2.24% 4%;
+            }
+        }
+        @media (prefers-color-scheme: dark){
+            background: $nativeBlackColor;
+        }
+        @media screen and (max-width: 767px) {
+            padding: 2.96% 4.034%;
+        }
+    }
+
+    .user-display-details-navigation-container{
+        .explore-trends-container{
+            position: absolute;
+            right: 0;
+            width: calc(100% - 30.684%);
+            top: 0;
+
+            .user-activity-details-container{
+                position: relative;
+                margin-bottom: 10%;
+                @media screen and (max-width: 767px) {
+                    margin-bottom: 35%;
+                }
+            }
+
+            @media screen and (max-width: 767px) {
+                position: relative;
+                width: 100%;
+            }
+        }
+    }
+}

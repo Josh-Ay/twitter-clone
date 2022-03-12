@@ -1,0 +1,49 @@
+/****** PAGE NOT FOUND  ******/
+.page-not-found-container{
+    margin: 4% auto;
+    h1{
+        text-transform: uppercase;
+        font-family: $poppinsFont;
+    }
+    h1, p{
+        text-align: center;
+    }
+    figure img{
+        display: block;
+        width: 65%;
+        margin: auto;
+    }
+    .go-home-btn{
+        background: $blueLogoColor;
+        outline: none;
+        border: none;
+        border-radius: 8px;
+        padding: 1% 2.5%;
+        display: block;
+        margin: 5% auto;
+        font-size: rem(12);
+        line-height: rem(16.34);
+        letter-spacing: -0.035rem;
+        color: $white;
+        transition: 0.35s ease-in-out;
+        &:focus, &:hover{
+            filter: brightness(1.2);
+            cursor: pointer;
+        }
+    }
+    @media (min-width: 992px) and (max-width: 1200px){
+        margin: 50% auto;
+    }
+    @media (min-width: 768px) and (max-width: 991px){
+        margin: 40% auto;
+        .go-home-btn{
+            padding: 2% 5%;
+        }
+    }
+    @media screen and (max-width: 767px) {
+        margin: 50% auto;
+        .go-home-btn{
+            padding: 3% 5%;
+        }
+    }
+}

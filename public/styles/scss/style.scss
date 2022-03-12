@@ -1,0 +1,95 @@
+@import "./variables";
+@import "./mixins";
+
+*,
+*::before, 
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    background: $veryLightGrey;
+}
+
+body {
+    margin: 0;
+    font-family: $notoFont;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: $base-size;
+    width: 100%;
+}
+
+/***    COMMON STYLES     ****/
+@import "./common/common";
+
+/***    LOADING PAGE     ****/
+@import "./loadingPage";
+
+/***    ERROR MESSAGE CONTAINER     ****/
+@import "./mini-containers/errorMessageContainer";
+
+/***    SIGNUP/LOGIN PAGE CONTAINER     ****/
+@import "./mini-containers/loginDetailsContainer";
+
+/***    NAVIGATION LINKS- LARGE SCREEN  ****/
+@import "./mini-containers/navigationLinksContainer";
+
+/***    USER PROFILE DROPDOWN   ****/
+@import "./common/components";
+
+/****   EDIT PROFILE PAGE***/
+@import "./profileEditPage";
+
+/****   HOMEPAGE    ****/
+@import "./homePage";
+
+/****   TWEETS CONTAINER    *****/
+@import "./mini-containers/tweetsContainer";
+
+/***    404 PAGE  ***/
+@import "./pageNotFound";
+
+/***    USER PROFILE PAGE   ***/
+@import "./userProfilePage";
+
+/***    USER NAVIGATION SIDEBAR CONTAINER   ***/
+@import "./mini-containers/userNavigationSidebarContainer";
+
+/****   EXPLORE PAGE CONTAINER  ***/
+@import "./explorePage";
+
+/*****  BOOKMARKS   *****/
+@import "./bookmarksPage";
+
+/****   MESSAGES PAGE   ****/
+@import "./messagesPage";
+
+/***    SINGLE CHAT PAGE CONTAINER      ***/
+@import "./mini-containers/chatPageContainer";
+
+/***    CHAT ACTIONS CONTAINER  ****/
+@import "./mini-containers/chatActionsContainer";
+
+/****** SHOW USERS CONTAINER    ******/
+@import "./mini-containers/usersPopupContainer";
+
+/***    NAVIGATION LINKS FOR MOBILE   ***/
+@import "./mini-containers/mobileNavigationLinksContainer";
+
+/***    GROUPS PAGE CONTAINER   ***/
+@import "./groupsPage";
+
+/****   SKELETON SCREEN LOADING ANIMATION   ****/
+@import "./mini-containers/skeletonContainers";
+
+
+/****   DARK THEME  ***/
+@media (prefers-color-scheme: dark){
+    html, body, .main-container{
+        background: $black;
+        color: $white;
+    }
+}

@@ -1,0 +1,61 @@
+/****   TRENDS CONTAINER    ***/
+.trends-container .title-text, .follower-suggestions-container .title-text{
+    color: $darkGrey;
+    font-size: rem(12);
+    margin-bottom: 2.8%;
+    font-family: $poppinsFont;
+    font-weight: 600;
+    line-height: rem(18);
+    @media (prefers-color-scheme: dark){
+        color: $lightGreyColor;       
+    }
+}
+
+.trends-container{
+    grid-area: trends;
+    margin-top: 4.1%;
+    .trending-tags-container{
+        margin: 6.8% 0;
+        border-radius: 8px;
+        padding: 2% 4%;
+        transition: 0.35s ease-in-out;
+        span{
+            display: block;
+        }
+        .trending-tag-item{
+            color: $nativeBlackColor;
+            font-weight: 600;
+            font-size: rem(16);
+            line-height: rem(21.79);
+            margin-bottom: 2%;
+            @media (prefers-color-scheme: dark){
+                color: $lightGreyColor;
+            }
+        }
+        .trending-tag-item-count{
+            font-size: rem(12);
+            font-weight: 500;
+            line-height: rem(16.34);
+            color: $greyColor;
+        }
+        &:hover, &:focus{
+            cursor: pointer;
+            background: $paleBlueGrey;
+            @media (prefers-color-scheme: dark){
+                background: $greyColor;
+                .trending-tag-item-count{
+                    color: $nativeBlackColor;
+                }
+            }
+        }
+    }
+    @media (prefers-color-scheme: dark){
+        background: $black;
+        border: 1px solid $greyColor;       
+    }
+    
+    @media (min-width: 768px) and (max-width: 1199px){
+        margin-left: auto;
+        margin-top: 2.05%;
+    }
+}

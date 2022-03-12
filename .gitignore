@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+# css map
+/public/styles/css/style.css.map
+
 # testing
 /coverage
 
@@ -13,6 +16,7 @@
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local

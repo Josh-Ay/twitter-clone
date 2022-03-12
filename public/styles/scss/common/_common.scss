@@ -1,0 +1,155 @@
+/******  COMMON STYLES AND CLASSES   ******/
+.submit-btn{
+    background: $blueColor;
+    color: $white;
+    border-color: $blueColor;   
+}
+
+form{
+    input, textarea{
+        display: block;
+        outline: none;
+        width: 100%;        
+        transition: 0.3s ease-in-out;
+    }
+}
+
+.logo-img{
+    cursor: pointer;
+    
+    @media (min-width: 768px) and (max-width: 1199px){
+        width: 11%;
+    }
+
+    @media screen and (max-width: 767px) {
+        width: 8.85%;
+    }
+}
+
+.custom-hr{
+    border: none;
+    height: 1px;
+    background-color: $paleGrey;
+    @media (prefers-color-scheme: dark){
+        background-color: $greyColor;
+    }
+}
+
+textarea{
+    resize: none;
+}
+
+#loading {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid $white;
+    border-top: 2px solid $blueLogoColor;
+    border-radius: 100%;
+    margin: 8% auto;
+    visibility: visible;
+    animation: spin 1s infinite linear;
+    display: block;
+}
+
+#loading.display {
+    visibility: visible;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.disabled{
+    opacity: 0.7;
+    &:hover, &:focus{
+        cursor: not-allowed;
+        filter: none !important;
+    }
+}
+.enabled{
+    opacity: 1;
+    &:hover, &:focus{
+        cursor: pointer;
+        filter: brightness(1.15);
+    }
+}
+
+.navigation-bar-container, .main-container{
+    padding: 1% 4%;
+    
+    @media (min-width: 768px) and (max-width: 1199px){
+        padding: 1% 2%;
+    }
+    @media screen and (max-width: 767px) {
+        padding: 1% 2%;
+    }
+}
+
+.current-user-img-container{
+    border-radius: 4px;
+    width: 18%;
+}
+
+.mini-container{
+    width: rem(306);
+    height: auto;
+    padding: 4%;
+    @media (min-width: 768px) and (max-width: 1199px){
+        width: 50%;
+    }
+}
+
+.side-div-container{
+    position: absolute;
+    right: 9.7%;
+    top: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, max-content);
+    grid-template-areas: "trends" "suggestions";
+    row-gap: 2.5%;
+    
+    @media (min-width: 768px) and (max-width: 1199px){
+        right: 4.2%;
+    }
+}
+
+.explore-page-container, .bookmarks-page-container, .messages-page-container{
+    width: 79.6%;
+    position: relative;
+    margin: 0 auto;
+    top: 2rem;
+    @media (min-width: 768px) and (max-width: 1199px){
+        width: 90%;
+    }
+    @media screen and (max-width: 767px) {
+        width: 94%;
+    }
+}
+
+.start-new-chat-btn{
+    outline: none;
+    border: none;
+    border-radius: 50%;
+    padding: 1.2%;
+    background: $blueLogoColor;
+    color: $white;
+    transition: 0.35s ease-in-out;
+    position: absolute;
+    right: 4%;
+    bottom: 12%;
+
+    &:hover, &:focus{
+        filter: brightness(1.4);
+        cursor: pointer;
+    }
+
+    @media screen and (max-width: 767px) {
+        padding: 4.8%;
+    }
+}

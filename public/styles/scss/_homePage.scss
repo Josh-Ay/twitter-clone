@@ -1,0 +1,77 @@
+/*****      HOMEPAGE    ****/
+.current-page{
+    color: $blueLogoColor !important;
+}
+
+.tweet-author-image{
+    height: rem(40);
+    width: rem(40);
+    max-width: rem(40);
+    margin-right: 2.5%;
+    object-fit: contain;
+    
+    @media screen and (max-width: 767px) {
+        margin-right: 4.5%;
+    }
+
+}
+
+.large-follow-btn, .medium-follow-btn, .follow-btn{
+    border: none;
+    position: relative;
+    border-radius: 4px;
+    padding: 1.566% 8.197%;
+    background: $blueLogoColor;
+    transition: 0.35s ease-in-out;
+    span{
+        position: relative;
+        left: 14%;
+        font-size: rem(12);
+        font-weight: 500;
+        line-height: rem(16.34);
+    }
+    .follow-icon{
+        @include positionAbsoluteAndCenterVer();
+        left: 8%;
+        width: 20%;
+    }
+    &:hover, &:focus{
+        filter: brightness(1.2);
+        cursor: pointer;
+    }
+}
+
+.homepage-container{
+    background: $veryLightGrey;
+    position: relative;
+    
+    .new-tweet-container, .trends-container, .follower-suggestions-container{
+        background: $white;
+        border-radius: 12px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .new-tweet-container, .user-tweet-container{
+        width: 59.281%;
+        margin-left: 8.6%;
+        
+        @media (min-width: 768px) and (max-width: 1199px){
+            width: 63%;
+            margin-left: 4.2%;
+        }
+        @media screen and (max-width: 767px) {
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+
+    /** NEW TWEET CONTAINER **/
+    @import "./mini-containers/newTweet";
+    
+    /*****  TRENDS CONTAINER    ******/
+    @import "./mini-containers/trendsContainer";
+    
+    /*****  FOLLOWER SUGGESTIONS CONTAINER  *****/
+    @import "./mini-containers/followerSuggestionsContainer";
+}

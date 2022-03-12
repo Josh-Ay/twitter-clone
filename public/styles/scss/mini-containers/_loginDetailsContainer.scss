@@ -1,0 +1,153 @@
+/*****  LOGIN/SIGNUP PAGE  *****/
+.details-box-container{
+    width: 35.125%;
+    border: 1px solid $lightGreyColor;
+    border-radius: rem(24);
+    padding: 2% 3% 6.065%;
+    @include positionAbsoluteAndCenter();
+    
+    .tweeter-intro{
+        margin-top: 7%;
+        h3{
+            font-size: rem(18);
+        }
+        p{
+            padding-top: 4%;
+        }
+    }
+
+    .user-form{
+        padding-top: 9%;
+        .form-error-message{
+            color: $redColor;
+        }
+        .details-input-box{
+
+            &:not(:last-child){
+                display: flex;
+                position: relative;
+                align-items: center;
+                margin-bottom: 5%;
+                line-height: 21.79px;
+
+                .form-icon{
+                    @include positionAbsoluteAndCenterVer();
+                    left: 3%;
+                    z-index: 2;
+                    color: $greyColor;
+                }
+
+                input{
+                    padding-left: 12%;
+                    border-color: $lightGreyColor;
+                    @media (prefers-color-scheme: dark){
+                        background-color: $black;
+                        color: $white;
+                    }
+                }
+            }
+
+            input{
+                padding: 3%;
+                border-width: 1px;
+                border-style: solid;
+                border-radius: rem(8);
+                font-size: rem(16);
+                @include changeInputFocusAndCaretStyle($blueColor);
+            }
+
+            &:last-child{
+                margin-bottom: 7%;
+                border-color: $blueColor;
+                border-radius: rem(8);
+                width: 100%;
+                button{
+                    width: 100%;
+                    padding: 3%;
+                    border-width: 1px;
+                    border-style: solid;
+                    border-radius: rem(8);
+                    font-size: rem(16);
+                    transition: 0.35s ease-in-out;
+                    @include changeInputFocusAndCaretStyle($blueColor);
+                    span#loading{
+                        margin: 0 auto;
+                    }
+                }
+            }
+
+            .disabled{
+                opacity: 0.7;
+                &:hover, &:focus{
+                    cursor: not-allowed;
+                }
+            }
+            .enabled{
+                opacity: 1;
+                &:hover, &:focus{
+                    cursor: pointer;
+                    filter: brightness(1.15);
+                }
+            }
+
+        }
+    }
+
+    .social-profiles-text, .user-reroute-container{
+        text-align: center;
+        color: $greyColor;
+        font-size: rem(14);
+    }
+
+    .social-profiles-container{
+        @include displayFlexCenterAndJustify(space-between);
+        .social-icon-container{
+            display: flex;
+            border-radius: 50%;
+            border: 1px solid #BDBDBD;
+            padding: 3.15%;
+            transition: 0.35s ease-in-out;
+            &:hover, &:focus{
+                cursor: pointer;
+                border-color: $blueColor;
+            }
+            .socials-icon{
+                color: $greyColor;
+            }
+        }
+        width: 65%;
+        margin: 7% auto 12%;
+    }
+
+    .user-reroute-container{
+        a{
+            color: $blueColor;
+            text-decoration: none;
+            &:hover, &:focus{
+                filter: brightness(0.8);
+            }
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1199px) {
+        width: 70%;
+        padding: 5% 3% 6.065%;
+    }
+
+    @media screen and (max-width: 767px) {
+        width: 100%;
+        border: none;
+        .tweeter-intro{
+            margin: 9% 0 7%;
+        }
+
+        .user-form .details-input-box{
+            &:not(:last-child){
+                margin-bottom: 7%;
+            }
+            &:last-child{
+                margin-bottom: 10%;
+            }
+        }
+    }
+}

@@ -1,0 +1,16 @@
+/*****  ERROR MESSAGE CONTAINER  *****/
+.error-message-container{
+    background: $paleRedColor;
+    border-radius: rem(8);
+    margin-top: 1%;
+    opacity: 0.9;
+    border: 1px solid $lightRedColor;
+    span{
+        padding: 1% 2%;
+        display: inline-block;
+        border-radius: rem(8);
+        width: 100%;
+        height: 100%;
+        color: $lightRedColor;
+    }
+}

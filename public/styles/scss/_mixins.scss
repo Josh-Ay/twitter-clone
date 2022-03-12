@@ -1,0 +1,48 @@
+//Function to convert px value into rem
+@function rem($target, $context: $base-size) {
+    @return ($target / $context) * 1rem;
+}
+
+// Mixin to make an element's position absolute and center it horizontally
+@mixin positionAbsoluteAndCenterHor() {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+// Mixin to make an element's position absolute and center it vertically
+@mixin positionAbsoluteAndCenterVer() {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+// Mixin to make an element's position absolute and center it both horizontally and vertically
+@mixin positionAbsoluteAndCenter() {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+// Mixin to make an element's display flex, align its items in the center vertically and justify it by a passed value($justify-value)
+@mixin displayFlexCenterAndJustify($justify-value) {
+    display: flex;
+    justify-content: $justify-value;
+    align-items: center;
+}
+
+// Mixin to make an element's display flex and justify it by a passed value($justify-value)
+@mixin displayFlexAndJustify($justify-value) {
+    display: flex;
+    justify-content: $justify-value;
+}
+
+// Mixin to change the border-color and caret-color(for inputs or textareas) of an element to a passed value($color)
+@mixin changeInputFocusAndCaretStyle($color) {
+    &:focus-within{
+        border-color: $color;
+        caret-color: $color;
+        filter: drop-shadow(0px 1px 6px rgba(0, 0, 0, 0.1));
+    }
+}

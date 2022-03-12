@@ -1,0 +1,272 @@
+/*****  USER PROFILE PAGE CONTAINER     *****/
+.user-profile-page-container{
+    position: relative;
+    top: 3rem;
+    .user-tweet-container{
+        .tweet-contents-container .tweet-text{
+            width: 76.21%;
+            @media screen and (max-width: 767px) {
+                margin: 7% 0 4%;
+                width: 90.91%;
+            }
+        }
+        .user-replies-container .user-reply-item {
+            .reply-reactions-container{
+                width: 50%;
+            }
+            .user-reply-details-box .user-reply span{
+                width: 86.7%;
+            }
+        }
+    }
+
+    .user-profile-cover-photo{
+        position: relative;
+        width: 100%;
+        height: 12.8rem;
+        transition: 0.35s ease-in-out;
+    }
+    .user-display-details-container, .user-display-details-navigation-container{
+        width: 79.541%;
+        margin: 0 auto;
+        @media screen and (max-width: 767px) {
+            width: 94%;
+            margin: 4% auto;
+        }
+    }
+    .user-display-details-container{
+        background: $white;
+        position: relative;
+        top: -4rem;
+        border-radius: 12px;
+        @include displayFlexCenterAndJustify(space-between);
+        padding: 0.408% 1.7%;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+
+        .user-picture-canvas{
+            position: absolute;
+            top: -3rem;
+            left: 2%;
+            background: $white;
+            width: calc(152px + .7rem);
+            height: rem(152);
+            border-radius: 10%;
+            @media (prefers-color-scheme: dark){
+                background: $black;
+            }
+            @media screen and (max-width: 767px) {
+                @include positionAbsoluteAndCenterHor();
+                top: -6.2rem;
+                width: calc(116.31px + .4rem);
+                height: 116.31px;
+            }
+        }
+
+        img.current-user-img-container{
+            position: relative;
+            top: -3rem;
+            left: 0.4%;
+            width: rem(152);
+            height: rem(152);
+            object-fit: cover;
+            border-radius: 10px;
+            max-width: 100%;
+            @media screen and (max-width: 767px) {
+                width: rem(116.31);
+                height: rem(116.31);
+                left: 0;
+                top: -6rem;
+            }
+        }
+        .user-details, .user-bio{
+            width: 84.27%;
+            @media (min-width:768px) and (max-width: 991px){
+                width: 100%;
+            }
+            @media screen and (max-width: 767px) {
+                position: relative;
+                width: 85.434%;
+                margin: auto;
+                top: 50%;
+                margin-top: calc(-30% / 2);
+            }
+            @media screen and (max-width: 576px) {
+                margin-top: calc(-40% /2);
+            }
+            @media screen and (max-width: 400px) {
+                margin-top: calc(-50% /2);
+            }
+        }
+        .user-display-details{
+            position: relative;
+            right: 6%;
+            
+            &.current-user{
+                // right: 15%;
+                width: 70%;
+            }
+
+            @media screen and (min-width: 992px) {
+                right: -4%;
+                width: 70%;
+            }
+            @media (min-width:768px) and (max-width: 991px){
+                right: -3%;
+                width: 59.8%;
+            }
+            @media screen and (max-width: 767px) {
+                right: 0;
+            }
+        }
+        .user-details{
+            @include displayFlexCenterAndJustify(space-between);
+            font-family: $poppinsFont;
+            letter-spacing: -0.035rem;
+            margin-bottom: 2%;
+            width: 100%;
+
+            h2, span{
+                text-transform: capitalize;
+            }
+            p{
+                text-transform: lowercase;
+            }
+            h2, .user-follower-count span.count{
+                color: $nativeBlackColor;
+                font-weight: 600;
+                @media (prefers-color-scheme: dark){
+                    color: $lightGreyColor;
+                }
+            }
+            h2{
+                line-height: rem(36);
+                font-size: rem(24);
+                @media (min-width:768px) and (max-width: 991px){
+                    margin-right: 4%;
+                }
+            }
+
+            p{
+                font-size: rem(12);
+                color: $lightGreyColor;
+                @media screen and  (max-width: 767px) {
+                    text-align: center;
+                }
+            }
+
+            .user-follower-count{
+                width: 50%;
+                margin-left: auto;
+                span{
+                    font-weight: 500;
+                    font-size: rem(12);
+                    color: $greyColor;
+                    line-height: rem(18);
+                    margin-right: 7%;
+                    cursor: pointer;
+
+                    &:hover, &:focus{
+                        filter: brightness(1.4);
+                    }
+
+                    @media (prefers-color-scheme: dark){
+                        color: $greyColor;
+                    }
+                }
+                span.count{
+                    margin-right: 3%;
+                }
+                @media screen and (max-width: 767px) {
+                    margin: 4% auto 9%;
+                    width: 100%;
+                    @include displayFlexCenterAndJustify(space-between);
+                    span:not(.count){
+                        margin-right: 0;
+                        width: 100%;
+                        margin-left: 15%;
+                    }
+                }
+            }
+            
+            @media screen and (max-width: 767px) {
+                flex-direction: column;
+                margin: 0 auto 2%;
+                position: relative;
+                top: -5rem;
+                span{
+                    flex-direction: row;
+                }
+            }
+        }
+        .user-bio{
+            color: $greyColor;
+            font-size: rem(18);
+            line-height: rem(24.52);
+            font-weight: 500;
+            @media screen and (max-width: 767px) {
+                text-align: center;
+            }
+        }
+        .follow-btn{
+            padding: 0.779% 3.26%;
+            margin-bottom: 5.7%;
+            span{
+                left: 30%;
+                line-height: rem(16);
+            }
+            .follow-icon{
+                left: 18%;
+            }
+            @media screen and (max-width:767px) {
+                padding: 2.355% 9.76%;
+                margin: 7.7% auto 5.7%;
+            }
+        }
+        @media (prefers-color-scheme: dark){
+            background: $black;
+        }
+        @media screen and (max-width: 767px) {
+            flex-direction: column;
+            top: -2rem;
+        }
+    }
+    .user-display-details-navigation-container{
+        position: relative;
+        top: -2rem;
+        .user-activity-details-container{
+            position: absolute;
+            right: 0;
+            width: calc(100% - 30.684%);
+            top: 0;
+            .user-tweet-container{
+                margin: 0 auto 3%;
+                .retweet-author-name{
+                    top: -100%;
+                    left: -3%;
+                }
+                &.empty-tweets{
+                    @media screen and (max-width: 767px) {
+                        margin: 10% 0 20%;
+                    }
+                }
+            }
+            .tweet-skeleton-screen.ss-1, .tweet-skeleton-screen.ss-2{
+                margin-left: 0;
+                width: 100%;
+            }
+            @media screen and (max-width: 767px) {
+                position: relative;
+                width: 100%;
+            }
+        }
+    }
+    .user-profile-edit-container{
+        margin: 2% auto 8%;
+        @media (min-width: 768px) and (max-width: 991px){
+            margin: 8% auto;
+        }
+        @media screen and (max-width: 767px) {
+            margin: 10% auto;
+        }
+    }
+}

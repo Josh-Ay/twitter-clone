@@ -1,0 +1,280 @@
+/****   SKELETON SCREEN LOADING ANIMATION   ****/
+.skeleton{
+    opacity: 0.3;
+    animation: skeleton-loading 1s linear infinite alternate;
+    border-radius: 5px;
+
+    &.overlay{
+        opacity: 0.1;
+    }
+
+    @keyframes skeleton-loading {
+        0%{
+            background-color: hsl(200, 20%, 70%);
+        }
+        100%{
+            background-color: hsl(200, 20%, 95%);
+        }
+    }
+}
+
+.skeleton-author-image{
+    width: rem(40);
+    height: rem(40);
+}
+
+.tweet-skeleton-screen{
+    background: $white;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 1.6% 2%;
+    letter-spacing: -0.035em;
+    border-radius: 8px;
+    margin-top: 1.5%;
+
+    &.ss-1, &.ss-2{
+        margin-left: 8.6%;
+        width: 59.281%;
+        @media screen and (max-width: 767px) {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) and (max-width: 1199px){
+            margin-left: 4.2%;
+            width: 63%;
+        }
+    }
+
+    &.ss-1{
+        height: rem(276.2);
+        @media screen and (max-width: 767px) {
+            height: rem(230.2);
+        }
+    }
+
+    &.ss-2{
+        height: rem(636);
+        @media screen and (max-width: 767px) {
+            height: rem(570);
+        }
+    }
+
+    &.search-skeleton-screen{
+        width: 100%;
+        margin-left: auto;
+    }
+
+    .skeleton-author-details, .skeleton-reactions-container, .skeleton-actions-container{
+        @include displayFlexCenterAndJustify(none);
+    }
+
+    .skeleton-author-image{
+        margin-right: 4%;
+    }
+
+    .skeleton-author-details{
+        .skeleton-author-container{
+            flex-grow: 1;
+
+            .skeleton-author-name{
+                width: 30%;
+                height: rem(16);
+                margin-bottom: 1.5%;
+                @media screen and (max-width: 767px) {
+                    width: 35%;
+                }
+            }
+            .skeleton-post-time{
+                width: 50%;
+                height: rem(8);
+                @media screen and (max-width: 767px) {
+                    width: 60%;
+                }
+            }
+        }
+    }
+
+    .skeleton-post-caption{
+        height: rem(30);
+        width: 100%;
+        margin: 3% 0;
+    }
+
+    .skeleton-post-image{
+        width: 100%;
+        height: rem(330);
+        margin-bottom: 3%;
+    }
+
+    .skeleton-stats-container{
+        height: rem(10);
+        width: 50%;
+        margin-left: auto;
+    }
+
+    .skeleton-reactions-container{
+        width: 100%;
+        height: rem(32);
+        margin: 3% 0;
+        justify-content: space-between;
+        .skeleton-reaction-item{
+            width: calc((100% - 9%) / 4);
+            height: 100%;
+            &:not(:last-child){
+                margin-right: 3%;
+            }
+            @media screen and (max-width: 767px) {
+                width: calc((100% - 18%) / 4);
+            }
+        }
+    }
+
+    .skeleton-actions-container{
+        .skeleton-author-action{
+            flex-grow: 1;
+            height: rem(40);
+        }
+    }
+
+    @media (prefers-color-scheme: dark){
+        border: 1px solid $greyColor;
+        background: $black;
+    }
+
+    @media screen and (max-width: 767px) {
+        padding: 4% 3% 5%;
+        margin-top: 4%;
+    }
+}
+
+.trends-skeleton-screen, .suggestions-skeleton-screen{
+    width: rem(306);
+    padding: 4%;
+    @media (min-width: 768px) and (max-width: 999px){
+        width: rem(216);
+    }
+    @media (min-width: 1000px) and (max-width: 1199px){
+        width: rem(280);
+    }
+}
+
+
+.suggestions-skeleton-screen{
+    padding: 6% 4%;
+    height: rem(517.7);
+    margin-bottom: 40%;
+    background: $white;
+    .heading-title{
+        height: rem(10);
+        width: 60%;
+        margin-bottom: 5%;
+    }
+
+    &.trends-skeleton-screen{
+        margin: 4.1% 0 0;
+        height: rem(445.7);
+
+        .skeleton-trend-item{
+            height: rem(50);
+            margin: 4% 0;
+        }
+
+        @media (min-width: 768px) and (max-width: 1199px){
+            margin-bottom: 0;
+            height: rem(405.7);
+        }
+    }
+
+    .skeleton-user-profile-container{
+        margin: 5% 0 2%;
+
+        .skeleton-user-details{
+            width: 100%;
+            @include displayFlexCenterAndJustify(space-between);
+
+            .skeleton-user-info{
+                flex-grow: 1;
+                margin: 0 4%;
+                .skeleton-username{
+                    height: rem(22);
+                    width: 85%;
+                    margin-bottom: 2%;
+                }
+                .skeleton-user-follow-count{
+                    height: rem(12);
+                    width: 60%;
+                }
+            }
+            
+            .skeleton-follow-btn{
+                width: 20%;
+                height: rem(24);
+            }
+        }
+
+        .skeleton-user-bio{
+            .user-bio-line{
+                margin: 5% 0 2%;
+                height: rem(12);
+                width: 100%;
+    
+                &:last-child{
+                    margin: 2% 0 5%;
+                }
+            }
+        }
+
+        .skeleton-user-cover-photo{
+            height: rem(100);
+            margin-bottom: 5%;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1199px){
+        margin-left: auto;
+        height: rem(470.7);
+    }
+
+    @media (prefers-color-scheme: dark){
+        background: $black;
+        border: 1px solid $greyColor;
+        border-radius: 12px;
+    }
+}
+
+.skeleton-user-picture{
+    border-radius: 5px;
+    height: 3rem;
+    width: 8%;
+    margin-right: 4%;
+}
+
+.users-skeleton-screen{
+    .skeleton-search-bar{
+        width: 70%;
+        height: 1rem;
+        margin-bottom: 2.8%;
+        border-radius: 18px;
+    }
+    .skeleton-user-details{
+        @include displayFlexCenterAndJustify(flex-start);
+        height: 100%;
+        margin: 2.8% 0;
+        .skeleton-user-info{
+            height: 1rem;
+            width: 90%;
+        }
+    }
+}
+
+.messages-skeleton-container{
+    .messages-title{
+        margin: 0% auto 4%;
+        height: 2rem;
+        width: 30%;
+    }
+    .current-user-messages{
+        @include displayFlexCenterAndJustify(flex-start);
+        margin: 2.5% 0;
+    }
+}

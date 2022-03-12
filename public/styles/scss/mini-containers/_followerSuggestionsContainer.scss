@@ -1,0 +1,77 @@
+/****   FOLLOWER SUGGESTIONS CONTAINER  ***/
+.follower-suggestions-container{
+    grid-area: suggestions;
+    margin-bottom: 20%;
+    .suggested-user-profile-container{
+        margin: 8% 0;
+        .suggested-user-profile{
+            @include displayFlexCenterAndJustify(space-between);
+            .suggested-user-profile-stats{
+                .username-title, .user-follower-stats{
+                    font-weight: 500;
+                }
+                .username-title{
+                    font-family: $poppinsFont;
+                    font-size: rem(16);
+                    line-height: rem(24);
+                    color: $nativeBlackColor;
+                    word-wrap: break-word;
+                    max-width: 120px;
+                    cursor: pointer;
+                    
+                    @media (prefers-color-scheme: dark){
+                        color: $lightGreyColor;
+                    }
+                }
+                .user-follower-stats{
+                    font-size: rem(12);
+                    line-height: rem(16.34);
+                    color: $greyColor;
+                }
+                @media (min-width: 768px) and (max-width: 1199px){
+                    flex-grow: 1;
+                }
+            }
+            .tweet-author-image{
+                @media (min-width: 768px) and (max-width: 1199px){
+                    margin-right: 8.5%;
+                }
+            }
+        }
+        .suggested-user-bio{ 
+            margin: 7% 0;
+            span{
+                font-weight: 500;
+                font-size: rem(14);
+                line-height: rem(19.07);
+                color: $greyColor;
+                @media (prefers-color-scheme: dark){
+                    color: $lightGreyColor;
+                }
+            }
+        }
+        .suggested-user-cover-photo{
+            height: 5.3rem;
+            width: 100%;
+            border-radius: 8px;
+        }
+        .medium-follow-btn{
+            display: block;
+            margin: 8% 0;
+            padding: 3.132% 12.2955%;
+        }
+        @media (min-width: 768px) and (max-width: 1199px){
+            .large-follow-btn{
+                display: none;
+            }
+        }
+    }
+    @media (prefers-color-scheme: dark){
+        background: $black;
+        border: 1px solid $greyColor;       
+    }
+    
+    @media (min-width: 768px) and (max-width: 1199px){
+        margin-left: auto;
+    }
+}

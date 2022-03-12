@@ -1,0 +1,33 @@
+/****   BOTTOM NAVIGATION LINKS FOR MOBILE  ****/
+.small-navigation-links-container{
+    @include displayFlexCenterAndJustify(space-between);
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    background: $white;
+    padding: 5.244% 5%;
+    z-index: 3;
+    .navigation-links{
+        position: relative;
+        a{
+            text-decoration: none;
+            color: $greyColor;
+        }
+        .slider{
+            position: absolute;
+            width: rem(40);
+            height: 3px;
+            bottom: -0.9rem;
+            left: -0.48rem;
+            background-color: $blueLogoColor;
+            border-radius: 8px 8px 0px 0px;
+            visibility: hidden;
+            animation: 0.35s ease-in-out;
+        }
+    }
+    @media (prefers-color-scheme: dark){
+        background: $black;
+        border-top: 1px solid $greyColor;
+        border-radius: 12px 12px 0 0;
+    }
+}

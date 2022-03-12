@@ -1,0 +1,290 @@
+/***    NEW TWEET CONTAINER ****/
+.new-tweet-container{
+    padding: 1% 2%;
+    .new-tweet-title-text{
+        font-size: rem(12);
+        line-height: rem(18);
+        font-family: $poppinsFont;
+        font-weight: 600;
+        margin-bottom: 1%;
+        color: $darkGrey;
+        @media (prefers-color-scheme: dark){
+            color: $lightGreyColor;   
+        }
+        @media screen and (max-width: 767px) {
+            margin-bottom: 3%;
+        }
+    }
+    .new-tweet-textarea{
+        width: 100%;
+        padding: 2% 0;
+        display: flex;
+        align-items: center;
+        height: 4.5rem;
+        .user-picture{
+            display: block;
+            width: 2.5rem;
+            height: 100%;
+            margin-right: 1.5%;
+            object-fit: contain;
+            
+            @media (min-width: 768px) and (max-width: 1199px) {
+                margin-right: 3%;
+                width: 2.2rem;
+                height: 70%;
+            }
+
+            @media screen and (max-width: 767px) {
+                margin-right: 4.5%;
+            }
+        }
+        textarea{
+            outline: none;
+            border: none;
+            flex-grow: 1;
+            font-family: $notoFont;
+            font-weight: 500;
+            height: 100%;
+            padding: 1.07% 0.5%;
+            font-size: rem(16);
+            line-height: rem(21.79);
+            caret-color: $blueColor;
+            color: $darkGrey;
+
+            &::placeholder{
+                color: $lightGreyColor;
+                @media (prefers-color-scheme: dark){
+                    color: $darkGrey;
+                }
+            }
+
+            @media (prefers-color-scheme: dark){
+                background: $black;
+                color: $lightGreyColor;
+            }
+
+            @media screen and (max-width: 767px) {        
+                padding: 3% 0.5%;
+            }
+            
+            @media (min-width: 768px) and (max-width: 1199px) {
+                padding: 3.5% 0.5%;
+            }
+        }
+        @media screen and (max-width: 767px) {
+            height: 4rem;
+            padding: 3% 0;
+        }
+    }
+    .tweet-media-img, .tweet-media-error-msg{
+        margin: 1% auto 5%;
+        @media screen and (max-width: 767px) {
+            margin: 1% auto 7%;
+        }
+    }
+    .tweet-media-img{
+        display: none;
+        max-width: 100%;
+        // margin-right: auto;
+        width: calc(100% - 2.5rem - 4%);
+        margin-left: calc(2.5rem + 2%);
+
+        @media (min-width: 768px) and (max-width: 1199px) {
+            // width: calc(2.2rem + 3%);
+
+        }
+
+        @media screen and (max-width: 767px) {
+            // margin-right: calc(2.5rem + 4.5%);
+        }
+    }
+    .tweet-upload-error-msg{
+        color: $redColor;
+        width: 84%;
+        transition: 2s ease-in-out;
+        animation: fadeIn 0.5s;
+        margin-top: 2%;
+
+        @media screen and (max-width: 991px) {
+            width: 100%;
+            margin-left: 0;
+        }
+
+        @keyframes fadeIn {
+            from{
+                opacity: 0;
+            }
+            to{
+                opacity: 1;
+            }
+        }
+    }
+    .new-tweet-settings-container{
+        @include displayFlexCenterAndJustify(space-between);
+        position: relative;
+        .new-tweet-configure-container{
+            width: 80%;
+            color: $blueLogoColor;
+            @include displayFlexCenterAndJustify(flex-start);
+            margin-left: 8%;
+            & > * {
+                cursor: pointer;
+                transition: 0.15s ease-in-out;
+                &:hover, &:focus{
+                    filter: brightness(1.4);
+                }
+            }
+            & > *:not(:last-child){
+                margin-right: 3%;
+            }
+            span{
+                font-size: rem(12);
+                line-height: rem(16.34);
+            }
+            @media screen and (max-width: 991px) {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .new-tweet-select-media-container{
+                label[for=tweetMedia], input#tweetMedia{
+                    display: none;
+                }
+            }
+
+            .tweet-visibility-indicator{
+                word-wrap: break-word;
+                @media screen and (max-width: 767px) {
+                    max-width: 150px;   
+                }
+            }
+        }
+        .new-tweet-popup-container{
+            position: absolute;
+            bottom: -11rem;
+            left: 6rem;
+            background-color: $white;
+            z-index: 4;
+            border: 1px solid $paleGrey;
+            padding: 1.8% 1.543%;
+            width: 33.59321%;
+            border-radius: rem(12);
+            h5, span, ul li{
+                font-size: rem(12);
+                letter-spacing: -0.035rem;
+            }
+            h5, ul li{
+                color: $darkGrey;
+                @media (prefers-color-scheme: dark){
+                    color: $lightGreyColor;
+                }
+            }
+            h5{
+                font-family: $poppinsFont;
+                font-weight: 600;
+                line-height: rem(18);
+            }
+            span{
+                line-height: rem(16);
+                color: $greyColor;
+            }
+            ul{
+                margin: 2.4% 0;
+                list-style: none;
+                li{
+                    cursor: pointer;
+                    padding: 3.61% 0;
+                    border-radius: rem(8);
+                    transition: 0.35s ease-in-out;
+                    @include displayFlexCenterAndJustify(none);
+                    &:hover, &:focus{
+                        background-color: $paleBlueGrey;
+                        @media (prefers-color-scheme: dark){
+                            background-color: $greyColor;
+                            svg, span{
+                                color: $paleBlueGrey;
+                            }
+                        }
+                    }
+                    & > *{
+                        margin-left: 5%;
+                    }
+                }
+            }
+            &.tags-popup{
+                bottom: -8.7rem;
+                left: 3rem;
+
+                @media screen and (max-width: 991px) {
+                    left: 0;
+                    bottom: -9rem;
+                }
+
+            }
+
+            input[name=tags]{
+                outline: none;
+                border: 0.5px solid $greyColor;
+                border-radius: rem(12);
+                font-size: rem(13);
+                width: 100%;
+                margin: 6% 0;
+                padding: 2% 5%;
+                transition: 0.35s ease-in-out;
+                &::placeholder{
+                    color: $lightGreyColor;
+                }
+                
+                @include changeInputFocusAndCaretStyle($blueColor);
+
+                @media (prefers-color-scheme: dark){
+                    color: $greyColor;
+                    background: $black;
+                }
+            }
+            @media (prefers-color-scheme: dark){
+                background: $black;
+                color: $lightGreyColor;
+                border: 1px solid $greyColor;
+            }
+            @media screen and (max-width: 991px) {
+                width: 80%;
+                left: 0;
+            }
+            
+            @media (min-width: 768px) and (max-width: 1199px) {
+                width: 50%;
+            }
+        }
+        .tweet-btn{
+            background-color: $blueLogoColor;
+            outline: none;
+            border: none;
+            border-radius: 4px;
+            padding: 1.297% 3.24%;
+            cursor: pointer;
+            font-size: rem(12);
+            font-weight: 500;
+            transition: 0.35s ease-in-out;
+            &:hover, &:focus{
+                filter: brightness(1.1);
+            }
+            @media screen and (max-width: 767px) {
+                padding: 2.735% 7.43833%;
+            }
+        }
+        @media screen and (max-width: 767px) {
+            margin: 6% auto 0;
+        }
+    }
+    @media (prefers-color-scheme: dark){
+        background: $black;
+        border: 1px solid $greyColor;       
+    }
+    @media (min-width: 768px) and (max-width: 1199px) {
+        padding: 2.6% 2%;
+    }
+    @media screen and (max-width: 767px) {
+        padding: 4% 3% 5%;
+    }
+}
