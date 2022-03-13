@@ -2747,6 +2747,7 @@ textarea {
   left: 0.4%;
   width: 9.5rem;
   height: 9.5rem;
+  max-height: none;
   -o-object-fit: cover;
      object-fit: cover;
   border-radius: 10px;
