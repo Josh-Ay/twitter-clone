@@ -4,6 +4,7 @@ import NavigationBar from "../components/NavigationBar";
 import TweetNavigationSideBar from "../components/TweetNavigationSideBar";
 import useChangeElementPropertyOnScroll from "../hooks/useChangeElementPropertyOnScroll";
 import useOffsetFromElement from "../hooks/useOffsetFromElement";
+import useTitle from "../hooks/useTitle";
 
 
 const Bookmarks = ({ user }) => {
@@ -13,6 +14,8 @@ const Bookmarks = ({ user }) => {
     const [tweetCategory, setTweetCategory] = useState("Tweets");
     const [tweetCategoryLocation, setTweetCategoryLocation] = useState("tweets");
     
+    useTitle("Bookmarks");
+
     useOffsetFromElement(navBarRef, bookmarksContainerRef, 15);
     useChangeElementPropertyOnScroll(navBarRef, "position", "fixed", "absolute");
     useChangeElementPropertyOnScroll(mobileNavBarRef, "display", "flex", "none");

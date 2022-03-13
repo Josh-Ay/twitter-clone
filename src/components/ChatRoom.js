@@ -34,15 +34,18 @@ const ChatRoom = ({currentUserDetailsRef, currentActiveUserChat, handleBackIconC
                 return;
             };
 
-            // creating a new blob url to let the user preview the image added to the new tweet
-            let imgPreview = URL.createObjectURL(e.target.files[0])
-            messageImagePreviewRef.current.src = imgPreview;
-            messageImagePreviewFigure.current.style.display = "block";
-            
-            handleImageUpload(e.target.files[0]);
-            
-            // deleting the blob url to save memory
-            URL.revokeObjectURL(imgPreview);
+            // creating a new data url to let the user preview the new message image added
+            Formatter.convertFileObjectToImageStr(e.target.files[0]).then((resultingImageStr) => {
+                
+                messageImagePreviewRef.current.src = resultingImageStr;
+                messageImagePreviewFigure.current.style.display = "block";
+
+                handleImageUpload(e.target.files[0]);
+           
+            }).catch(err => {
+                setMessageImageError("An error occured while trying to load the image");
+            });
+
         }
     }
 
@@ -79,7 +82,8 @@ const ChatRoom = ({currentUserDetailsRef, currentActiveUserChat, handleBackIconC
                             <img 
                                 src={
                                     message.messageImage instanceof File ?
-                                    URL.createObjectURL(message.messageImage) : message.messageImage instanceof ArrayBuffer ? 
+                                    Formatter.convertFileObjectToImageStr(message.messageImage).then(resultingImageStr => resultingImageStr) :
+                                    message.messageImage instanceof ArrayBuffer ? 
                                     `${Formatter.convertBufferArrayToImageStr(message.messageImage)}` : `${Formatter.formatImageStr(message.messageImage)}`
                                 }
                                 alt="chat media" 

@@ -292,6 +292,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
                                 handleInputChange={handleChangeInUserDetailsInput}
                                 errorMsg={userDetailsError}
                                 handleSubmitClick={handleUserDetailsSubmitClick}
+                                notSocialUser={notSocialUser}
                                 updateCurrentUser={
                                     (userData) => {
                                         updateCurrentUser(userData);
@@ -308,7 +309,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
                         
                         {
                             !settingsParameterPassed && !groupsParameterPassed && requestedUserData && <>
-                                <div className="user-profile-cover-photo" style={{background: `${requestedUserData.coverPhoto ? `url(${Formatter.formatImageStr(requestedUserData.coverPhoto)})` : "url(assets/default-background-pic.jpg)"}`}} ></div>
+                                <div className="user-profile-cover-photo" style={{background: `${requestedUserData.coverPhoto ? `url(${Formatter.formatImageStr(requestedUserData.coverPhoto)})` : "url(/assets/default-background-pic.jpg)"}`}} ></div>
                                 <div className="user-display-details-container">
                                     <div className="user-picture-canvas"></div>
                                     <UserPicture displayPicture={requestedUserData.profilePhoto} />

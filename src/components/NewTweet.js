@@ -6,6 +6,7 @@ import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import useClickOutside from "../hooks/useClickOutside";
 import { useRef, useState } from 'react';
 import { checkImageFile } from "../validators/Validators";
+import { Formatter } from "../helpers/Formatter";
 
 const NewTweet = ( {username, userPicture, tweet, updateTweetText, handleSubmit, updateTweetVisibility, handleImageUpload, showLoadingAnimation, tweetCreateError } ) => {
     const [ tweetVisibility, setTweetVisibility ] = useState("public");
@@ -85,29 +86,36 @@ const NewTweet = ( {username, userPicture, tweet, updateTweetText, handleSubmit,
                 return;
             };
 
-            // creating a new blob url to let the user preview the image added to the new tweet
-            let imgPreview = URL.createObjectURL(e.target.files[0])
-            tweetMediaImgRef.current.src = imgPreview;
-            tweetMediaImgRef.current.style.display = "block";
-            
-            handleImageUpload(e.target.files[0]);
-            
-            // deleting the blob url to save memory
-            URL.revokeObjectURL(imgPreview);
+            // creating a new data url to let the user preview the image added to the new tweet
+            Formatter.convertFileObjectToImageStr(e.target.files[0]).then((resultingImageStr) => {
+                
+                tweetMediaImgRef.current.src = resultingImageStr;
+                tweetMediaImgRef.current.style.display = "block";
 
+                handleImageUpload(e.target.files[0]);
+           
+            }).catch(err => {
+                setTweetImgUploadErrMsg("An error occured while trying to load the image");
+            });
+            
         }
     }
 
     return <div className="new-tweet-container">
         <h5 className="new-tweet-title-text">Tweet Something</h5>
         <hr className="custom-hr" />
+        
         {tweetCreateError && <div className="tweet-upload-error-msg">An error occured while trying to create your tweet. Please try again</div>}
+        
         <div className="new-tweet-textarea">
             <UserPicture className="user-picture" location={username} displayPicture={userPicture}/>
             <textarea placeholder="What's happening?" name="tweetText" value={tweet.tweetText} onChange={updateTweetText} onKeyUp={resizeTextArea} autoFocus />
         </div>
+        
         {tweetImgUploadErrMsg && <div className="tweet-upload-error-msg">{tweetImgUploadErrMsg}</div>}
+        
         <img ref={tweetMediaImgRef} className="tweet-media-img" src="" alt="media of tweet"></img>
+        
         <div className="new-tweet-settings-container">
             <div className="new-tweet-configure-container">
                 <LocalOfferIcon onClick={handleTagIconClick} />
@@ -139,6 +147,7 @@ const NewTweet = ( {username, userPicture, tweet, updateTweetText, handleSubmit,
             }
             <button onClick={() => {handleSubmit(tweetMediaImgRef)}} className="submit-btn tweet-btn">{showLoadingAnimation ? <div id="loading"></div> : "Tweet"}</button>
         </div>
+        
     </div>
 }
 

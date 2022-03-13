@@ -204,17 +204,25 @@ const Tweet = (props) => {
                 return;
             };
 
-            // creating a new blob url to let the user preview the image added to the new tweet
-            let imgPreview = URL.createObjectURL(e.target.files[0]);
-            commentImagePreviewRefs.current[currentTweetIndex].src = imgPreview;
-            commentImagePreviewRefs.current[currentTweetIndex].style.display = "block";
-            
-            setCommentData(prevValue => {
-                return {...prevValue, "commentImage": e.target.files[0]}
+            // creating a new data url to let the user preview the comment image added to the tweet
+            Formatter.convertFileObjectToImageStr(e.target.files[0]).then((resultingImageStr) => {
+                
+                commentImagePreviewRefs.current[currentTweetIndex].src = resultingImageStr;
+                commentImagePreviewRefs.current[currentTweetIndex].style.display  = "block";
+
+                setCommentData(prevValue => {
+                    return {...prevValue, "commentImage": e.target.files[0]}
+                });
+           
+            }).catch(err => {
+                // displaying an error message and making the div containing it to be visible
+                commentUploadErrRefs.current[currentTweetIndex].style.display = "block";
+                
+                // removing the error message and the div containing it after 4s
+                setTimeout(() => commentUploadErrRefs.current[currentTweetIndex].style.display = "none", 4000);
+                
             });
-            
-            // deleting the blob url to save memory
-            URL.revokeObjectURL(imgPreview);
+
         }
     }
 

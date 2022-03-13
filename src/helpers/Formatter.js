@@ -66,7 +66,26 @@ class Formatter{
     }
 
     static convertBufferArrayToImageStr = (bufferArray) => {
+        // returning a data url of the buffer array
         return `data:image/png;base64,${Buffer.from(bufferArray, "utf8").toString("base64")}`;
+    }
+
+    static convertFileObjectToImageStr = (fileObj) => {
+        
+        // returning a new promise
+        return new Promise((resolve, reject) => {
+            // instantiating a new object of the FileReader class to read the file object passed
+            const reader = new FileReader();
+
+            // using the object to read the file as a data url i.e 'data:image/...'
+            reader.readAsDataURL(fileObj);
+
+            // on successful read of file
+            reader.onload = () => resolve(reader.result);
+            
+            // on error reading the file
+            reader.onerror = error => reject(error);
+        });
     }
 }
 

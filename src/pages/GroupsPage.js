@@ -1,4 +1,9 @@
+import useTitle from "../hooks/useTitle";
+
 const GroupsPage = () => {
+
+    useTitle("Groups");
+
     return <>
         <div className="main-container groups-page-container">
             <h1 className="title-text">Groups</h1>

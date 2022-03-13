@@ -7,12 +7,13 @@ import { Request } from "../requests/Request";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import CryptoJS from "crypto-js";
+import useTitle from "../hooks/useTitle";
 
 require("dotenv").config();
 
 
 const NewUser = ({ user, updateCurrentUser, notSocialUser }) => {
-    document.title = "Tweeter | Set Up Profile";
+    useTitle("Tweeter | Set Up Profile");
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -60,6 +61,8 @@ const NewUser = ({ user, updateCurrentUser, notSocialUser }) => {
         Request.makePatchRequest(`/users/${user._id}`, userDetails).then(res => {
             if (res.status === 200){
                 updateCurrentUser(res.data.user);
+
+                // updating the user data stored in local storage for non-oauth users
                 if (notSocialUser) localStorage.setItem("userData", JSON.stringify(res.data.user));
                 navigate("/");
             }

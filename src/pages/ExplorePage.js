@@ -5,6 +5,7 @@ import NavigationBar from "../components/NavigationBar";
 import TweetNavigationSideBar from "../components/TweetNavigationSideBar";
 import useChangeElementPropertyOnScroll from "../hooks/useChangeElementPropertyOnScroll";
 import useOffsetFromElement from "../hooks/useOffsetFromElement";
+import useTitle from "../hooks/useTitle";
 
 
 const ExplorePage = ({ user }) => {
@@ -15,6 +16,8 @@ const ExplorePage = ({ user }) => {
     const [exploreCategory, setExploreCategory] = useState("Top");
     const [exploreCategoryLocation, setExploreCategoryLocation] = useState("top");
     
+    useTitle("Tweeter | Explore");
+
     useOffsetFromElement(ref, ref2, 15);
     useChangeElementPropertyOnScroll(ref, "position", "fixed", "absolute");
     useChangeElementPropertyOnScroll(ref3, "display", "flex", "none");

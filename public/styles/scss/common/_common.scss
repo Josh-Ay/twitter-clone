@@ -93,6 +93,11 @@ textarea{
 .current-user-img-container{
     border-radius: 4px;
     width: 18%;
+    max-height: rem(40);
+
+    @media screen and (max-width: 767px) {
+        max-height: rem(45);
+    }
 }
 
 .mini-container{

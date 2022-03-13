@@ -100,14 +100,20 @@ const UserProfileForm = (props) => {
         file.append("username", props.usernamePlaceholder);
         if (typeOfImage) file.append("coverPhoto", true);
 
-        // creating a new blob url with the image file and using it as the background image for the 'profile photo' to display to the user
-        let imageBlobUrl = URL.createObjectURL(image);
-        
-        if (typeOfImage){
-            userCoverPhotoRef.current.style.backgroundImage = `url(${imageBlobUrl})`;
-        }else{
-            profileImageRef.current.style.backgroundImage = `url(${imageBlobUrl})`;
-        }
+        // creating a new data url to let the user preview the image added
+        Formatter.convertFileObjectToImageStr(image).then((resultingImageStr) => {
+            
+            if (typeOfImage){
+                userCoverPhotoRef.current.style.backgroundImage = resultingImageStr;
+            }else{
+                profileImageRef.current.style.backgroundImage = resultingImageStr;
+            }
+       
+        }).catch(err => {
+            // displaying an error message
+            setImageUploadErrMsg("An error occurred while trying to load your image");
+        });
+
         
         // uploading the image
         Request.uploadImage(`/users/${props.user_id}/photo/upload`, file).then(res => {
@@ -118,11 +124,9 @@ const UserProfileForm = (props) => {
                 setProfileLoading(false);
             }
 
-            // delete the blob url created above to save memory
-            URL.revokeObjectURL(imageBlobUrl);
             
-            // updating the user data stored in local storage
-            localStorage.setItem("userData", JSON.stringify(res.data.user));
+            // updating the user data stored in local storage if any
+            if (props.notSocialUser) localStorage.setItem("userData", JSON.stringify(res.data.user));
             
             // updating the current user state data
             props.updateCurrentUser(res.data.user);
@@ -150,9 +154,6 @@ const UserProfileForm = (props) => {
             // show an error message
             setImageUploadErrMsg("An error occured while uploading your image. Please try again.");
 
-             
-            // delete the blob url created above to save memory
-            URL.revokeObjectURL(imageBlobUrl);
         });
         
     }
@@ -165,7 +166,7 @@ const UserProfileForm = (props) => {
         <form autoComplete="off">
             <div className={`profile-image-upload-container ${isProfileUploadSuccessful && "success"}`} >
                 <div className="profile-image" onDragLeave={handleDragLeave} onDragEnter={handleDragEnter} style={{backgroundImage: props.profilePhoto ? `url(${Formatter.formatImageStr(props.profilePhoto)})` : "url(assets/blank-profile-picture.svg)", backgroundSize: "100% 100%", backgroundRepeat: "no-repeat" }} aria-label="user display pic" ref={profileImageRef}>
-                    <div className="image-mask" onDrop={handleImageDrop} style={{border: imageOver ? "1px solid #2D9CDB": "", opacity: imageOver ? "0.5": "1"}}  onClick={profileLoading ? () => {} : openFileUpload} >{profileLoading ? <div id="loading"></div> : isProfileUploadSuccessful ? <Done style={{color: "#2f80ed"}} /> : <PhotoCameraIcon onDragOver={handleDragEnter} style={{color: "white"}} />}</div>
+                    <div className="image-mask" onDrop={handleImageDrop} style={{border: imageOver ? "1px solid #2D9CDB": "", opacity: imageOver ? "0.5": "1"}}  onClick={profileLoading ? () => {} : () => openFileUpload() } >{profileLoading ? <div id="loading"></div> : isProfileUploadSuccessful ? <Done style={{color: "#2f80ed"}} /> : <PhotoCameraIcon onDragOver={handleDragEnter} style={{color: "white"}} />}</div>
                 </div>
                 <label htmlFor="profile-image-upload" className={`profile-image-upload-btn ${isProfileUploadSuccessful && "success"}`}>{isProfileUploadSuccessful ? "Successfully changed profile photo!" : "Change photo"}</label>
                 <input type="file" id="profile-image-upload" ref={fileUploadRef} onChange={handleImageLoad} />
