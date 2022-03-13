@@ -1,70 +1,220 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h1 align="center">Tweeter - Twitter Clone</h1>
 
-## Available Scripts
+<div align="center">
+   A Twitter clone application as a solution for a challenge from  <a href="http://devchallenges.io" target="_blank">Devchallenges.io</a>.
+</div>
+<br/>
+<div align="center">
+  <h3>
+    <a href="https://tweeter-clone-app.netlify.app/">
+      Demo
+    </a>
+    <span> | </span>
+    <a href="https://{your-url-to-the-solution}">
+      Solution
+    </a>
+    <span> | </span>
+    <a href="https://devchallenges.io/challenges/rleoQc34THclWx1cFFKH">
+      Challenge
+    </a>
+  </h3>
+</div>
+<br/>
+<!-- TABLE OF CONTENTS -->
 
-In the project directory, you can run:
+## Table of Contents
 
-### `npm start`
+- [Overview](#overview)
+- [Built With](#built-with)
+  - [Frontend](#frontend)
+  - [Backend](#backend)
+- [Features](#features)
+- [How to use](#how-to-use)
+- [Contact](#contact)
+- [Acknowledgements](#acknowledgements)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+<!-- OVERVIEW -->
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Overview
 
-### `npm test`
+![](./screenshot_desktop_light.png)
+![](./screenshot_desktop_dark.png)
+![](./screenshot_mobile_dark_1.png)
+![](./screenshot_mobile_light.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+## Built With
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<!-- This section should list any major frameworks that you built your project using. Here are a few examples.-->
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Frontend
+The following were used in the building of the frontend of this application:
+- HTML
+- SASS/CSS
+- [Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+- [NPM](https://www.npmjs.com/)
+- [React](https://reactjs.org/)
+- [Axios](https://www.npmjs.com/package/axios)
+- [React Responsive](https://www.npmjs.com/package/react-responsive)
+- [Socket.io Client](https://www.npmjs.com/package/socket.io-client)
+- [Crypto Js](https://www.npmjs.com/package/crypto-js)
+- [Dotenv](https://www.npmjs.com/package/dotenv)
+- [Qs](https://www.npmjs.com/package/qs)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Backend
+The following were used in the building of the backend of this application:
 
-### `npm run eject`
+- [AWS SDK](https://www.npmjs.com/package/aws-sdk)
+- [Connect Mongo](https://www.npmjs.com/package/connect-mongo#connection-to-mongodb)
+- [Cors](https://www.npmjs.com/package/cors)
+- [Crypto Js](https://www.npmjs.com/package/crypto-js)
+- [Dotenv](https://www.npmjs.com/package/dotenv)
+- [Express.js](https://expressjs.com/)
+- [Express session](https://www.npmjs.com/package/express-session)
+- [Mongoose](https://mongoosejs.com/)
+- [Mongoose FindOrCreate](https://www.npmjs.com/package/mongoose-find-or-create)
+- [Multer](https://www.npmjs.com/package/multer)
+- [Nodemon](https://www.npmjs.com/package/nodemon)
+- [PassportJS](https://www.passportjs.org/)
+- [Socket.io](https://www.npmjs.com/package/socket.io)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Features
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+This web application/site was created as a submission to a [DevChallenges](https://devchallenges.io/challenges) challenge. The [challenge](https://devchallenges.io/challenges/rleoQc34THclWx1cFFKH) was to build an application to complete the following user stories:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- User story: I can see my profile or others' profile
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- User story: When I am on a profile, I can see Tweets and Retweets. I can also filter by Tweets, Tweets and replies, Media and Likes
 
-## Learn More
+- User story: When I am on a profile, I can see followers and following
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- User story: When I am on a profile, I can see follow or unfollow the user
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- User story: I can navigate between Home, Explore, Bookmarks and Messages
 
-### Code Splitting
+- User story: I can navigate to My Profile, Group Chat (optional), Setting/Authentication App.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- User story: When I am on Home, I can post a new Tweet
 
-### Analyzing the Bundle Size
+- User story: When I post a new Tweet, I can choose to upload an image and set the Tweet to be public or only-follower
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- User story: When I am on Home, I can see Tweets of people who I follow
 
-### Making a Progressive Web App
+- User story: I can Comment, Retweet, Like or Save a Tweet
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- User story: I can Comment with image and I can like a comment
 
-### Advanced Configuration
+- User story: I can see the posted time of the Comments and Tweets
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- User story: When I am on Home, I can see the most popular hashtags and people I should follow (it's up to you how to implement this)
 
-### Deployment
+- User story: When I am on Explore, I can see the Top, Latest Tweet, or Tweet with Media. I can also choose to see the most popular people
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- User story: When I am on Bookmarks, I can see the Saved Tweet
 
-### `npm run build` fails to minify
+### Added User Stories
+- User story: When I am on Messages, I can see messages that I have started with others
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- User story: When I am on Messages, the messages that I have started with others should be sorted starting from the last message received
+
+- User story: When I am on Messages, I can start a new chat with those I follow and search through the people I follow to start a chat with
+
+- User story: When I am on Messages, I can see the details of the person I am currently chatting with and navigate to their profile
+
+- User story: When I am on Messages, I can send a message and receive messages
+
+- User story: When I am on Messages, I can choose to upload an image
+
+- User story: When I am on Messages, I can see the created time of the sent or received message 
+
+## How To Use
+
+<!-- Example: -->
+
+To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+
+```bash
+# Clone this repository
+$ git clone https://github.com/Josh-Ay/twitter-clone.git
+
+```
+- Go into the 'client' folder
+
+```bash
+# Go into client folder
+$ cd client/
+```
+- Create a new .env file and set the following to anything you like:
+  1. REACT_APP_API_URL=http://localhost:5000 (the server runs on port 5000)
+  2. REACT_APP_AES_SECRET_KEY=anythingyouwant (but it should be the same as the one you would also set in the .env file that you would soon create backend folder)
+
+```bash
+# Install all dependencies
+$ npm install
+```
+
+- `cd` out of the 'client' folder and into the 'server' folder
+```bash
+# cd out of 'client' and into 'server' folder
+$ cd ../server
+```
+- Create a new .env file and set the following:
+  1. SESSION_SECRET=anythingyouwant
+  2. GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET (check out this [link](https://www.youtube.com/watch?v=7K9kDrtc4S8&t=3885s) to know how to set these up)
+  3. GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET (check out this [link](https://www.youtube.com/watch?v=wcUdBgktd4s) to know how to set these up)
+  4. FACEBOOK_APP_ID, FACEBOOK_APP_SECRET (check out this [link](https://www.youtube.com/watch?v=KlE9RAOl9KA) to know how to set these up)
+  5. SALT_LENGTH=a number e.g 2, 4, 6
+  6. AES_SECRET_KEY=anythingyouwant (it should match the one you created in the .env file in your 'client' folder)
+  7. CLIENT_URL=http://localhost:3000 (the client 'react' runs on port 3000)
+  8. AWS_BUCKET_NAME, AWS_BUCKET_REGION=us-east-2,AWS_ACCESS_KEY, AWS_SECRET_KEY (check out this [link](https://youtu.be/NZElg91l_ms) to know how to set these up)
+  9. API_URL=http://localhost:5000 (the server is running on port 5000)
+
+```bash
+# Install all dependencies
+$ npm install
+```
+- Go to line 60 in the 'app.js'
+```bash
+# line 60
+// mongoose.connect("mongodb://localhost:27017/tweeterDB")    // localuse
+```
+- uncomment it and comment out line 61
+```bash
+# line 61
+mongoose.connect(process.env.MONGO_DB_URI);     // mongo atlas
+```
+
+- save all changes
+
+```bash
+# Run the server
+$ node app.js
+```
+
+- open up a new terminal and cd into the 'clients/' folder in the new terminal
+
+
+```bash
+# Run the react app
+$ npm start
+```
+
+- That's it. You're all done!!
+
+<br />
+
+## Acknowledgements
+The following links were very helpful to me in the course of building this project and I feel they could also be useful to you too in your future endeavours: 
+
+- [Social OAuth with React](https://www.youtube.com/watch?v=7K9kDrtc4S8&t=3885s)
+- [Create an array of refs using react](https://www.youtube.com/watch?v=ygPIjzhKB2s)
+- [Upload images to s3](https://youtu.be/NZElg91l_ms)
+- [Socket.io crash course](https://youtu.be/ZKEqqIO7n-k)
+- [Chat app with react](https://youtu.be/NU-HfZY3ATQ)
+- [Model-View-Controller(MVC) pattern with Express and Node.js](https://www.youtube.com/watch?v=Cgvopu9zg8Y&t=534s)
+- [MVC in 4mins](https://www.youtube.com/watch?v=DUg2SWWK18I&t=3s)
+
+## Contact
+
+- GitHub [@Josh-Ay](https://{github.com/Josh-Ay})
