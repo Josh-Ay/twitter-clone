@@ -320,7 +320,7 @@ const Tweet = (props) => {
                 </div>
             </div>
             <div className="tweet-contents-container">
-                <span className="tweet-text">{tweet.tweetText}</span>
+                <span className="tweet-text" style={{whiteSpace: "pre-line"}}>{tweet.tweetText}</span>
                 {
                     tweet.image && <figure>
                         <img src={Formatter.formatImageStr(tweet.image)} alt="media of tweet" />
@@ -385,7 +385,7 @@ const Tweet = (props) => {
                                 <span>{Formatter.formatDateTime(comment.createdAt)}</span>
                             </div>
                             <div className="user-reply">
-                                <span>{comment.commentText}</span>
+                                <span style={{whiteSpace: "pre-line"}}>{comment.commentText}</span>
                             </div>
                         </div>
                         <div className="reply-reactions-container">

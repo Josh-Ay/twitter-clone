@@ -76,7 +76,7 @@ const ChatRoom = ({currentUserDetailsRef, currentActiveUserChat, handleBackIconC
                 React.Children.toArray(messages.map(message => {
                     return <>
                     <div className={`${message.type === "sent" ? "sent-message-container" : "received-message-container"}`}>
-                        <span>{message.messageContent}</span>
+                        <span style={{whiteSpace: "pre-line"}}>{message.messageContent}</span>
                         {
                             message.messageImage && 
                             <img 
