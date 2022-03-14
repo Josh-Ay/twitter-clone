@@ -159,7 +159,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
     // useEffect hook to monitor the username entered and validate that its not used by another user
     useEffect(() => {
         if (userDetails.username.length < 1) {
-            setUserDetailsError("");
+            setUserDetailsError("Please enter a username");
             setAllowClick(false);
             return
         }
