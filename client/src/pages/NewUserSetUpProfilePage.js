@@ -78,6 +78,13 @@ const NewUser = ({ user, updateCurrentUser, notSocialUser }) => {
             setAllowClick(false);
             return
         }
+
+        // monitoring for spaces in username
+        if (userDetails.username.includes(" ")){
+            setErrorMessage("Please do not include spaces in your username");
+            setAllowClick(false);
+            return;
+        }
         
         Request.makeGetRequest("/usernames").then(res => {
             const bytes  = CryptoJS.AES.decrypt(res.data.usernames, process.env.REACT_APP_AES_SECRET_KEY);

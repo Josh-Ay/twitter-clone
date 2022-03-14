@@ -83,7 +83,7 @@
             width: max-content;
             height: auto;
             padding: 1% 1.5%;
-            margin: 3% 0;
+            margin: 4% 0;
             text-align: left;
             max-width: 50vw;
             color: $white;
@@ -99,7 +99,7 @@
             @media screen and (max-width: 767px) {
                 padding: 3% 6% 4% 4%;
                 max-width: 80vw;
-                margin: 9% 0;
+                margin: 15% 0;
             }
 
             @media (prefers-color-scheme: dark) {

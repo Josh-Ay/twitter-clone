@@ -54,7 +54,8 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
     const [userDetails, setUserDetails] = useState({
         displayName: "",
         username: "",
-        userBio: ""
+        userBio: "",
+        type: "update"
     });
     const [userDetailsError, setUserDetailsError] = useState("");
     
@@ -85,6 +86,14 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
 
             // the user exists
             setUserRegistered(true);
+            setUserDetails(prevValue => {
+                return {
+                    ...prevValue, 
+                    displayName: loggedInUser.displayName,
+                    username: loggedInUser.username,
+                    userBio: loggedInUser.about
+                }
+            });
             setRequestedUserData(allUsernames.find(user => user.username === requestedUser.user)); 
             
             setPageLoading(false);
@@ -97,7 +106,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
             
         })
         
-    }, [requestedUser.user]);
+    }, [requestedUser.user, loggedInUser.username, loggedInUser.about, loggedInUser.displayName]);
 
 
     // 'useEffect' hook to check if there's a currently logged-in user
@@ -107,15 +116,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
 
             if (query) {
                 if (query === "groups") return setGroupsParameterPassed(true);
-                if (query === "settings") {
-                    setSettingsParameterPassed(true);
-                    setUserDetails({
-                        displayName: loggedInUser.displayName,
-                        username: loggedInUser.username,
-                        userBio: loggedInUser.about
-                    })
-                    return;
-                };
+                if (query === "settings") return setSettingsParameterPassed(true);
                 
                 return <PageNotFound user={loggedInUser} navigationBarReference={navBarRef} />
             };
@@ -158,10 +159,17 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
 
     // useEffect hook to monitor the username entered and validate that its not used by another user
     useEffect(() => {
-        if (userDetails.username.length < 1) {
+        if (userDetails.username.length < 1 && !pageLoading) {
             setUserDetailsError("Please enter a username");
             setAllowClick(false);
-            return
+            return;
+        }
+
+        // no spaces in username
+        if(userDetails.username.includes(" ")) {
+            setUserDetailsError("Please do not spaces in your username");
+            setAllowClick(false);
+            return;
         }
         
         Request.makeGetRequest("/usernames").then(res => {
@@ -181,7 +189,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
             setUserDetailsError("An error occurred while trying to fetch the requested resource.");
         })
     
-    }, [userDetails.username, loggedInUser.username])
+    }, [userDetails.username, loggedInUser.username, pageLoading])
 
 
     // checking if the requested username cannot be found

@@ -7,6 +7,7 @@ import React, { useRef, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { checkImageFile } from '../validators/Validators';
 import { Formatter } from '../helpers/Formatter';
+import useScrollToBottom from '../hooks/useScrollToBottom';
 
 
 const ChatRoom = ({currentUserDetailsRef, currentActiveUserChat, handleBackIconClick, messages, newMessage, createMessageContainerRef, handleInputChange, handleImageUpload, isMessageBoxEmpty, handleMessageSend}) => {
@@ -14,7 +15,10 @@ const ChatRoom = ({currentUserDetailsRef, currentActiveUserChat, handleBackIconC
     const messageImageRef = useRef(null);
     const messageImagePreviewRef = useRef(null);
     const messageImagePreviewFigure = useRef(null);
+    const currentChatMessagesContainerRef = useRef(null);
     const [ messageImageError, setMessageImageError ] = useState("");
+
+    useScrollToBottom(currentChatMessagesContainerRef);
 
     const handleAddMessageImage = () => {
         // if there is no reference to the input with a type of file
@@ -71,7 +75,7 @@ const ChatRoom = ({currentUserDetailsRef, currentActiveUserChat, handleBackIconC
             </div>
         </div>
 
-        <div className="current-chat-messages"> 
+        <div className="current-chat-messages" ref={currentChatMessagesContainerRef}> 
             {
                 React.Children.toArray(messages.map(message => {
                     return <>
