@@ -185,6 +185,21 @@ $ npm install
 mongoose.connect(process.env.MONGO_DB_URI);     // mongo atlas
 ```
 
+- copy the mongo url on line 60 i.e `"mongodb://localhost:27017/tweeterDB"`
+- navigate to 'middleware' folder and locate the 'config.js' file
+- now, replace the 'process.env.MONGO_DB_URI' on line 23 with what you copied above
+
+```bash
+# line 23(before)
+store: MongoStore.create({ mongoUrl: process.env.MONGO_DB_URI }),
+```
+
+```bash
+# line 23(it should now be this)
+store: MongoStore.create({ mongoUrl: mongodb://localhost:27017/tweeterDB }),
+```
+
+
 - save all changes
 
 ```bash
