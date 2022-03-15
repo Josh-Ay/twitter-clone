@@ -34,12 +34,16 @@
         textarea{
             background: $paleBlueGrey;
             padding: 1%;
-            width: 98%;
-            margin-left: 1%;
+            width: 100%;
             border: none;
             outline: none;
+            border-radius: 10px;
             @include changeInputFocusAndCaretStyle($blueLogoColor);
             font-family: $poppinsFont;
+
+            @media (min-width: 768px) and (max-width: 991px){
+                padding: 2%;
+            }
 
             @media screen and (max-width: 767px) {
                 padding: 3% 5%;
@@ -83,9 +87,13 @@
         }
     }
 
+    @media (min-width: 768px) and (max-width: 991px){
+        padding: 2% 2.5%;
+    }
+
     @media screen and (max-width: 767px) {
         bottom: 10%;
-        padding: 4% 2.5%;
+        padding: 5.5% 2.5%;
     }
 
     @media screen and (max-width: 576px) {

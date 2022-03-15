@@ -85,18 +85,8 @@
     .tweet-media-img{
         display: none;
         max-width: 100%;
-        // margin-right: auto;
         width: calc(100% - 2.5rem - 4%);
         margin-left: calc(2.5rem + 2%);
-
-        @media (min-width: 768px) and (max-width: 1199px) {
-            // width: calc(2.2rem + 3%);
-
-        }
-
-        @media screen and (max-width: 767px) {
-            // margin-right: calc(2.5rem + 4.5%);
-        }
     }
     .tweet-upload-error-msg{
         color: $redColor;
@@ -254,6 +244,10 @@
             
             @media (min-width: 768px) and (max-width: 1199px) {
                 width: 50%;
+            }
+
+            @media screen and (max-width: 767px) {
+                padding: 4.5% 3.8575%;
             }
         }
         .tweet-btn{

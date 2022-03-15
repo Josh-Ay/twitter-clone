@@ -52,7 +52,7 @@ const MessagesPage = ( { user, socketInstance } ) => {
 
     useTitle("Messages | Tweeter");
     useChangeElementPropertyOnScroll(mobileNavRef, "display", "flex", "none");
-    useChangeElementPropertyOnScroll(createMessageContainerRef, "bottom", isSmallScreen ? isVerySmallScreen ? "9%" : "11%" : "0", "0");
+    useChangeElementPropertyOnScroll(createMessageContainerRef, "bottom", isSmallScreen ? isVerySmallScreen ? "7.7%" : "11%" : "0", "0");
     useClickOutside(ref, () => setActive(false));
     
     // handle input change
