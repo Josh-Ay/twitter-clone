@@ -16,6 +16,7 @@ const ChatRoom = ({currentUserDetailsRef, currentActiveUserChat, handleBackIconC
     const messageImagePreviewRef = useRef(null);
     const messageImagePreviewFigure = useRef(null);
     const currentChatMessagesContainerRef = useRef(null);
+    const chatImageRef = useRef(null);
     const [ messageImageError, setMessageImageError ] = useState("");
 
     useScrollToBottom(currentChatMessagesContainerRef);
@@ -59,6 +60,15 @@ const ChatRoom = ({currentUserDetailsRef, currentActiveUserChat, handleBackIconC
         messageImagePreviewFigure.current.style.display = "none";
     }
 
+    // get image data url string of file object using a method in the 'Formatter' class
+    const getImageStr = (fileObj) => {
+        Formatter.convertFileObjectToImageStr(fileObj)
+        .then((resultingImageStr) =>{
+            // displaying the image for preview as a data url
+            chatImageRef.current.src = resultingImageStr
+        })
+    }
+
     return (
     <>
     <div className="user-chat-page-container">
@@ -79,20 +89,22 @@ const ChatRoom = ({currentUserDetailsRef, currentActiveUserChat, handleBackIconC
             {
                 React.Children.toArray(messages.map(message => {
                     return <>
-                    <div className={`${message.type === "sent" ? "sent-message-container" : "received-message-container"}`}>
-                        <span style={{whiteSpace: "pre-line"}}>{message.messageContent}</span>
-                        {
-                            message.messageImage && 
-                            <img 
-                                src={
-                                    message.messageImage instanceof File ?
-                                    Formatter.convertFileObjectToImageStr(message.messageImage).then(resultingImageStr => resultingImageStr) :
-                                    message.messageImage instanceof ArrayBuffer ? 
-                                    `${Formatter.convertBufferArrayToImageStr(message.messageImage)}` : `${Formatter.formatImageStr(message.messageImage)}`
-                                }
-                                alt="chat media" 
-                            />
-                        } 
+                    <div className={`${message.type === "sent" ? "sent-message-container" : "received-message-container"} ${message.messageImage ? "image-present" : ""}`}>
+                        <span style={{whiteSpace: "pre-line"}}>
+                            {message.messageContent}
+                            {
+                                message.messageImage && 
+                                <img ref={chatImageRef}
+                                    src={
+                                        message.messageImage instanceof File ?
+                                        getImageStr(message.messageImage) :
+                                        message.messageImage instanceof ArrayBuffer ? 
+                                        `${Formatter.convertBufferArrayToImageStr(message.messageImage)}` : `${Formatter.formatImageStr(message.messageImage)}`
+                                    }
+                                    alt="chat media" 
+                                />
+                            }
+                        </span> 
                         <div className={`creation-time ${message.messageImage && "image-present"}`}>{Formatter.formatDateTime(message.createdAt)}</div>
                     </div>
                     </>

@@ -3628,6 +3628,10 @@ textarea {
   margin-left: auto;
 }
 
+.user-chat-page-container .current-chat-messages .sent-message-container.image-present {
+  margin-bottom: 6%;
+}
+
 .user-chat-page-container .current-chat-messages .sent-message-container .creation-time {
   right: 0;
 }
@@ -3642,6 +3646,10 @@ textarea {
   background-color: #E0E0E0;
   border-radius: 12px 12px 12px 0px;
   color: #333;
+}
+
+.user-chat-page-container .current-chat-messages .received-message-container.image-present {
+  margin-bottom: 6%;
 }
 
 @media screen and (max-width: 767px) {
