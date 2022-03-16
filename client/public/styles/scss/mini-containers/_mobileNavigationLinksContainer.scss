@@ -24,6 +24,10 @@
             visibility: hidden;
             animation: 0.35s ease-in-out;
         }
+        .blue-dot{
+            top: -35%;
+            right: -40%;
+        }
     }
     @media (prefers-color-scheme: dark){
         background: $black;

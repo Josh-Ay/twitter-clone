@@ -58,6 +58,8 @@
     transition: 0.35s ease-in-out;
     border-radius: 8px;
     padding: 1% 2%;
+    position: relative;
+
     .user-img{
         display: block;
         width: 5%;
@@ -66,7 +68,17 @@
             width: 10%;
         }
     }
+
+    &.unread-present{
+        .current-user-details .current-user-display-name, .current-user-details .current-user-username{
+            color: $blueLogoColor;
+        }
+    }
     
+    .blue-dot{
+        right: 2%;
+    }
+
     &:hover, &:focus{
         cursor: pointer;
         background: $paleBlueGrey;

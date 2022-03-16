@@ -6,7 +6,7 @@ import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 
-const MobileNavigationBar = ({ navigationRef }) => {
+const MobileNavigationBar = ({ navigationRef, unreadMessagesIndicator }) => {
     const isSmallScreen = useMediaQuery({query: "(max-width: 767px)"});
     const ref1 = useRef(null);   
     const ref2 = useRef(null);   
@@ -46,6 +46,7 @@ const MobileNavigationBar = ({ navigationRef }) => {
             <div className="navigation-links">
                 <Link ref={ref4} to="/messages" aria-label="go to your messages"><ChatBubbleIcon /></Link>
                 <span className="slider"></span>
+                {unreadMessagesIndicator && <div className="blue-dot"></div>}
             </div>
         </div>
     }

@@ -154,3 +154,11 @@ textarea{
         padding: 4.8%;
     }
 }
+
+.blue-dot{
+    position: absolute;
+    background: $blueLogoColor;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+}

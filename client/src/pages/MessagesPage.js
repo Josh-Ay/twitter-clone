@@ -49,6 +49,7 @@ const MessagesPage = ( { user, socketInstance } ) => {
     const isVerySmallScreen = useMediaQuery({query: "(max-width: 576px)"});
     const [isUsersLoading, setIsUsersLoading] = useState(true);
     const [isPageLoading, setIsPageLoading] = useState(true);
+    const [unreadMessages, setUnreadMessages] = useState(false);
 
     useTitle("Messages | Tweeter");
     useChangeElementPropertyOnScroll(mobileNavRef, "display", "flex", "none");
@@ -68,6 +69,7 @@ const MessagesPage = ( { user, socketInstance } ) => {
         Request.makeGetRequest(`/messages/${user._id}`).then(res => {
             setIsPageLoading(false);
             setAllMessages(res.data.userMessages);
+            res.data.userMessages.map(userMessageItem => userMessageItem.messages.filter(message => message.status === "1")).flat().length > 1 ? setUnreadMessages(true) : setUnreadMessages(false);
         }).catch(err => {
             setIsPageLoading(false);
             console.log("An error occurred while trying to fetch your messages");
@@ -78,6 +80,7 @@ const MessagesPage = ( { user, socketInstance } ) => {
     useEffect(() => {
         socketInstance.on("receive-message", message => {
             message.type = "received";
+            message.status = 1;
             setCurrentChatMessages(prevMessages => {
                 return [...prevMessages, message];
             });
@@ -136,6 +139,13 @@ const MessagesPage = ( { user, socketInstance } ) => {
             userId: userId,
             socketId: socketId
         });
+
+        // marking all messages as read
+        Request.makePostRequest(`/messages/${userId}/${user._id}/update_read`, { message: "update" }).then(res => {
+            setAllMessages(res.data.updatedUserMessages);
+        }).catch(err => {
+            console.log("An error occurred while trying to update your messages");
+        })
     };
 
     // handle image upload
@@ -201,7 +211,7 @@ const MessagesPage = ( { user, socketInstance } ) => {
 
 
     return <>
-        <NavigationBar user={user} className="rel-nav-bar" />
+        <NavigationBar user={user} className="rel-nav-bar" unreadMessagesIndicator={unreadMessages} />
         <main>
             {
                 !isUserActive && <div className="messages-page-container">
@@ -275,7 +285,7 @@ const MessagesPage = ( { user, socketInstance } ) => {
                 </>
             }
         </main>
-        <MobileNavigationBar navigationRef={mobileNavRef} />
+        <MobileNavigationBar navigationRef={mobileNavRef} unreadMessagesIndicator={unreadMessages} />
     </>
 }
 

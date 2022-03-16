@@ -227,6 +227,14 @@ textarea {
   }
 }
 
+.blue-dot {
+  position: absolute;
+  background: #2f80ed;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
 /***    LOADING PAGE     ****/
 /*****  LOADING PAGE    *****/
 .loading-page-container {
@@ -607,6 +615,11 @@ textarea {
 
 .navigation-bar-container nav .navigation-bar-display .navigation-links-large-container .navigation-links:last-child .slider {
   width: 6.25rem;
+}
+
+.navigation-bar-container nav .navigation-bar-display .navigation-links-large-container .navigation-links .blue-dot {
+  top: -10%;
+  right: -20%;
 }
 
 @media (min-width: 768px) and (max-width: 1199px) {
@@ -3397,6 +3410,7 @@ textarea {
   transition: 0.35s ease-in-out;
   border-radius: 8px;
   padding: 1% 2%;
+  position: relative;
 }
 
 .user-message-item .user-img {
@@ -3409,6 +3423,14 @@ textarea {
   .user-message-item .user-img {
     width: 10%;
   }
+}
+
+.user-message-item.unread-present .current-user-details .current-user-display-name, .user-message-item.unread-present .current-user-details .current-user-username {
+  color: #2f80ed;
+}
+
+.user-message-item .blue-dot {
+  right: 2%;
 }
 
 .user-message-item:hover, .user-message-item:focus {
@@ -4175,6 +4197,11 @@ textarea {
   visibility: hidden;
   -webkit-animation: 0.35s ease-in-out;
           animation: 0.35s ease-in-out;
+}
+
+.small-navigation-links-container .navigation-links .blue-dot {
+  top: -35%;
+  right: -40%;
 }
 
 @media (prefers-color-scheme: dark) {

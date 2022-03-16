@@ -5,7 +5,7 @@ import Logo from "../components/Logo";
 import UserProfileDropDown from "../components/UserProfileDropDown";
 import { Link } from "react-router-dom";
 
-const NavigationBar = ({ user, disableDropDown, disableNavLinks, removeDropDownIcon, navigationBarReference, className }) => {
+const NavigationBar = ({ user, disableDropDown, disableNavLinks, removeDropDownIcon, navigationBarReference, className, unreadMessagesIndicator }) => {
     const navigate = useNavigate();
     const ref1 = useRef(null);
     const ref2 = useRef(null);
@@ -57,6 +57,7 @@ const NavigationBar = ({ user, disableDropDown, disableNavLinks, removeDropDownI
                         {user && <div className="navigation-links">
                             <Link ref={ref4} to="/messages" onClick={() => handleClick("/messages") } aria-label="go to your messages">Messages</Link>
                             <span className="slider"></span>
+                            {unreadMessagesIndicator && <div className="blue-dot"></div>}
                         </div>}
                     </div>
                 }

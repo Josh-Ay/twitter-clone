@@ -48,6 +48,10 @@
                     &:last-child .slider{
                         width: rem(100);
                     }
+                    .blue-dot{
+                        top: -10%;
+                        right: -20%;
+                    }
                 }
                 @media (min-width: 768px) and (max-width: 1199px){
                     width: 30%;
