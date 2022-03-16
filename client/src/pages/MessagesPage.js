@@ -143,6 +143,7 @@ const MessagesPage = ( { user, socketInstance } ) => {
         // marking all messages as read
         Request.makePostRequest(`/messages/${userId}/${user._id}/update_read`, { message: "update" }).then(res => {
             setAllMessages(res.data.updatedUserMessages);
+            setUnreadMessages(false) // to update the indicator on the navigation bar
         }).catch(err => {
             console.log("An error occurred while trying to update your messages");
         })
