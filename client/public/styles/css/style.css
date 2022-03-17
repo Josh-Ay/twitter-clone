@@ -3781,6 +3781,7 @@ textarea {
           box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
   margin: 0 3%;
+  background: #F2F2F2;
 }
 
 .current-chat-actions-container .new-message-container:focus-within {
@@ -3852,6 +3853,7 @@ textarea {
 @media (prefers-color-scheme: dark) {
   .current-chat-actions-container .new-message-container {
     border: 1px solid #828282;
+    background: #333;
   }
 }
 
