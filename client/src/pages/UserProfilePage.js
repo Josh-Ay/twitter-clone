@@ -79,8 +79,8 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
 
             // if the user does not exist
             if (!userExists){
-                setUserRegistered(false);
                 setPageLoading(false); 
+                setUserRegistered(false);
                 return;
             }
 
