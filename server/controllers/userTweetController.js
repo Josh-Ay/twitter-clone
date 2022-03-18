@@ -5,7 +5,7 @@ const Tweet = require("../models/tweet").Tweet;
 const Comment = require("../models/comment").Comment;
 const awsS3Client = require("../middleware/upload/amazonS3Upload");
 const fs = require("fs");
-const { shuffleArray, get_top_occurences_in_array } = require("../helpers/helper")
+const { shuffleArray, get_top_occurences_in_array, get_unique_items_in_list_of_objects } = require("../helpers/helper")
 
 // create a new tweet for a user
 exports.user_create_tweet_post = async (req, res) => {
@@ -19,6 +19,7 @@ exports.user_create_tweet_post = async (req, res) => {
             author: req.body.author,
             authorImage: req.body.authorImage,
             authorUsername: req.body.authorUsername,
+            authorId: userId,
             tweetText: req.body.tweetText,
             tweetTextLowerCase: req.body.tweetText.toLocaleLowerCase(),
             visibility: req.body.visibility,
@@ -63,6 +64,7 @@ exports.user_create_tweet_post = async (req, res) => {
                 author: req.body.author,
                 authorImage: req.body.authorImage,
                 authorUsername: req.body.authorUsername,
+                authorId: userId,
                 tweetText: req.body.tweetText ? req.body.tweetText : "",
                 image: awsRes.Key,
                 visibility: req.body.visibility,
@@ -113,13 +115,13 @@ exports.user_get_follow_tweet = (req, res) => {
         // getting all the tweets and retweets of the current user, user's followers and following 
         if (user.followers.length === 0 && user.following.length === 0){
             const allTweets = await Tweet.find({}).sort({_id: -1}).exec();
-            
+
             return res.status(200).json({
                 userTweets: user.tweets,
                 userRetweets: user.retweets,
                 userLikedTweets: user.likedTweets,
                 userSavedTweets: user.savedTweets,
-                tweets: user.tweets.concat(user.retweets, allTweets).reverse(),
+                tweets: get_unique_items_in_list_of_objects(user.tweets.concat(user.retweets, allTweets), "_id").reverse(),
             })
         }
 
@@ -129,12 +131,15 @@ exports.user_get_follow_tweet = (req, res) => {
             userRetweets: user.retweets,
             userLikedTweets: user.likedTweets,
             userSavedTweets: user.savedTweets,
-            tweets: user.tweets.concat(
+            tweets: get_unique_items_in_list_of_objects(
+                user.tweets.concat( 
                 user.retweets,
-                [...new Set( user.followers.map(allTweets => allTweets.tweets).concat(user.following.map(allTweets => allTweets.tweets),) )] ,
+                user.followers.map(allTweets => allTweets.tweets),
+                user.following.map(allTweets => allTweets.tweets),
                 user.followers.map(allRetweets => allRetweets.retweets), 
                 user.following.map(allRetweets => allRetweets.retweets)
-            ).reverse().flat(),
+                ).flat(), "_id"
+            ).reverse()
         });
     })
 }
@@ -297,9 +302,9 @@ exports.tweet_index = async (req, res) => {
             
             // getting other's users
             case "people":
-                const allUsers = await User.find({}).exec();
+                const popularUsers = await User.find({}).sort({"followers": -1}).exec();
                 
-                res.status(200).json({users: shuffleArray(allUsers)})
+                res.status(200).json({users: popularUsers});
                 break;
             
             // getting tweets that have an image
@@ -357,13 +362,16 @@ exports.user_update_tweet = (req, res) => {
                         User.findOneAndUpdate({"tweets._id": mongoose.Types.ObjectId(tweetId) }, {$push: {"tweets.$.comments": newComment} }, {new: true}, (err, updatedUser) => {
                             if (err) return res.status(500).json({error: err.message});
 
-                            return res.status(200).json({updatedTweets: updatedUser.tweets.concat(
-                                updatedUser.retweets, 
-                                updatedUser.followers.map(allTweets => allTweets.tweets), 
-                                updatedUser.following.map(allTweets => allTweets.tweets), 
-                                updatedUser.followers.map(allRetweets => allRetweets.retweets), 
-                                updatedUser.following.map(allRetweets => allRetweets.retweets))
-                                .reverse().flat()
+                            return res.status(200).json({updatedTweets: 
+                                get_unique_items_in_list_of_objects(
+                                    updatedUser.tweets.concat(
+                                        updatedUser.retweets, 
+                                        updatedUser.followers.map(allTweets => allTweets.tweets), 
+                                        updatedUser.following.map(allTweets => allTweets.tweets), 
+                                        updatedUser.followers.map(allRetweets => allRetweets.retweets), 
+                                        updatedUser.following.map(allRetweets => allRetweets.retweets)
+                                    ).flat(), "_id"
+                                ).reverse()
                             })
                         });
                     });
@@ -390,13 +398,16 @@ exports.user_update_tweet = (req, res) => {
                         // also adding the comment to the comments array of the author of the tweet to be updated
                         User.findOneAndUpdate({"tweets._id": mongoose.Types.ObjectId(tweetId) }, {$push: {"tweets.$.comments": newComment} }, {new: true}, (err, updatedUser) => {
                             if (err) return res.status(500).json({error: err.message});
-                            return res.status(200).json({updatedTweets: updatedUser.tweets.concat(
-                                updatedUser.retweets, 
-                                updatedUser.followers.map(allTweets => allTweets.tweets), 
-                                updatedUser.following.map(allTweets => allTweets.tweets), 
-                                updatedUser.followers.map(allRetweets => allRetweets.retweets), 
-                                updatedUser.following.map(allRetweets => allRetweets.retweets))
-                                .reverse().flat()
+                            return res.status(200).json({updatedTweets: 
+                                get_unique_items_in_list_of_objects(
+                                    updatedUser.tweets.concat(
+                                        updatedUser.retweets, 
+                                        updatedUser.followers.map(allTweets => allTweets.tweets), 
+                                        updatedUser.following.map(allTweets => allTweets.tweets), 
+                                        updatedUser.followers.map(allRetweets => allRetweets.retweets), 
+                                        updatedUser.following.map(allRetweets => allRetweets.retweets)
+                                    ).flat(), "_id"
+                                ).reverse()
                             })
                         });
                     });
