@@ -19,7 +19,7 @@ export default function UserPicture(props) {
 
     return <img
         className={props.className ? `current-user-img-container ${props.className} ${hasImageLoaded ? "" : "skeleton overlay" }` : `current-user-img-container ${hasImageLoaded ? "" : "skeleton overlay" }`} 
-        src={props.displayPicture ? Formatter.formatImageStr(props.displayPicture) : "/assets/blank-profile-picture.svg"} 
+        src={props.displayPicture && props.displayPicture !== "undefined" ? Formatter.formatImageStr(props.displayPicture) : "/assets/blank-profile-picture.svg"} 
         alt="current user" style={{cursor: "pointer"}} onClick={handleClick}
         onLoad={handleImageLoad}
     />
