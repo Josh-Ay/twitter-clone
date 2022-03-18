@@ -225,7 +225,7 @@ exports.tweet_index = async (req, res) => {
             // getting the saved tweets of a user
             case "tweets":
                 res.status(200).json({
-                    tweets: currentUserProfile.savedTweets,
+                    tweets: currentUserProfile.savedTweets.reverse(),
                     userTweets: currentUserProfile.tweets,
                     userRetweets: currentUserProfile.retweets,
                     userLikedTweets: currentUserProfile.likedTweets,
@@ -310,7 +310,7 @@ exports.tweet_index = async (req, res) => {
             // getting tweets that have an image
             case "media":
                 res.status(200).json({
-                    tweets: allTweets.filter(tweet => tweet.image),
+                    tweets: allTweets.filter(tweet => tweet.image).reverse(),
                     userTweets: currentUserProfile.tweets,
                     userRetweets: currentUserProfile.retweets,
                     userLikedTweets: currentUserProfile.likedTweets,
@@ -561,7 +561,7 @@ exports.tweet_search_index = (req, res) => {
             if (err) return res.status(500).json({error: err.message});
 
             return res.status(200).json({
-                tweets: matchingTweets,
+                tweets: matchingTweets.reverse(),
                 users: matchingUsers
             });
 
@@ -622,7 +622,7 @@ exports.get_tweet_trend = async (req, res) => {
         if (err) return res.status(500).json({error: err.message});
         
         return res.status(200).json({
-            matchingTweets: matchingTweets,
+            matchingTweets: matchingTweets.reverse(),
             userTweets: currentUser.tweets,
             userRetweets: currentUser.retweets,
             userLikedTweets: currentUser.likedTweets,
