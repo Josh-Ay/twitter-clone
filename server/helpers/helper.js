@@ -39,3 +39,13 @@ exports.get_top_occurences_in_array = (arrayToCheck, occurenceLimit) => {
     return countOfTagsToCheckFor.sort((a, b) => b.count - a.count).slice(0, occurenceLimit);
 
 }
+
+// function to get remove dublicate items/objects in a list of objects
+exports.get_unique_items_in_list_of_objects = (arrayToCheck, uniqueKey) => {
+    return arrayToCheck.reduce((unique, o) => {
+        if(!unique.some(obj => obj[uniqueKey].toString() === o[uniqueKey].toString() )) {
+            unique.push(o);
+        }
+        return unique;
+    }, [] )
+}
