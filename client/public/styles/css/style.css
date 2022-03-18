@@ -2523,6 +2523,12 @@ textarea {
 @media screen and (max-width: 767px) {
   .user-tweet-container .user-replies-container .user-reply-item .reply-reactions-container {
     width: 60%;
+    left: 10%;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .user-tweet-container .user-replies-container .user-reply-item .reply-reactions-container {
     left: 18%;
   }
 }
@@ -3511,7 +3517,7 @@ textarea {
       -ms-flex-align: center;
           align-items: center;
   width: 100%;
-  padding: 2.2% 1%;
+  padding: 0.5% 1%;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
@@ -3547,6 +3553,8 @@ textarea {
   font-size: 1.375rem;
   font-family: "Poppins", sans-serif;
   color: #000;
+  max-width: 17rem;
+  word-wrap: break-word;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -3793,7 +3801,7 @@ textarea {
 
 .current-chat-actions-container .new-message-container textarea {
   background: #F2F2F2;
-  padding: 1%;
+  padding: 1% 2%;
   width: 100%;
   border: none;
   outline: none;

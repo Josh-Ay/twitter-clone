@@ -11,7 +11,7 @@
     .current-chat-user-details{
         @include displayFlexCenterAndJustify(space-between);
         width: 100%;
-        padding: 2.2% 1%;
+        padding: 0.5% 1%;
         position: sticky;
         top: 0;
         background: $white;
@@ -39,6 +39,8 @@
                 font-size: rem(22);
                 font-family: $poppinsFont;
                 color: $nativeBlackColor;
+                max-width: 17rem;
+                word-wrap: break-word;
                 @media (prefers-color-scheme:dark) {
                     color: $lightGreyColor;
                 }
