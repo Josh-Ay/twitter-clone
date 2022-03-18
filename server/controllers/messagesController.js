@@ -88,6 +88,9 @@ exports.post_new_message = async (req, res) => {
                             // changing the message content type for the receiver
                             newMessageContent.type = "received";
 
+                            // updating the status of the message content('0' for read, '1' for unread)
+                            newMessageContent.status = 1;
+
                             // pushing the contents of message to the message list of the receiver that has been created above
                             User.findOneAndUpdate({_id: receiverUserId, "messages.userId": senderUserId}, {$push: {"messages.$.messages": newMessageContent} }, (err, updatedReceiver) => {
                                 if (err) return res.status(500).json({error: err.message});
@@ -108,6 +111,9 @@ exports.post_new_message = async (req, res) => {
                         
                         // changing the message content type for the receiver
                         newMessageContent.type = "received";
+
+                        // updating the status of the message content('0' for read, '1' for unread)
+                        newMessageContent.status = 1;
 
                         // pushing the contents of message to the message list of the receiver that has been created above
                         User.findOneAndUpdate({_id: receiverUserId, "messages.userId": senderUserId}, {$push: {"messages.$.messages": newMessageContent} }, (err, updatedReceiver) => {
@@ -146,6 +152,9 @@ exports.post_new_message = async (req, res) => {
                     // changing the message content type for the receiver    
                     newMessageContent.type = "received";
 
+                    // updating the status of the message content('0' for read, '1' for unread)
+                    newMessageContent.status = 1;
+
                     // pushing the contents of message to the message list of the receiver
                     User.findOneAndUpdate({_id: receiverUserId, "messages.userId": senderUserId}, {$push: {"messages.$.messages": newMessageContent} }, (err, updatedReceiver) => {
                         if (err) return res.status(500).json({error: err.message});
@@ -169,6 +178,9 @@ exports.post_new_message = async (req, res) => {
                 // changing the message content type for the receiver
                 newMessageContent.type = "received";
 
+                // updating the status of the message content('0' for read, '1' for unread)
+                newMessageContent.status = 1;
+
                 // pushing the contents of message to the message list of the receiver
                 User.findOneAndUpdate({_id: receiverUserId, "messages.userId": senderUserId}, {$push: {"messages.$.messages": newMessageContent} }, (err, updatedReceiver) => {
                     if (err) return res.status(500).json({error: err.message});
@@ -179,4 +191,24 @@ exports.post_new_message = async (req, res) => {
             })
         }
     }
+}
+
+// update status of messages to read
+exports.mark_all_messages_read = async (req, res) => {
+    const senderUserId = req.params.senderUserId;
+    const receiverUserId = req.params.receiverUserId;
+
+    const existingMessageListWithSender = await User.findOne({_id: receiverUserId, "messages.userId": senderUserId}).exec();
+
+    // if there was no existing message list found between the receiver and the sender
+    if(!existingMessageListWithSender) return res.status(200).json({updatedUserMessages: []});
+    
+    // updating all the unread messages(with a status of '1') in the receiver's messages list status from '1'(unread) to '0'(read)
+    User.findOneAndUpdate({_id: receiverUserId, "messages.userId": senderUserId}, {$set: {"messages.$.messages.$[message].status": "0"}}, {"arrayFilters": [{"message.status": 1}]}, (err, updatedUser) => {
+        if(err) return res.status(500).json({error: err.message});
+
+        // returning the updated user messages
+        return res.status(200).json({updatedUserMessages: updatedUser.messages ? updatedUser.messages.sort((a, b) => b.updatedAt - a.updatedAt) : updatedUser.messages});
+    });
+
 }
