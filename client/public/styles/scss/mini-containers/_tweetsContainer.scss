@@ -243,6 +243,7 @@
                         line-height: rem(21);
                         color: $nativeBlackColor;
                         margin-right: 2.5%;
+                        cursor: pointer;
                         @media screen and (max-width: 767px) {
                             margin-right: 4%;
                         }

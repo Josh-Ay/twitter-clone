@@ -2386,6 +2386,7 @@ textarea {
   line-height: 1.3125rem;
   color: #000;
   margin-right: 2.5%;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 767px) {

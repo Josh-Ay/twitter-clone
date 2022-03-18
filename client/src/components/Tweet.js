@@ -381,7 +381,7 @@ const Tweet = (props) => {
                         <UserPicture className="tweet-author-image" location={comment.authorUsername} displayPicture={comment.authorImage} />
                         <div className="user-reply-details-box">
                             <div className="user-reply-author">
-                                <h4>{comment.author}</h4>
+                                <h4 onClick={navigate(`/${comment.authorUsername}`)}>{comment.author}</h4>
                                 <span>{Formatter.formatDateTime(comment.createdAt)}</span>
                             </div>
                             <div className="user-reply">
