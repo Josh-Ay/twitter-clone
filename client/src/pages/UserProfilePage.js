@@ -79,8 +79,8 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
 
             // if the user does not exist
             if (!userExists){
-                setPageLoading(false);
-                setUserRegistered(false); 
+                setUserRegistered(false);
+                setPageLoading(false); 
                 return;
             }
 
@@ -257,8 +257,6 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
     const handleUserDetailsSubmitClick = (e) => {
         e.preventDefault();
 
-        if (userDetails.displayName.length < 1) return setUserDetailsError("Please enter a display name");
-        
         if (userDetails.username.length < 1) return setUserDetailsError("Please enter a username");
         
         if (!allowClick) return;
@@ -372,7 +370,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
                                     isActive && 
                                     <UsersPopup
                                         userPopupRef={ref}
-                                        user={requestedUserData}
+                                        user={loggedInUser}
                                         usersDataToShow={fetchedUsersData}
                                         fetchError={fetchUsersDataError}
                                         setActive={setActive}

@@ -97,7 +97,6 @@ const UserProfileForm = (props) => {
         // creating a new form and appending an object with key "image" that holds the image file
         const file = new FormData();
         file.append("image", image);
-        file.append("username", props.usernamePlaceholder);
         if (typeOfImage) file.append("coverPhoto", true);
 
         // creating a new data url to let the user preview the image added
