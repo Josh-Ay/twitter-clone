@@ -8,6 +8,7 @@ const tweetSchema = new Schema({
     author: String,
     authorImage: String,
     authorUsername: String,
+    authorId: String,
     tweetText: String,
     tweetTextLowerCase: String,
     tweetScore: {type: Number, default: 0},
