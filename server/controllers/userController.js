@@ -1,4 +1,4 @@
-// require("dotenv").config();
+require("dotenv").config();
 
 // requiring the necessary packages and model
 const User = require("../models/user");
