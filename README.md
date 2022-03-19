@@ -25,6 +25,7 @@
 
 ## Table of Contents
 
+- [Solution Walthrough](#solution-walkthrough)
 - [Overview](#overview)
 - [Built With](#built-with)
   - [Frontend](#frontend)
@@ -33,6 +34,9 @@
 - [How to use](#how-to-use)
 - [Contact](#contact)
 - [Acknowledgements](#acknowledgements)
+
+## Solution Walkthrough
+![](./solution-demo.gif)
 
 <!-- OVERVIEW -->
 
@@ -82,6 +86,18 @@ The following were used in the building of the backend of this application:
 ## Features
 
 This web application/site was created as a submission to a [DevChallenges](https://devchallenges.io/challenges) challenge. The [challenge](https://devchallenges.io/challenges/rleoQc34THclWx1cFFKH) was to build an application to complete the following user stories:
+
+- User story: I can register a new account
+
+- User story: I can log in
+
+- User story: I can log in or register with at least one of the following services: Google, Facebook, Twitter or Github
+
+- User story: I can sign out
+
+- User story: I can edit my details including: profile and cover photo, name, bio
+
+- User story: I can upload a new photo for my profile photo or cover photo
 
 - User story: I can see my profile or others' profile
 

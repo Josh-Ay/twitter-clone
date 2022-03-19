@@ -246,6 +246,9 @@
                         cursor: pointer;
                         @media screen and (max-width: 767px) {
                             margin-right: 4%;
+                            max-width: 8rem;
+                            word-wrap: break-word;
+                            margin-bottom: 2.5%;
                         }
                         @media (prefers-color-scheme: dark){
                             color: $lightGreyColor;    

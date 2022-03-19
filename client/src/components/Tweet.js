@@ -296,9 +296,7 @@ const Tweet = (props) => {
 
     // handle like on a comment
     const handleCommentActionClick = (commentId, tweetId, actionType, index) => {
-        commentSpanRefs.current[index].classList.toggle("liked");
-        commentSpanRefs.current[index].lastChild.textContent = actionType === "like-comment" ? "Liked" : "Like";
-
+        
         Request.makePostRequest(`/users/${props.userId}/tweet/${tweetId}/update`, {action: actionType, commentId: commentId}).then(res => {
             setTweets(res.data.updatedTweets);
         }).catch(err => {

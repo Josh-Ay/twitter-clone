@@ -2392,6 +2392,9 @@ textarea {
 @media screen and (max-width: 767px) {
   .user-tweet-container .user-replies-container .user-reply-item .user-reply-details-box .user-reply-author h4 {
     margin-right: 4%;
+    max-width: 8rem;
+    word-wrap: break-word;
+    margin-bottom: 2.5%;
   }
 }
 
@@ -2895,6 +2898,8 @@ textarea {
 .user-profile-page-container .user-display-details-container .user-details h2 {
   line-height: 2.25rem;
   font-size: 1.5rem;
+  max-width: 18rem;
+  word-wrap: break-word;
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
