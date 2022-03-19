@@ -617,6 +617,22 @@ exports.get_tweet_trend = async (req, res) => {
     const trend = req.params.trend;
     const currentUser = await User.findById({_id: req.params.id}).exec();
 
+    // workaround for getting tweets that have no tags
+    if (trend === "@+)"){
+        Tweet.find({ tags: { $eq: "" } }).sort( {_id: -1} ).exec( (err, matchingTweets) => {
+            if (err) return res.status(500).json({error: err.message});
+        
+            return res.status(200).json({
+                matchingTweets: matchingTweets.reverse(),
+                userTweets: currentUser.tweets,
+                userRetweets: currentUser.retweets,
+                userLikedTweets: currentUser.likedTweets,
+                userSavedTweets: currentUser.savedTweets
+            });
+        })
+        return;
+    }
+
     // getting tweets whose tags match the trend passed from the user
     Tweet.find({ tags: { $regex: trend, $options: "i" } }).sort( {_id: -1} ).exec( (err, matchingTweets) => {
         if (err) return res.status(500).json({error: err.message});
