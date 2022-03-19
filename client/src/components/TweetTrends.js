@@ -13,7 +13,7 @@ const TweetTrends = ({ userId }) => {
     }]);
     
     // handle route to a trend
-    const handleRouteToTrend = (trendToRouteTo) => navigate(`/explore/trends/${trendToRouteTo}`, {state: {trendTag: trendToRouteTo}});
+    const handleRouteToTrend = (trendToRouteTo) => navigate(`${trendToRouteTo ? `/explore/trends/${trendToRouteTo}` : `/explore` }`, {state: {trendTag: trendToRouteTo ? trendToRouteTo : "@+)"}});
 
     // useEffect hook to get trends for the user
     useEffect(() => {
@@ -34,7 +34,7 @@ const TweetTrends = ({ userId }) => {
                 <hr className="custom-hr" />
                 {React.Children.toArray(trends.map(trend => {
                     return <>
-                    <div className="trending-tags-container" onClick={() => handleRouteToTrend("programming")}>
+                    <div className="trending-tags-container" onClick={() => handleRouteToTrend(trend.name)}>
                         <span className="trending-tag-item">#{trend.name}</span>
                         <span className="trending-tag-item-count">{Formatter.formatNumber(trend.tweetCount)} Tweets</span>
                     </div>
