@@ -1,4 +1,4 @@
-require("dotenv").config();
+// require("dotenv").config();
 
 // requiring the necessary packages and model
 const User = require("../models/user");
@@ -12,7 +12,7 @@ const { shuffleArray } = require("../helpers/helper");
 
 // get all users
 exports.user_index = (req, res) => {
-    User.find({}, {"_id": 0, "email": 1}, (err, users) => {
+    User.find({}, {"_id": 0, "email": 1}).lean().exec( (err, users) => {
         if(err) return res.status(500).json({error: err.message});
         
         // encrypting the data returned because it contains all the emails of the existing users
@@ -22,7 +22,7 @@ exports.user_index = (req, res) => {
 
 // get all usernames
 exports.username_index = (req, res) => {
-    User.find({}, {"messages": 0, "email": 0, "savedTweets": 0}, (err, usernames) => {
+    User.find({}, {"messages": 0, "email": 0, "savedTweets": 0}).lean().exec( (err, usernames) => {
         if (err) return res.status(500).json({error: err.message});
         
         res.status(200).json({usernames: CryptoJS.AES.encrypt(JSON.stringify(usernames), process.env.AES_SECRET_KEY).toString()});
@@ -233,7 +233,7 @@ exports.get_media_file = async (req, res) => {
 
 // get user follower suggestions
 exports.get_user_follower_suggestions = async (req, res) => {
-    const allUsers = await User.find({}).exec();
+    const allUsers = await User.find({}).lean().exec();
 
     User.findById({_id: req.params.id}, {"messages": 0}, (err, foundUser) => {
         if (err) return res.status(404).json({error: err.message});

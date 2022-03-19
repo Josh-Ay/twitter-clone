@@ -114,7 +114,7 @@ exports.user_get_follow_tweet = (req, res) => {
 
         // getting all the tweets and retweets of the current user, user's followers and following 
         if (user.followers.length === 0 && user.following.length === 0){
-            const allTweets = await Tweet.find({}).sort({_id: -1}).exec();
+            const allTweets = await Tweet.find({}).lean().sort({_id: -1}).exec();
 
             return res.status(200).json({
                 userTweets: user.tweets,
@@ -274,7 +274,7 @@ exports.tweet_index = async (req, res) => {
 
         // explore 
     } else if (typeOfTweet === "explore"){
-        const allTweets = await Tweet.find({}).exec();
+        const allTweets = await Tweet.find({}).lean().exec();
         const currentUserProfile = await User.findById({_id: userId}).exec();
 
         switch (categoryToGet) {
@@ -302,9 +302,9 @@ exports.tweet_index = async (req, res) => {
             
             // getting other's users
             case "people":
-                const popularUsers = await User.find({}).sort({"followers": -1}).exec();
+                const allUsers = await User.find({}).lean().exec();
                 
-                res.status(200).json({users: popularUsers});
+                res.status(200).json({users: allUsers.sort((a, b) => b.followers - a.followers)});
                 break;
             
             // getting tweets that have an image
@@ -589,7 +589,7 @@ exports.get_tweet_trends = (req, res) => {
 
         // if the user has not tweeted, retweeted, saved or liked any tweet
         if (tagsForUser.length === 0){
-            const allTweets = await Tweet.find({}).exec();
+            const allTweets = await Tweet.find({}).lean().exec();
             const tagsOfAllTweets = allTweets.map(tweet => tweet.tags ? tweet.tags : "").filter(tag => tag !== "").join(" ").split(" ");
             tagsToCheckFor = shuffleArray(tagsOfAllTweets);
         }else{
