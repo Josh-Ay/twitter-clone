@@ -9,7 +9,6 @@ const { shuffleArray, get_top_occurences_in_array, get_unique_items_in_list_of_o
 
 // create a new tweet for a user
 exports.user_create_tweet_post = async (req, res) => {
-    const userId = req.params.id;
     
     // if there was no image attached with the tweet
     if(!req.file){
@@ -19,7 +18,7 @@ exports.user_create_tweet_post = async (req, res) => {
             author: req.body.author,
             authorImage: req.body.authorImage,
             authorUsername: req.body.authorUsername,
-            authorId: userId,
+            authorId: req.params.id,
             tweetText: req.body.tweetText,
             tweetTextLowerCase: req.body.tweetText.toLocaleLowerCase(),
             visibility: req.body.visibility,
@@ -27,15 +26,15 @@ exports.user_create_tweet_post = async (req, res) => {
         });
 
         // adding the new tweet document to the user's tweets
-        User.findByIdAndUpdate({_id: userId}, {$push: {"tweets": newTweet} }, (err, user) => {
+        User.findByIdAndUpdate({_id: req.params.id}, {$push: {"tweets": newTweet} }, (err, user) => {
             if (err) return res.status(404).json({error: err.message});
 
             // also adding the new tweet to the user's tweets list wherever the user is a follower
-            User.updateMany({"followers._id": mongoose.Types.ObjectId(userId)}, {$push: {"followers.$.tweets": newTweet} }, (err, updatedUsers) => {
+            User.updateMany({"followers._id": mongoose.Types.ObjectId(req.params.id)}, {$push: {"followers.$.tweets": newTweet} }, (err, updatedUsers) => {
                 if (err) return res.status(500).json({ error: err.message });
 
                 // also adding the new tweet to the user's tweets list wherever the user is being followed
-                User.updateMany({"following._id": mongoose.Types.ObjectId(userId)}, {$push: {"following.$.tweets": newTweet} }, (err, updatedUsers) => {
+                User.updateMany({"following._id": mongoose.Types.ObjectId(req.params.id)}, {$push: {"following.$.tweets": newTweet} }, (err, updatedUsers) => {
                     if (err) return res.status(500).json({ error: err.message });
                 
                     // saving the new tweet to the tweets collection('Tweet' model)
@@ -64,7 +63,7 @@ exports.user_create_tweet_post = async (req, res) => {
                 author: req.body.author,
                 authorImage: req.body.authorImage,
                 authorUsername: req.body.authorUsername,
-                authorId: userId,
+                authorId: req.params.id,
                 tweetText: req.body.tweetText ? req.body.tweetText : "",
                 image: awsRes.Key,
                 visibility: req.body.visibility,
@@ -72,15 +71,15 @@ exports.user_create_tweet_post = async (req, res) => {
             });
     
             // adding the new tweet document with key of the image object that just got added to the aws bucket to the user's tweets
-            User.findByIdAndUpdate({_id: userId}, {$push: {"tweets": newTweet}}, (err, user) => {
+            User.findByIdAndUpdate({_id: req.params.id}, {$push: {"tweets": newTweet}}, (err, user) => {
                 if (err) return res.status(404).json({error: err.message});
 
                 // also adding the new tweet to the user's tweets list wherever the user is a follower
-                User.updateMany({"followers._id": mongoose.Types.ObjectId(userId)}, {$push: {"followers.$.tweets": newTweet} }, (err, updatedUsers) => {
+                User.updateMany({"followers._id": mongoose.Types.ObjectId(req.params.id)}, {$push: {"followers.$.tweets": newTweet} }, (err, updatedUsers) => {
                     if (err) return res.status(500).json({ error: err.message });
 
                     // also adding the new tweet to the user's tweets list wherever the user is being followed
-                    User.updateMany({"following._id": mongoose.Types.ObjectId(userId)}, {$push: {"following.$.tweets": newTweet} }, (err, updatedUsers) => {
+                    User.updateMany({"following._id": mongoose.Types.ObjectId(req.params.id)}, {$push: {"following.$.tweets": newTweet} }, (err, updatedUsers) => {
                         if (err) return res.status(500).json({ error: err.message });
                     
                         // saving the new tweet to the tweets collection('Tweet' model)
@@ -105,9 +104,8 @@ exports.user_create_tweet_post = async (req, res) => {
 
 // get all tweets of a user's followers and following
 exports.user_get_follow_tweet = (req, res) => {
-    const userId = req.params.id;
 
-    User.findById({_id: userId}, async (err, user) => {
+    User.findById({_id: req.params.id}, async (err, user) => {
         if (err) return res.status(404).json({error: err.message});
 
         if(!user) return;
@@ -147,13 +145,11 @@ exports.user_get_follow_tweet = (req, res) => {
 
 // get all tweets of a user
 exports.get_user_tweet_index = async (req, res) => {
-    const userId = req.params.id;
-    const tweetType = req.params.type;
-    const currentUserProfile = await User.findById({_id: userId}).exec();
+    const currentUserProfile = await User.findById({_id: req.params.id}).exec();
     
     if (!currentUserProfile) return res.status(404).json({error: "Current user profile does not exist"});
 
-    switch (tweetType) {
+    switch (req.params.type) {
         // getting the tweets of a user
         case "tweets":
             res.status(200).json({
@@ -167,7 +163,7 @@ exports.get_user_tweet_index = async (req, res) => {
         
         // getting the tweets, retweets of the user and the tweets where the user has commented
         case "tweets+replies":
-            Tweet.find({"comments.authorUserId": mongoose.Types.ObjectId(userId)}, (err, matchingTweets) => {
+            Tweet.find({"comments.authorUserId": mongoose.Types.ObjectId(req.params.id)}, (err, matchingTweets) => {
                 if (err) return res.status(500).json({error: err.message});
 
                 return res.status(200).json({
@@ -213,15 +209,12 @@ exports.get_user_tweet_index = async (req, res) => {
 
 // get a specific category of tweets for a user
 exports.tweet_index = async (req, res) => {
-    const userId = req.params.id;
-    const typeOfTweet = req.params.type;
-    const categoryToGet = req.params.category;
 
     // bookmarks
-    if (typeOfTweet === "bookmarks"){
-        const currentUserProfile = await User.findById({_id: userId}).exec();
+    if (req.params.type === "bookmarks"){
+        const currentUserProfile = await User.findById({_id: req.params.id}).exec();
     
-        switch (categoryToGet) {
+        switch (req.params.category) {
             // getting the saved tweets of a user
             case "tweets":
                 res.status(200).json({
@@ -273,11 +266,11 @@ exports.tweet_index = async (req, res) => {
         }
 
         // explore 
-    } else if (typeOfTweet === "explore"){
+    } else if (req.params.type === "explore"){
         const allTweets = await Tweet.find({}).lean().exec();
-        const currentUserProfile = await User.findById({_id: userId}).exec();
+        const currentUserProfile = await User.findById({_id: req.params.id}).exec();
 
-        switch (categoryToGet) {
+        switch (req.params.category) {
             // getting the top tweets for a user sorted by a 'tweetScore'
             case "top":
                 res.status(200).json({
@@ -328,17 +321,14 @@ exports.tweet_index = async (req, res) => {
 
 // handle user update on tweet
 exports.user_update_tweet = (req, res) => {
-    const userId = req.params.id;
-    const tweetId = req.params.tweetId;
-    const typeOfAction = req.body.action;
-
-    if (!typeOfAction) return res.status(500).json({message: "request missing 'typeOfAction' parameter in body"});
     
-    switch (typeOfAction) {
+    if (!req.body.action) return res.status(500).json({message: "request missing 'typeOfAction' parameter in body"});
+    
+    switch (req.body.action) {
         // if the type of action inititiated by the user was to add a new comment
         case "comment":
             // finding the tweet to be updated
-            Tweet.findById({_id: tweetId}, async (err, foundTweet) => {
+            Tweet.findById({_id: req.params.tweetId}, async (err, foundTweet) => {
                 if (err) return res.status(500).json({err: err.message});
 
                 // creating a new comment document using the 'Comment' model
@@ -359,7 +349,7 @@ exports.user_update_tweet = (req, res) => {
                         if (err) return res.status(500).json({error: err.message});
 
                         // also adding the comment to the comments array of the author of the tweet to be updated
-                        User.findOneAndUpdate({"tweets._id": mongoose.Types.ObjectId(tweetId) }, {$push: {"tweets.$.comments": newComment} }, {new: true}, (err, updatedUser) => {
+                        User.findOneAndUpdate({"tweets._id": mongoose.Types.ObjectId(req.params.tweetId) }, {$push: {"tweets.$.comments": newComment} }, {new: true}, (err, updatedUser) => {
                             if (err) return res.status(500).json({error: err.message});
 
                             return res.status(200).json({updatedTweets: 
@@ -396,7 +386,7 @@ exports.user_update_tweet = (req, res) => {
                         if (err) return res.status(500).json({error: err.message});
 
                         // also adding the comment to the comments array of the author of the tweet to be updated
-                        User.findOneAndUpdate({"tweets._id": mongoose.Types.ObjectId(tweetId) }, {$push: {"tweets.$.comments": newComment} }, {new: true}, (err, updatedUser) => {
+                        User.findOneAndUpdate({"tweets._id": mongoose.Types.ObjectId(req.params.tweetId) }, {$push: {"tweets.$.comments": newComment} }, {new: true}, (err, updatedUser) => {
                             if (err) return res.status(500).json({error: err.message});
                             return res.status(200).json({updatedTweets: 
                                 get_unique_items_in_list_of_objects(
@@ -421,10 +411,10 @@ exports.user_update_tweet = (req, res) => {
         // if the type of action inititiated by the user was to like a tweet
         case "like":
             // finding the tweet to be updated
-            Tweet.findByIdAndUpdate({_id: tweetId}, { $inc: {tweetScore: 1} }, (err, updatedTweet) => {
+            Tweet.findByIdAndUpdate({_id: req.params.tweetId}, { $inc: {tweetScore: 1} }, (err, updatedTweet) => {
                 if (err) return res.status(500).json({err: err.message});
             
-                User.findByIdAndUpdate({_id: userId}, {$push: {likedTweets: updatedTweet} }, {new: true}, (err, updatedUser) => {
+                User.findByIdAndUpdate({_id: req.params.id}, {$push: {likedTweets: updatedTweet} }, {new: true}, (err, updatedUser) => {
                     if (err) return res.status(500).json({error: err.message});
 
                     return res.status(200).json({updatedLikedTweets: updatedUser.likedTweets.reverse()});
@@ -436,7 +426,7 @@ exports.user_update_tweet = (req, res) => {
         // if the type of action inititiated by the user was to unlike a tweet
         case "unlike":
             // finding the tweet to be updated
-            User.findByIdAndUpdate({_id: userId}, { $pull: { likedTweets: {_id: tweetId} } }, {new: true}, (err, updatedUser) => {
+            User.findByIdAndUpdate({_id: req.params.id}, { $pull: { likedTweets: {_id: req.params.tweetId} } }, {new: true}, (err, updatedUser) => {
                 if (err) return res.status(500).json({error: err.message});
 
                 return res.status(200).json({updatedLikedTweets: updatedUser.likedTweets.reverse()});
@@ -446,16 +436,16 @@ exports.user_update_tweet = (req, res) => {
         // if the type of action inititiated by the user was to save a tweet
         case "save":
             // finding the tweet to be updated
-            Tweet.findByIdAndUpdate({_id: tweetId}, { $inc: {timesSaved: 1, tweetScore: 1} }, (err, foundTweet) => {
+            Tweet.findByIdAndUpdate({_id: req.params.tweetId}, { $inc: {timesSaved: 1, tweetScore: 1} }, (err, foundTweet) => {
                 if (err) return res.status(500).json({err: err.message});
             
-                User.findByIdAndUpdate({_id: userId}, {$push: {savedTweets: foundTweet} }, (err, updatedUser) => {
+                User.findByIdAndUpdate({_id: req.params.id}, {$push: {savedTweets: foundTweet} }, (err, updatedUser) => {
                     if (err) return res.status(500).json({error: err.message});
 
-                    User.findOneAndUpdate({"savedTweets._id": mongoose.Types.ObjectId(tweetId)}, {$set: {"savedTweets.$.saved": true}, $inc: {"savedTweets.$.timesSaved": 1} }, {new: true}, (err, updatedUser) => {
+                    User.findOneAndUpdate({"savedTweets._id": mongoose.Types.ObjectId(req.params.tweetId)}, {$set: {"savedTweets.$.saved": true}, $inc: {"savedTweets.$.timesSaved": 1} }, {new: true}, (err, updatedUser) => {
                         if (err) return res.status(500).json({error: err.message});
 
-                        User.findOneAndUpdate({"tweets._id": mongoose.Types.ObjectId(tweetId)}, { $inc: {"tweets.$.timesSaved": 1} }, {new: true}, (err, updatedUser) => {
+                        User.findOneAndUpdate({"tweets._id": mongoose.Types.ObjectId(req.params.tweetId)}, { $inc: {"tweets.$.timesSaved": 1} }, {new: true}, (err, updatedUser) => {
                             if (err) return res.status(500).json({error: err.message});
     
                             return res.status(200).json({updatedSavedTweets: updatedUser.savedTweets.reverse()});
@@ -470,7 +460,7 @@ exports.user_update_tweet = (req, res) => {
         // if the type of action inititiated by the user was to unsave a tweet
         case "unsave":
             // finding the tweet to be updated
-            User.findByIdAndUpdate({_id: userId}, { $pull: { savedTweets: {_id: tweetId} } }, {new: true}, (err, updatedUser) => {
+            User.findByIdAndUpdate({_id: req.params.id}, { $pull: { savedTweets: {_id: req.params.tweetId} } }, {new: true}, (err, updatedUser) => {
                 if (err) return res.status(500).json({error: err.message});
 
                 return res.status(200).json({updatedSavedTweets: updatedUser.savedTweets.reverse()});
@@ -480,16 +470,16 @@ exports.user_update_tweet = (req, res) => {
         // if the type of action inititiated by the user was to retweet a tweet
         case "retweet":
             // finding the tweet to be updated
-            Tweet.findByIdAndUpdate({_id: tweetId}, { $inc: {retweets: 1, tweetScore: 1} }, (err, foundTweet) => {
+            Tweet.findByIdAndUpdate({_id: req.params.tweetId}, { $inc: {retweets: 1, tweetScore: 1} }, (err, foundTweet) => {
                 if (err) return res.status(500).json({err: err.message});
             
-                User.findByIdAndUpdate({_id: userId}, {$push: {retweets: foundTweet} }, (err, updatedUser) => {
+                User.findByIdAndUpdate({_id: req.params.id}, {$push: {retweets: foundTweet} }, (err, updatedUser) => {
                     if (err) return res.status(500).json({error: err.message});
 
-                    User.findOneAndUpdate({_id: userId, "retweets._id": mongoose.Types.ObjectId(tweetId)}, {$set: {"retweets.$.retweetAuthor": req.body.currentUserUsername, "retweets.$.retweeted": true}, $inc: {"retweets.$.retweets": 1} }, {new: true}, (err, updatedUser) => {
+                    User.findOneAndUpdate({_id: req.params.id, "retweets._id": mongoose.Types.ObjectId(req.params.tweetId)}, {$set: {"retweets.$.retweetAuthor": req.body.currentUserUsername, "retweets.$.retweeted": true}, $inc: {"retweets.$.retweets": 1} }, {new: true}, (err, updatedUser) => {
                         if (err) return res.status(500).json({error: err.message});
 
-                        User.findOneAndUpdate({"tweets._id": mongoose.Types.ObjectId(tweetId)}, { $inc: {"tweets.$.retweets": 1} }, {new: true}, (err, updatedUser) => {
+                        User.findOneAndUpdate({"tweets._id": mongoose.Types.ObjectId(req.params.tweetId)}, { $inc: {"tweets.$.retweets": 1} }, {new: true}, (err, updatedUser) => {
                             if (err) return res.status(500).json({error: err.message});
     
                             return res.status(200).json({updatedRetweets: updatedUser.retweets.reverse()});
@@ -504,7 +494,7 @@ exports.user_update_tweet = (req, res) => {
         // if the type of action inititiated by the user was to un-retweet a tweet
         case "unretweet":
             // finding the tweet to be updated
-            User.findByIdAndUpdate({_id: userId}, { $pull: { retweets: {_id: tweetId} } }, {new: true}, (err, updatedUser) => {
+            User.findByIdAndUpdate({_id: req.params.id}, { $pull: { retweets: {_id: req.params.tweetId} } }, {new: true}, (err, updatedUser) => {
                 if (err) return res.status(500).json({error: err.message});
 
                 return res.status(200).json({updatedRetweets: updatedUser.retweets.reverse()});
@@ -514,10 +504,10 @@ exports.user_update_tweet = (req, res) => {
         // if the type of action inititiated by the user was to like a comment
         case "like-comment":
             // finding the tweet to be updated
-            Tweet.findOneAndUpdate({"comments._id": mongoose.Types.ObjectId(req.body.commentId)}, { $inc: {"comments.$.likes": 1}, $push: {"comments.$.usersThatLiked": userId} }, (err, updatedTweet) => {
+            Tweet.findOneAndUpdate({"comments._id": mongoose.Types.ObjectId(req.body.commentId)}, { $inc: {"comments.$.likes": 1}, $push: {"comments.$.usersThatLiked": req.params.id} }, (err, updatedTweet) => {
                 if (err) return res.status(500).json({err: err.message});
                 
-                User.findOneAndUpdate({"tweets.comments._id": mongoose.Types.ObjectId(req.body.commentId)}, {$push: {"tweets.$[tweet].comments.$[comment].usersThatLiked": userId}, $inc: {"tweets.$[tweet].comments.$[comment].likes": 1} }, {new: true, "arrayFilters": [{"tweet._id": tweetId}, {"comment._id": req.body.commentId} ]}, (err, updatedUser) => {
+                User.findOneAndUpdate({"tweets.comments._id": mongoose.Types.ObjectId(req.body.commentId)}, {$push: {"tweets.$[tweet].comments.$[comment].usersThatLiked": req.params.id}, $inc: {"tweets.$[tweet].comments.$[comment].likes": 1} }, {new: true, "arrayFilters": [{"tweet._id": req.params.tweetId}, {"comment._id": req.body.commentId} ]}, (err, updatedUser) => {
                     if (err) return res.status(500).json({error: err.message});
 
                     return res.status(200).json({updatedTweets: updatedUser.tweets.reverse()});
@@ -528,10 +518,10 @@ exports.user_update_tweet = (req, res) => {
         
         // if the type of action inititiated by the user was to un-like a comment
         case "unlike-comment":
-            Tweet.findOneAndUpdate({"comments._id": mongoose.Types.ObjectId(req.body.commentId)}, { $inc: {"comments.$.likes": -1}, $pull: {"comments.$.usersThatLiked": userId} }, (err, updatedTweet) => {
+            Tweet.findOneAndUpdate({"comments._id": mongoose.Types.ObjectId(req.body.commentId)}, { $inc: {"comments.$.likes": -1}, $pull: {"comments.$.usersThatLiked": req.params.id} }, (err, updatedTweet) => {
                 if (err) return res.status(500).json({err: err.message});
                 
-                User.findOneAndUpdate({"tweets.comments._id": mongoose.Types.ObjectId(req.body.commentId)}, {$pull: {"tweets.$[tweet].comments.$[comment].usersThatLiked": userId}, $inc: {"tweets.$[tweet].comments.$[comment].likes": -1} }, {new: true, "arrayFilters": [{"tweet._id": tweetId}, {"comment._id": req.body.commentId} ]}, (err, updatedUser) => {
+                User.findOneAndUpdate({"tweets.comments._id": mongoose.Types.ObjectId(req.body.commentId)}, {$pull: {"tweets.$[tweet].comments.$[comment].usersThatLiked": req.params.id}, $inc: {"tweets.$[tweet].comments.$[comment].likes": -1} }, {new: true, "arrayFilters": [{"tweet._id": req.params.tweetId}, {"comment._id": req.body.commentId} ]}, (err, updatedUser) => {
                     if (err) return res.status(500).json({error: err.message});
 
                     return res.status(200).json({updatedTweets: updatedUser.tweets.reverse()});
@@ -550,14 +540,13 @@ exports.user_update_tweet = (req, res) => {
 
 // search for tweets or users matching a particular string query
 exports.tweet_search_index = (req, res) => {
-    const userQuery = req.params.q;
     
     // searching through the tweets collection for a tweet whose 'tweetText' matches the passed query
-    Tweet.find({ tweetText: { $regex: userQuery, $options: "i" } }, (err, matchingTweets) => {
+    Tweet.find({ tweetText: { $regex: req.params.q, $options: "i" } }, (err, matchingTweets) => {
         if (err) return res.status(500).json({error: err.message});
         
         // searching through the users collection for a user whose 'displayName' or 'username' matches the passed query
-        User.find({ $or: [{displayName: { $regex: userQuery, $options: "i" }}, {username: { $regex: userQuery, $options: "i" }} ] }, {"messages": 0}, (err, matchingUsers) => {
+        User.find({ $or: [{displayName: { $regex: req.params.q, $options: "i" }}, {username: { $regex: req.params.q, $options: "i" }} ] }, {"messages": 0}, (err, matchingUsers) => {
             if (err) return res.status(500).json({error: err.message});
 
             return res.status(200).json({
@@ -572,9 +561,8 @@ exports.tweet_search_index = (req, res) => {
 
 // get tweet trends
 exports.get_tweet_trends = (req, res) => {
-    const userId = req.params.id;
-
-    User.findById({_id: userId}, async (err, foundUser) => {
+    
+    User.findById({_id: req.params.id}, async (err, foundUser) => {
         if (err) return res.status(500).json({error: err.message});
 
         // getting tags for a user based on the tweets and retweets of the user, tweets the user has liked and saved
@@ -614,11 +602,10 @@ exports.get_tweet_trends = (req, res) => {
 
 // get a tweet trend
 exports.get_tweet_trend = async (req, res) => {
-    const trend = req.params.trend;
     const currentUser = await User.findById({_id: req.params.id}).exec();
 
     // workaround for getting tweets that have no tags
-    if (trend === "@+)"){
+    if (req.params.trend === "@+)"){
         Tweet.find({ tags: { $eq: "" } }).sort( {_id: -1} ).exec( (err, matchingTweets) => {
             if (err) return res.status(500).json({error: err.message});
         
@@ -634,7 +621,7 @@ exports.get_tweet_trend = async (req, res) => {
     }
 
     // getting tweets whose tags match the trend passed from the user
-    Tweet.find({ tags: { $regex: trend, $options: "i" } }).sort( {_id: -1} ).exec( (err, matchingTweets) => {
+    Tweet.find({ tags: { $regex: req.params.trend, $options: "i" } }).sort( {_id: -1} ).exec( (err, matchingTweets) => {
         if (err) return res.status(500).json({error: err.message});
         
         return res.status(200).json({
