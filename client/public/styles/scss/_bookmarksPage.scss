@@ -16,7 +16,7 @@
         @media screen and (max-width: 767px) {
             position: relative;
             width: 100%;
-            .user-tweet-container{
+            .user-tweet-container:last-child{
                 margin-bottom: 35%;
             }
         }

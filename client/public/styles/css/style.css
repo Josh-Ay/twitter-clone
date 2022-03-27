@@ -3334,7 +3334,7 @@ textarea {
     position: relative;
     width: 100%;
   }
-  .bookmarks-page-container .user-activity-details-container .user-tweet-container {
+  .bookmarks-page-container .user-activity-details-container .user-tweet-container:last-child {
     margin-bottom: 35%;
   }
 }
