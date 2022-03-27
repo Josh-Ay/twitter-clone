@@ -32,6 +32,7 @@ const Home = ( {user, updateCurrentUser} ) => {
     const [newTweetAdded, updateTweets] = useState([]);
     const [loading, setLoading] = useState(false);
     const [tweetCreateError, setTweetCreateError] = useState(null);
+    const [unreadMessages, setUnreadMessages] = useState(false);
     
     useTitle("Tweeter");
     useOffsetFromElement(largeScreenNavRef, homepageContainerRef, isSmallScreen ? 12 : "");
@@ -44,6 +45,14 @@ const Home = ( {user, updateCurrentUser} ) => {
 
         setNewTextEmpty(false);
     }, [newTweet])
+
+
+    // useEffect hook to check if the current user has any unread messages
+    useEffect(() => {
+        if(user.messages.map(messageItem => messageItem.messages.filter(message => message.status === "1").length >= 1) ) return setUnreadMessages(true);
+
+        setUnreadMessages(false);
+    }, [user.messages])
 
     
     // handle input(for changes in new tweet textarea) change
@@ -124,7 +133,7 @@ const Home = ( {user, updateCurrentUser} ) => {
     };
 
     return <>
-        <NavigationBar user={user} navigationBarReference={largeScreenNavRef} />
+        <NavigationBar user={user} navigationBarReference={largeScreenNavRef} unreadMessagesIndicator={unreadMessages} />
 
         <main>
             <div className="main-container homepage-container" ref={homepageContainerRef}>
@@ -160,7 +169,7 @@ const Home = ( {user, updateCurrentUser} ) => {
             </div>
         </main>
 
-        <MobileNavigationBar navigationRef={mobileNavRef} />
+        <MobileNavigationBar navigationRef={mobileNavRef} unreadMessagesIndicator={unreadMessages} />
         
     </>
 }

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import MobileNavigationBar from "../components/MobileNavigationBar";
 import NavigationBar from "../components/NavigationBar";
@@ -15,6 +15,7 @@ const ExplorePage = ({ user }) => {
     const isSmallScreen = useMediaQuery({query: "(max-width: 767px)"});
     const [exploreCategory, setExploreCategory] = useState("Top");
     const [exploreCategoryLocation, setExploreCategoryLocation] = useState("top");
+    const [unreadMessages, setUnreadMessages] = useState(false);
     
     useTitle("Tweeter | Explore");
 
@@ -28,8 +29,15 @@ const ExplorePage = ({ user }) => {
         setExploreCategoryLocation(category.toLocaleLowerCase());
     }
 
+    // useEffect hook to check if the current user has any unread messages
+    useEffect(() => {
+        if(user.messages.map(messageItem => messageItem.messages.filter(message => message.status === "1").length >= 1) ) return setUnreadMessages(true);
+
+        setUnreadMessages(false);
+    }, [user.messages])
+
     return <>
-        <NavigationBar user={user} navigationBarReference={ref} />
+        <NavigationBar user={user} navigationBarReference={ref} unreadMessagesIndicator={unreadMessages} />
         <main>
             <div className="explore-page-container" ref={ref2} >
                 <TweetNavigationSideBar
@@ -53,7 +61,7 @@ const ExplorePage = ({ user }) => {
                  />
             </div>
         </main>
-        <MobileNavigationBar navigationRef={ref3} />
+        <MobileNavigationBar navigationRef={ref3} unreadMessagesIndicator={unreadMessages} />
     </>
 }
 

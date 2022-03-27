@@ -20,6 +20,30 @@ import UserProfile from "../components/UserProfile";
 
 require("dotenv").config();
 
+const reducerActions = {
+    updateDivActive: "update-div-active",
+    updatePageLoading: "update-page-loading",
+    updateUserRegistered: "update-user-registered",
+    updateUserRequestedData: "update-requested-user-data",
+    updateUserDetails: "update-user-details",
+    updateLoggedIn: "update-logged-in",
+    updateGroupsParameter: "update-groups-parameter",
+    updateSettingsParameter: "update-settings-parameter",
+    updateFollowing: "update-following",
+    updateIsSearchQueryEmpty: "update-is-search-query-empty",
+    updateUserSearchQuery: "update-user-search-query",
+    updateSearchResults: "update-search-results",
+    updateUserDetailsError: "update-user-details-error",
+    updateAllowClick: "update-allow-click",
+    updateTweetCategory: "update-tweet-category",
+    updateTweetCategoryLocation: "update-tweet-category-location",
+    updateIsRequestLoading: "update-is-request-loading",
+    updateIsUsersLoading: "update-is-users-loading",
+    updateFetchedUsers: "update-fetched-users",
+    updateFetchUsersError: "update-fetch-users-error",
+    updateUnreadMessages: "update-unread-messages"
+}
+
 const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => {
     const requestedUser = useParams();
     const navBarRef = useRef(null);
@@ -56,29 +80,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
             type: "update"
         },
         userDetailsError: "",
-    }
-
-    const reducerActions = {
-        updateDivActive: "update-div-active",
-        updatePageLoading: "update-page-loading",
-        updateUserRegistered: "update-user-registered",
-        updateUserRequestedData: "update-requested-user-data",
-        updateUserDetails: "update-user-details",
-        updateLoggedIn: "update-logged-in",
-        updateGroupsParameter: "update-groups-parameter",
-        updateSettingsParameter: "update-settings-parameter",
-        updateFollowing: "update-following",
-        updateIsSearchQueryEmpty: "update-is-search-query-empty",
-        updateUserSearchQuery: "update-user-search-query",
-        updateSearchResults: "update-search-results",
-        updateUserDetailsError: "update-user-details-error",
-        updateAllowClick: "update-allow-click",
-        updateTweetCategory: "update-tweet-category",
-        updateTweetCategoryLocation: "update-tweet-category-location",
-        updateIsRequestLoading: "update-is-request-loading",
-        updateIsUsersLoading: "update-is-users-loading",
-        updateFetchedUsers: "update-fetched-users",
-        updateFetchUsersError: "update-fetch-users-error",
+        unreadMessages: false,
     }
 
 
@@ -111,9 +113,9 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
             case reducerActions.updateLoggedIn:
                 return { ...currentState, isLoggedIn: action.payload.value }
             case reducerActions.updateGroupsParameter:
-                return { ...currentState, groupsParameterPassed: action.payload.value }
+                return { ...currentState, groupsParameterPassed: action.payload.value, settingsParameterPassed: action.payload.settingsParameterValue }
             case reducerActions.updateSettingsParameter:
-                return { ...currentState, settingsParameterPassed: action.payload.value }
+                return { ...currentState, settingsParameterPassed: action.payload.value, groupsParameterPassed: action.payload.groupsParameterValue }
             case reducerActions.updateFollowing:
                 return { ...currentState, isFollowing: action.payload.value }
             case reducerActions.updateIsSearchQueryEmpty:
@@ -138,6 +140,8 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
                 return { ...currentState, fetchedUsersData: action.payload.value }
             case reducerActions.updateFetchUsersError:
                 return { ...currentState, fetchUsersDataError: action.payload.value }
+            case reducerActions.updateUnreadMessages:
+                return { ...currentState, unreadMessages: action.payload.value }
             default:
                 return currentState;
         }
@@ -189,7 +193,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
             dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
         })
         
-    }, [requestedUser.user, loggedInUser.username, loggedInUser.about, loggedInUser.displayName, reducerActions.updateUserRegistered, reducerActions.updatePageLoading, reducerActions.updateUserDetails, reducerActions.updateUserRequestedData]);
+    }, [requestedUser.user, loggedInUser.username, loggedInUser.about, loggedInUser.displayName]);
 
 
     // 'useEffect' hook to check if there's a currently logged-in user
@@ -198,8 +202,8 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
             dispatch({ type: reducerActions.updateLoggedIn, payload: { value: true } });
             
             if (query) {
-                if (query === "groups") return dispatch({ type: reducerActions.updateGroupsParameter, payload: { value: true } });
-                if (query === "settings") return dispatch({ type: reducerActions.updateSettingsParameter, payload: { value: true } });
+                if (query === "groups") return dispatch({ type: reducerActions.updateGroupsParameter, payload: { value: true, settingsParameterValue: false } });
+                if (query === "settings") return dispatch({ type: reducerActions.updateSettingsParameter, payload: { value: true, groupsParameterValue: false } });
                 
                 return <PageNotFound user={loggedInUser} navigationBarReference={navBarRef} />
             };
@@ -212,7 +216,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
 
         dispatch({ type: reducerActions.updateLoggedIn, payload: { value: false } });
         
-    }, [loggedInUser, query, reducerActions.updateLoggedIn, reducerActions.updateGroupsParameter, reducerActions.updateSettingsParameter]);
+    }, [loggedInUser, query]);
 
 
     // 'useEffect' hook to check if the logged-in user is following the user whose page is requested
@@ -226,7 +230,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
 
         dispatch({ type: reducerActions.updateFollowing, payload: { value: true } });
         
-    }, [state.requestedUserData, loggedInUser._id, loggedInUser, reducerActions.updateFollowing]);
+    }, [state.requestedUserData, loggedInUser._id, loggedInUser]);
 
 
     // useEffect hook to monitor searching through either the user's following or followers
@@ -237,7 +241,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
         
         dispatch( {type: reducerActions.updateSearchResults, payload: { value: state.fetchedUsersData.filter(user => user.username.toLocaleLowerCase().includes(state.userSearchQuery.toLocaleLowerCase()) || user.displayName.toLocaleLowerCase().includes(state.userSearchQuery.toLocaleLowerCase())) } } );
         
-    }, [state.userSearchQuery, state.fetchedUsersData, reducerActions.updateIsSearchQueryEmpty, reducerActions.updateSearchResults]);
+    }, [state.userSearchQuery, state.fetchedUsersData]);
 
 
     // useEffect hook to monitor the username entered and validate that its not used by another user
@@ -274,7 +278,14 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
             dispatch({ type: reducerActions.updateUserDetailsError, payload: { value: "An error occurred while trying to fetch the requested resource." }});
         })
     
-    }, [state.userDetails.username, loggedInUser.username, state.pageLoading, reducerActions.updateUserDetailsError, reducerActions.updateAllowClick])
+    }, [state.userDetails.username, loggedInUser.username, state.pageLoading])
+
+    // useEffect hook to check if the current user has any unread messages
+    useEffect(() => {
+        if(loggedInUser.messages.map(messageItem => messageItem.messages.filter(message => message.status === "1").length >= 1) ) return dispatch({ type: reducerActions.updateUnreadMessages, payload: { value: true } });
+
+        dispatch({ type: reducerActions.updateUnreadMessages, payload: { value: false } });
+    }, [loggedInUser.messages])
 
 
     // checking if the requested username cannot be found
@@ -365,7 +376,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
         {!state.pageLoading && 
             
             <>
-                <NavigationBar user={state.isLoggedIn ? loggedInUser: ""} removeDropDownIcon={state.isLoggedIn && true} navigationBarReference={navBarRef} />
+                <NavigationBar user={state.isLoggedIn ? loggedInUser: ""} removeDropDownIcon={state.isLoggedIn && true} navigationBarReference={navBarRef} unreadMessagesIndicator={state.unreadMessages} />
 
                 <main>
                     <div className="user-profile-page-container">
@@ -454,7 +465,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
                     </div>
                 </main>
 
-                <MobileNavigationBar navigationRef={mobileNavRef} />
+                <MobileNavigationBar navigationRef={mobileNavRef} unreadMessagesIndicator={state.unreadMessages} />
 
             </>
         }

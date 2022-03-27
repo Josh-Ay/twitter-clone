@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MobileNavigationBar from "../components/MobileNavigationBar";
 import NavigationBar from "../components/NavigationBar";
 import TweetNavigationSideBar from "../components/TweetNavigationSideBar";
@@ -13,6 +13,7 @@ const Bookmarks = ({ user }) => {
     const mobileNavBarRef = useRef(null);
     const [tweetCategory, setTweetCategory] = useState("Tweets");
     const [tweetCategoryLocation, setTweetCategoryLocation] = useState("tweets");
+    const [unreadMessages, setUnreadMessages] = useState(false);
     
     useTitle("Bookmarks");
 
@@ -26,9 +27,17 @@ const Bookmarks = ({ user }) => {
         setTweetCategoryLocation(category.toLocaleLowerCase().replace(" ", "").replace(" ", "").replace("&", "+"));
     }; 
 
+    // useEffect hook to check if the current user has any unread messages
+    useEffect(() => {
+        if(user.messages.map(messageItem => messageItem.messages.filter(message => message.status === "1").length >= 1) ) return setUnreadMessages(true);
+
+        setUnreadMessages(false);
+    }, [user.messages])
+
+
     
     return <>
-        <NavigationBar user={user} navigationBarReference={navBarRef} />
+        <NavigationBar user={user} navigationBarReference={navBarRef} unreadMessagesIndicator={unreadMessages} />
         <main>
             <div className="bookmarks-page-container" ref={bookmarksContainerRef} >
                 <TweetNavigationSideBar
@@ -47,7 +56,7 @@ const Bookmarks = ({ user }) => {
                  />
             </div>
         </main>
-        <MobileNavigationBar navigationRef={mobileNavBarRef} />
+        <MobileNavigationBar navigationRef={mobileNavBarRef} unreadMessagesIndicator={unreadMessages} />
     </>
 }
 
