@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const Logo = ({ disableClick }) => {
     const userPrefersDarkTheme = useMediaQuery({query: "(prefers-color-scheme: dark)"});
-    const smallScreen = useMediaQuery({query: "(max-width: 767px)"});
+    const smallScreen = useMediaQuery({query: "(max-width: 991px)"});
     const navigate = useNavigate();
 
     // handle click on the tweeter logo

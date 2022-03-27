@@ -313,7 +313,7 @@ const Tweet = (props) => {
                 {tweet.retweetAuthor ? <span className="retweet-author-name"><AutorenewIcon className="autorenew-icon" />{tweet.retweetAuthor} Retweeted</span> : <></>}
                 <UserPicture className="tweet-author-image" location={tweet.authorUsername} displayPicture={tweet.authorImage} />
                 <div className="tweet-author-details">
-                    <h4 style={{cursor: "pointer"}} onClick={() => { navigate(`/${tweet.authorUsername}`)} }>{tweet.author}</h4>
+                    <h4 style={{cursor: "pointer"}} onClick={() => { navigate(`/${tweet.authorUsername}`)} }>{tweet.author ? tweet.author : tweet.authorUsername}</h4>
                     <span>{Formatter.formatDateTime(tweet.createdAt)}</span>
                 </div>
             </div>
