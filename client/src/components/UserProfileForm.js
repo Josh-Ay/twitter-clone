@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { checkImageFile } from "../validators/Validators";
 import { Request } from "../requests/Request";
 import { Formatter } from "../helpers/Formatter";
+import useTitle from "../hooks/useTitle";
 
 const UserProfileForm = (props) => {
     const fileUploadRef = useRef(null);
@@ -18,6 +19,8 @@ const UserProfileForm = (props) => {
     const [coverLoading, setCoverLoading] = useState(false);
     const [isProfileUploadSuccessful, setProfileUploadSuccessful] = useState(false);
     const [isCoverUploadSuccessful, setCoverUploadSuccessful] = useState(false);
+
+    useTitle(`${props.username} | Settings`);
 
     // open file upload dialog box
     const openFileUpload = (type) => { 
