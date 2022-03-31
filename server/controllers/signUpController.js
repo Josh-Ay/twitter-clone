@@ -15,7 +15,7 @@ exports.user_create = (req, res)=>{
         passport.authenticate("local")(req, res, () =>{
 
             // assigning a username by default to the new user
-            User.findByIdAndUpdate({_id: req.user._id}, {$set: {username: `user${req.user._id}`}}, { new: true, fields: { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0 } }, (err, loggedInUser) => {
+            User.findByIdAndUpdate({_id: req.user._id}, {$set: {username: `user${req.user._id}`}}, { new: true, fields: { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "followers": 0, "following": 0 } }, (err, loggedInUser) => {
                 if (err) { return next(err); }
 
                 // returning the created logged-in user

@@ -70,7 +70,7 @@ exports.user_update_detail = (req, res) => {
                                         if (err) return res.status(500).json({error: err.message});
                                         
                                         // getting the user with the user's updated details
-                                        const updatedUserDetails = await User.findById({_id: req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0 }).exec();
+                                        const updatedUserDetails = await User.findById({_id: req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "messages": 0, "followers": 0, "following": 0 }).exec();
 
                                         return res.status(200).json({user: updatedUserDetails});
                                     })
@@ -107,7 +107,7 @@ exports.user_update_display_photo = async (req, res) => {
                 
                 // if it's a new user, i.e. the user did not have a previous cover photo
                 if (!user.coverPhoto){
-                    User.findById({"_id": req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0 }, (err, foundUser) => {
+                    User.findById({"_id": req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "messages": 0, "followers": 0, "following": 0 }, (err, foundUser) => {
                         if (err) return res.status(500).json({error: err.message});
 
                         return res.status(200).json({user: foundUser});
@@ -119,7 +119,7 @@ exports.user_update_display_photo = async (req, res) => {
                 await awsS3Client.deleteFileInAwsBucket(user.coverPhoto).then(awsDelRes => {
                     console.log("successfully deleted file in aws bucket");
 
-                    User.findById({"_id": req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0 }, (err, foundUser) => {
+                    User.findById({"_id": req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "messages": 0, "followers": 0, "following": 0 }, (err, foundUser) => {
                         if (err) return res.status(500).json({error: err.message});
 
                         return res.status(200).json({user: foundUser});
@@ -156,7 +156,7 @@ exports.user_update_display_photo = async (req, res) => {
                                     Tweet.updateMany({"comments.authorUserId": req.params.id}, {$set: {"comments.$[comment].authorImage": awsRes.Key} }, { multi:true, "arrayFilters": [ {"comment.authorUserId": req.params.id} ]}, (err, updatedTweets) => {
                                         if (err) return res.status(500).json({error: err.message});
 
-                                        User.findById({"_id": req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0 }, (err, foundUser) => {
+                                        User.findById({"_id": req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "messages": 0, "followers": 0, "following": 0 }, (err, foundUser) => {
                                             if (err) return res.status(500).json({error: err.message});
                     
                                             return res.status(200).json({user: foundUser});
@@ -194,7 +194,7 @@ exports.user_update_display_photo = async (req, res) => {
                                     if (err) return res.status(500).json({error: err.message});
 
                                     // returning the updated user
-                                    User.findById({"_id": req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0 }, (err, foundUser) => {
+                                    User.findById({"_id": req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "messages": 0, "followers": 0, "following": 0 }, (err, foundUser) => {
                                         if (err) return res.status(500).json({error: err.message});
                                         
                                         return res.status(200).json({user: foundUser});
@@ -296,7 +296,7 @@ exports.user_follow_user = async (req, res) => {
                         User.updateMany({"followers._id": mongoose.Types.ObjectId(newFollowerId)}, {$push: {"followers.$.following": userToFollow}}, async (err, updatedUsers) => {
                             if (err) return res.status(500).json({error: err.message});
                     
-                            const userToFollowData = await User.findById({_id: userToFollowId}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0 });
+                            const userToFollowData = await User.findById({_id: userToFollowId}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "messages": 0, "followers": 0, "following": 0 });
                             
                             // returning the updated data for both the follower and the followed
                             return res.status(200).json({"newFollower": newFollowerData, "followedUser": userToFollowData});
