@@ -3,6 +3,7 @@ import NavigationBar from "../components/NavigationBar";
 import { useNavigate } from "react-router-dom";
 import MobileNavigationBar from "../components/MobileNavigationBar";
 import { useEffect, useState } from "react";
+import { Request } from "../requests/Request";
 
 const PageNotFound = ( {user, navigationBarReference} ) => {
     const navigate = useNavigate();
@@ -12,10 +13,16 @@ const PageNotFound = ( {user, navigationBarReference} ) => {
 
     // useEffect hook to check if the current user has any unread messages
     useEffect(() => {
-        if(user.messages.map(messageItem => messageItem.messages.filter(message => message.status === "1").length >= 1) ) return setUnreadMessages(true);
+        Request.makeGetRequest(`/messages/${user._id}`).then(res => {
+            if(res.data.userMessages.map(messageItem => messageItem.messages.filter(message => message.status === "1")).flat().length >= 1 ) return setUnreadMessages(true);
 
-        setUnreadMessages(false);
-    }, [user.messages])
+            setUnreadMessages(false);
+
+        }).catch(err => {
+            console.log("An error occured while trying to fetch current user's messages")
+        });
+        
+    }, [user._id])
 
     const handleClick = () => navigate("/"); 
     

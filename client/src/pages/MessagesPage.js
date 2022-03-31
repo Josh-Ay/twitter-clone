@@ -69,7 +69,7 @@ const MessagesPage = ( { user, socketInstance } ) => {
         Request.makeGetRequest(`/messages/${user._id}`).then(res => {
             setIsPageLoading(false);
             setAllMessages(res.data.userMessages);
-            res.data.userMessages.map(userMessageItem => userMessageItem.messages.filter(message => message.status === "1")).length >= 1 ? setUnreadMessages(true) : setUnreadMessages(false);
+            res.data.userMessages.map(userMessageItem => userMessageItem.messages.filter(message => message.status === "1")).flat().length >= 1 ? setUnreadMessages(true) : setUnreadMessages(false);
         }).catch(err => {
             setIsPageLoading(false);
             console.log("An error occurred while trying to fetch your messages");
@@ -221,7 +221,7 @@ const MessagesPage = ( { user, socketInstance } ) => {
                         <>
                         <h3 className="title-text normal-size">Messages</h3>
                         {
-                            checkIfListIsEmpty(user.messages) ?
+                            checkIfListIsEmpty(allMessages) ?
                             <>
                                 <div className="get-started-message-container">
                                     <h4 className="title-text small-size">Send a message, get a message</h4>

@@ -5,6 +5,7 @@ import TweetNavigationSideBar from "../components/TweetNavigationSideBar";
 import useChangeElementPropertyOnScroll from "../hooks/useChangeElementPropertyOnScroll";
 import useOffsetFromElement from "../hooks/useOffsetFromElement";
 import useTitle from "../hooks/useTitle";
+import { Request } from "../requests/Request";
 
 
 const Bookmarks = ({ user }) => {
@@ -29,10 +30,16 @@ const Bookmarks = ({ user }) => {
 
     // useEffect hook to check if the current user has any unread messages
     useEffect(() => {
-        if(user.messages.map(messageItem => messageItem.messages.filter(message => message.status === "1").length >= 1) ) return setUnreadMessages(true);
+        Request.makeGetRequest(`/messages/${user._id}`).then(res => {
+            if(res.data.userMessages.map(messageItem => messageItem.messages.filter(message => message.status === "1")).flat().length >= 1 ) return setUnreadMessages(true);
 
-        setUnreadMessages(false);
-    }, [user.messages])
+            setUnreadMessages(false);
+
+        }).catch(err => {
+            console.log("An error occured while trying to fetch current user's messages")
+        });
+        
+    }, [user._id])
 
 
     

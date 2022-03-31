@@ -282,10 +282,16 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
 
     // useEffect hook to check if the current user has any unread messages
     useEffect(() => {
-        if(loggedInUser.messages.map(messageItem => messageItem.messages.filter(message => message.status === "1").length >= 1) ) return dispatch({ type: reducerActions.updateUnreadMessages, payload: { value: true } });
+        Request.makeGetRequest(`/messages/${loggedInUser._id}`).then(res => {
+            if(res.data.userMessages.map(messageItem => messageItem.messages.filter(message => message.status === "1")).flat().length >= 1 ) return dispatch({ type: reducerActions.updateUnreadMessages, payload: { value: true }});
 
-        dispatch({ type: reducerActions.updateUnreadMessages, payload: { value: false } });
-    }, [loggedInUser.messages])
+            dispatch({ type: reducerActions.updateUnreadMessages, payload: { value: false } });
+
+        }).catch(err => {
+            console.log("An error occured while trying to fetch current user's messages")
+        });
+        
+    }, [loggedInUser._id])
 
 
     // checking if the requested username cannot be found
