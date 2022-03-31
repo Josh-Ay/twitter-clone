@@ -2,7 +2,6 @@ import UserPicture from "./UserPicture"
 
 const UserItem = ( { user, handleUserItemClick } ) => {
     return <div className={`user-message-item ${user.messages.filter(message => message.status === "1").length >= 1 ? "unread-present" : "" }`} onClick={() => { handleUserItemClick(user.displayName ? user.displayName : user.username, user.username, user.userId, user.socketId) } }>
-        {console.log(user.messages.filter(message => message.status === "1"))}
         <UserPicture 
             className="user-img"
             displayPicture={user.profilePhoto}
