@@ -69,4 +69,32 @@ self.addEventListener('message', (event) => {
   }
 });
 
-// Any other custom service worker logic can go here.
+// This defines a cache to store contents offline
+const CACHE_NAME = "tweeter-cache-resources";
+
+// contents to store offline
+const targetsToCache = [
+  "/styles/css/style.min.css",
+  "/assets/tweeter-light.svg",
+  "/assets/tweeter.svg",
+  "/assets/tweeter-small.svg",
+  "/assets/404-page-not-found.svg",
+];
+
+// This is to cache the static assets above the first time a user accesses the app
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(targetsToCache);
+    })
+  );
+});
+
+// Offline-first: This returns the offline cached static contents if the network is unavailable/off-line
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((res) => {
+      return res || fetch(event.request);
+    })
+  )
+});
