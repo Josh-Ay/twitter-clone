@@ -160,10 +160,12 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
 
     useEffect(() => {
         // making a get request to server to check if the requested username entered is registered
-        Request.makeGetRequest(`/usernames/?username=${requestedUser.user}`).then(res => {
-            
+        Request.makeGetRequest("/usernames").then(res => {
+            const decryptedData = JSON.parse(CryptoJS.AES.decrypt(res.data.usernames, process.env.REACT_APP_AES_SECRET_KEY).toString(CryptoJS.enc.Utf8));        
+            const userExists = checkIfItemInList(decryptedData, requestedUser.user, "username");
+
             // if the user does not exist
-            if (!res.data.user[0]){
+            if (!userExists){
                 dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
                 dispatch({ type: reducerActions.updateUserRegistered, payload: { value: false } });
                 return;
@@ -181,7 +183,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
                 } 
             });
 
-            dispatch({ type: reducerActions.updateUserRequestedData, payload: { value: res.data.user[0] } });
+            dispatch({ type: reducerActions.updateUserRequestedData, payload: { value: decryptedData.find(user => user.username === requestedUser.user) } });
             dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
             
             return;
@@ -258,8 +260,6 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
             dispatch({ type: reducerActions.updateAllowClick, payload: { value: false }});
             return;
         }
-        
-        if (state.userDetails.username === loggedInUser.username) return;
         
         Request.makeGetRequest("/usernames").then(res => {
             const allUsernames = JSON.parse(CryptoJS.AES.decrypt(res.data.usernames, process.env.REACT_APP_AES_SECRET_KEY).toString(CryptoJS.enc.Utf8));        

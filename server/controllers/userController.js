@@ -20,20 +20,8 @@ exports.user_index = (req, res) => {
     })
 };
 
-// get usernames
+// get all usernames
 exports.username_index = (req, res) => {
-    // get a user profile for a passed username
-    if (req.query.username){
-        User.find({ username: req.query.username }, { "messages": 0 }).lean().exec( (err, foundUser) => {
-            if (err) return res.status(404).json({ error: err.message });
-
-            return res.status(200).json({ user: foundUser });
-        });
-
-        return;
-    }
-
-    // get all usernames
     User.find({}, { "username": 1, "followers": 1, "following": 1, "displayName": 1 }).lean().exec( (err, usernames) => {
         if (err) return res.status(500).json({error: err.message});
         
