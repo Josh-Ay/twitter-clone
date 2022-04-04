@@ -295,7 +295,7 @@ exports.tweet_index = async (req, res) => {
             
             // getting other's users
             case "people":
-                const allUsers = await User.find({}).lean().exec();
+                const allUsers = await User.find({}).limit(10).lean().exec();
                 
                 res.status(200).json({users: allUsers.sort((a, b) => b.followers - a.followers)});
                 break;
