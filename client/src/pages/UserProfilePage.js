@@ -187,7 +187,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
             dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
             
             return;
-
+ 
         }).catch(err => {
             console.log("An error occured while trying to connect to the server.");
             dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
