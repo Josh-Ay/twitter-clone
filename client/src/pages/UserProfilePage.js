@@ -160,12 +160,10 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
 
     useEffect(() => {
         // making a get request to server to check if the requested username entered is registered
-        Request.makeGetRequest("/usernames").then(res => {
-            const decryptedData = JSON.parse(CryptoJS.AES.decrypt(res.data.usernames, process.env.REACT_APP_AES_SECRET_KEY).toString(CryptoJS.enc.Utf8));        
-            const userExists = checkIfItemInList(decryptedData, requestedUser.user, "username");
-
+        Request.makeGetRequest(`/usernames/?username=${requestedUser.user}`).then(res => {
+            
             // if the user does not exist
-            if (!userExists){
+            if (!res.data.user[0]){
                 dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
                 dispatch({ type: reducerActions.updateUserRegistered, payload: { value: false } });
                 return;
@@ -183,16 +181,16 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
                 } 
             });
 
-            dispatch({ type: reducerActions.updateUserRequestedData, payload: { value: decryptedData.find(user => user.username === requestedUser.user) } });
+            dispatch({ type: reducerActions.updateUserRequestedData, payload: { value: res.data.user[0] } });
             dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
             
             return;
- 
+
         }).catch(err => {
             console.log("An error occured while trying to connect to the server.");
             dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
         })
-        
+
     }, [requestedUser.user, loggedInUser.username, loggedInUser.about, loggedInUser.displayName]);
 
 
