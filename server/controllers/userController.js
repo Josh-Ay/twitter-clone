@@ -24,7 +24,8 @@ exports.user_index = (req, res) => {
 exports.username_index = (req, res) => {
     // get a user profile for a passed username
     if (req.query.username){
-        User.find({ username: req.query.username }, { "messages": 0 }).lean().exec( (err, foundUser) => {
+        // Used find().limit(1) instead of findOne() because from research, find().limit(1) is faster
+        User.find({ username: req.query.username }, { "messages": 0 }).limit(1).lean().exec( (err, foundUser) => {
             if (err) return res.status(404).json({ error: err.message });
 
             return res.status(200).json({ user: foundUser });
