@@ -163,7 +163,7 @@ textarea {
 
 .side-div-container {
   position: absolute;
-  right: 9.7%;
+  right: 8%;
   top: 0;
   display: -ms-grid;
   display: grid;
@@ -2338,6 +2338,12 @@ textarea {
   .user-tweet-container .tweet-reply-container {
     margin: 2.6% 0;
   }
+}
+
+.user-tweet-container .user-replies-container {
+  max-height: 30rem;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .user-tweet-container .user-replies-container .user-reply-item {

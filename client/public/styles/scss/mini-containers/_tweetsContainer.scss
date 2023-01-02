@@ -222,6 +222,9 @@
     }
 
     .user-replies-container{
+        max-height: 30rem;
+        overflow-x: hidden;
+        overflow-y: auto;
         .user-reply-item{
             margin: 2.5% 0 7%;
             @include displayFlexCenterAndJustify(flex-start);
