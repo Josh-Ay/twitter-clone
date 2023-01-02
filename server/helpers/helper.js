@@ -1,3 +1,5 @@
+const { isValidObjectId } = require("mongoose");
+
 // function to shuffle an array
 exports.shuffleArray = (arrayToShuffle) => {
     
@@ -49,3 +51,6 @@ exports.get_unique_items_in_list_of_objects = (arrayToCheck, uniqueKey) => {
         return unique;
     }, [] )
 }
+
+// function to check if a mongoose id is valid
+exports.isMongooseIdValid = (passedId) => isValidObjectId(passedId);

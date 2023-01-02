@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 // requiring the necessary packages and model
 const User = require("../models/user");
 const Tweet = require("../models/tweet").Tweet;
@@ -8,7 +6,9 @@ const CryptoJS = require("crypto-js");
 const awsS3Client = require("../middleware/upload/amazonS3Upload");
 const { Readable } = require("stream");
 const fs = require("fs");
-const { shuffleArray } = require("../helpers/helper");
+const { shuffleArray, isMongooseIdValid } = require("../helpers/helper");
+const Message = require("../models/message").Message;
+const Comment = require("../models/comment").Comment;
 
 // get all users
 exports.user_index = (req, res) => {
@@ -25,7 +25,7 @@ exports.username_index = (req, res) => {
     // get a user profile for a passed username
     if (req.query.username){
         // Used find().limit(1) instead of findOne() because from research, find().limit(1) is faster
-        User.find({ username: req.query.username }, { "messages": 0 }).limit(1).lean().exec( (err, foundUser) => {
+        User.find({ username: req.query.username }).limit(1).lean().exec( (err, foundUser) => {
             if (err) return res.status(404).json({ error: err.message });
 
             return res.status(200).json({ user: foundUser });
@@ -43,62 +43,30 @@ exports.username_index = (req, res) => {
 };
 
 // update existing user details
-exports.user_update_detail = (req, res) => {
+exports.user_update_detail = async (req, res) => {
     const { username, userBio, displayName } = req.body;
     
-    // updating a user's username, displayName and bio
-    User.findByIdAndUpdate(req.params.id, {$set: { displayName: displayName, username: username, about: userBio }}, {new: true}, (err, updatedUser) => {
-        if (err) return res.status(500).json({error: err.message});
-
-        // also updating the user's details(user with _id of req.params.id) in other users accounts' where the user is a follower
-        User.updateMany({"followers._id":  mongoose.Types.ObjectId(req.params.id)}, { $set: {"followers.$.displayName": displayName, "followers.$.username": username, "followers.$.about": userBio }  }, { multi: true },(err, updatedUsers) => {
-            if (err) return res.status(500).json({error: err.message});
-
-            // also updating the user's details(user with _id of req.params.id) in other users accounts' wherever the user is being followed
-            User.updateMany({"following._id":  mongoose.Types.ObjectId(req.params.id)}, { $set: {"following.$.displayName": displayName, "following.$.username": username, "following.$.about": userBio }  }, { multi: true }, (err, updatedUsers) => {
-                if (err) return res.status(500).json({error: err.message});
-
-                // also updating the user's details(user with _id of req.params.id) for all messages between the user and other users
-                User.updateMany({"messages.userId":  req.params.id}, { $set: {"messages.$.displayName": displayName, "messages.$.username": username }  }, {multi: true }, (err, updatedUsers) => {
-                    if (err) return res.status(500).json({error: err.message});
-
-                    // also updating the user's details(user with _id of req.params.id) in tweets the user has created
-                    User.updateMany({"tweets.authorId":  req.params.id}, { $set: {"tweets.$[tweet].author": displayName, "tweets.$[tweet].authorUsername": username }  }, { multi: true, "arrayFilters": [{"tweet.authorId": req.params.id}] }, (err, updatedUsers) => {
-                        if (err) return res.status(500).json({error: err.message});
-
-                        // also updating the user's details(user with _id of req.params.id) in tweets the user has retweeted
-                        User.updateMany({"retweets.authorId": req.params.id}, { $set: { "retweets.$[retweet].author": displayName, "retweets.$[retweet].authorUsername": username } }, { multi: true, "arrayFilters": [{"retweet.authorId": req.params.id}] }, (err, updatedUsers) => {
-                            if (err) return res.status(500).json({error: err.message});
-
-                            // also updating the user's details(user with _id of req.params.id) in tweets the user has commented in
-                            User.updateMany({"tweets.comments.authorUserId": req.params.id}, { $set: {"tweets.$.comments.$[comment].author": displayName, "tweets.$.comments.$[comment].authorUsername": username} }, {multi: true, "arrayFilters": [ {"comment.authorUserId": req.params.id} ]}, (err, updatedUsers) => {
-                                if (err) return res.status(500).json({error: err.message});
-    
-                                // also updating the user's details(user with _id of req.params.id) in the tweets model
-                                Tweet.updateMany({"authorId": req.params.id}, { $set: {"author": displayName, "authorUsername": username }  }, (err, updatedTweets) => {
-                                    if (err) return res.status(500).json({error: err.message});
+    try {
+        // updating a user's username, displayName and bio
+        await User.findByIdAndUpdate(req.params.id, {$set: { displayName: displayName, username: username, about: userBio }}, {new: true});
         
-                                    // also updating the user's details(user with _id of req.params.id) in tweets the user has commented in(in the tweets model)
-                                    Tweet.updateMany({"comments.authorUserId":  req.params.id}, { $set: {"comments.$[comment].author": displayName, "comments.$[comment].authorUsername": username }  }, { multi: true, "arrayFilters": [{"comment.authorUserId": req.params.id}] }, async (err, updatedTweets) => {
-                                        if (err) return res.status(500).json({error: err.message});
-                                        
-                                        // getting the user with the user's updated details
-                                        const updatedUserDetails = await User.findById({_id: req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "messages": 0, "followers": 0, "following": 0 }).exec();
-
-                                        return res.status(200).json({user: updatedUserDetails});
-                                    })
+        // updating the user's details(user with _id of req.params.id) for all messages between the user and other users
+        await Message.updateMany({"userId":  req.params.id}, { $set: {"displayName": displayName, "username": username }  }, {multi: true });
         
-                                })
-                            })
-                        })
-                    })
-
-                    
-                })
-            })
-        })
+        // also updating the user's details(user with _id of req.params.id) in tweets the user has created
+        await Tweet.updateMany({"authorId":  req.params.id}, { $set: {"author": displayName, "authorUsername": username }  }, { multi: true });
         
-    });
+        // also updating the user's details(user with _id of req.params.id) in tweets the user has commented in
+        await Comment.updateMany({"authorUserId": req.params.id}, { $set: {"author": displayName, "authorUsername": username} }, {multi: true });
+
+        // getting the user with the user's updated details
+        const updatedUserDetails = await User.findById({_id: req.params.id}, { "email": 0, "followers": 0, "following": 0 }).exec();
+        return res.status(200).json({user: updatedUserDetails});
+
+    } catch (error) {
+        return res.status(500).json({error: err.message});
+    }
+
 };
 
 // update user display photo
@@ -120,23 +88,24 @@ exports.user_update_display_photo = async (req, res) => {
                 
                 // if it's a new user, i.e. the user did not have a previous cover photo
                 if (!user.coverPhoto){
-                    User.findById({"_id": req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "messages": 0, "followers": 0, "following": 0 }, (err, foundUser) => {
-                        if (err) return res.status(500).json({error: err.message});
-
+                    try {
+                        const foundUser = await User.findById({"_id": req.params.id}, { "email": 0, "followers": 0, "following": 0 });
                         return res.status(200).json({user: foundUser});
-                    });
-                    return;
+                    } catch (err) {
+                        return res.status(500).json({error: err.message});
+                    }
                 }
 
                 // if it's an existing user with a previous cover photo, then delete the previous one
                 await awsS3Client.deleteFileInAwsBucket(user.coverPhoto).then(awsDelRes => {
                     console.log("successfully deleted file in aws bucket");
 
-                    User.findById({"_id": req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "messages": 0, "followers": 0, "following": 0 }, (err, foundUser) => {
-                        if (err) return res.status(500).json({error: err.message});
-
+                    try {
+                        const foundUser = User.findById({"_id": req.params.id}, { "email": 0, "followers": 0, "following": 0 });
                         return res.status(200).json({user: foundUser});
-                    })
+                    } catch (err) {
+                        return res.status(500).json({error: err.message});   
+                    }
 
                 }).catch(err => {
                     console.log(err);
@@ -154,33 +123,19 @@ exports.user_update_display_photo = async (req, res) => {
                 
                 // if it's a new user, i.e. the user did not have a previous profile photo or if the user's former profile photo was gotten via oauth authentication (from an external source)
                 if ((!user.profilePhoto) || (user.profilePhoto.includes("https://"))){
-                    User.updateMany({ "tweets.authorId" : req.params.id }, {$set: {"tweets.$[elem].authorImage": awsRes.Key }}, { multi: true, "arrayFilters": [{"elem.authorId": req.params.id}] }, (err, updatedUsers) => {
-                        if (err) return res.status(500).json({error: err.message});
-    
-                        User.updateMany({"tweets.comments.authorUserId": req.params.id}, {$set: {"tweets.$.comments.$[comment].authorImage": awsRes.Key}}, {multi: true, "arrayFilters": [{"comment.authorUserId": req.params.id} ]}, (err, updatedUsers) => {
-                            if (err) return res.status(500).json({error: err.message});
-    
-                            User.updateMany({"messages.userId": req.params.id}, {$set: {"messages.$.profilePhoto": awsRes.Key} }, { multi: true }, (err, updatedUsers) => {
-                                if (err) return res.status(500).json({error: err.message});
-    
-                                Tweet.updateMany({"authorId": req.params.id}, {$set: {"authorImage": awsRes.Key} }, (err, updatedTweets) => {
-                                    if (err) return res.status(500).json({error: err.message});
-    
-                                    Tweet.updateMany({"comments.authorUserId": req.params.id}, {$set: {"comments.$[comment].authorImage": awsRes.Key} }, { multi:true, "arrayFilters": [ {"comment.authorUserId": req.params.id} ]}, (err, updatedTweets) => {
-                                        if (err) return res.status(500).json({error: err.message});
+                    try {
+                        await Tweet.updateMany({ "authorId" : req.params.id }, {$set: {"authorImage": awsRes.Key }}, { multi: true });
+                    
+                        await Comment.updateMany({"authorUserId": req.params.id}, {$set: {"authorImage": awsRes.Key}}, {multi: true });
+                                
+                        await Message.updateMany({"userId": req.params.id}, {$set: {"profilePhoto": awsRes.Key} }, { multi: true });
+                                    
+                        const foundUser = await User.findById({"_id": req.params.id}, { "email": 0, "followers": 0, "following": 0 });
+                        return res.status(200).json({user: foundUser});
 
-                                        User.findById({"_id": req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "messages": 0, "followers": 0, "following": 0 }, (err, foundUser) => {
-                                            if (err) return res.status(500).json({error: err.message});
-                    
-                                            return res.status(200).json({user: foundUser});
-                                        });
-                                    })
-                                })
-                            })
-                        })
-                    })
-                    
-                    return;
+                    } catch (err) {
+                        return res.status(500).json({error: err.message});
+                    }
                 }
 
                 // if it's an existing user with a previous profile photo, then delete the previous one
@@ -190,38 +145,22 @@ exports.user_update_display_photo = async (req, res) => {
                     console.log(err);
                 });
 
-                // updating the user's picture in all created tweets
-                User.updateMany({ "tweets.authorId" : req.params.id }, {$set: {"tweets.$[elem].authorImage": awsRes.Key }}, { multi: true, "arrayFilters": [{"elem.authorId": req.params.id}] }, (err, updatedUsers) => {
-                    if (err) return res.status(500).json({error: err.message});
+                try {
+                    // updating the user's picture in all created tweets
+                    await Tweet.updateMany({ "authorId" : req.params.id }, {$set: {"authorImage": awsRes.Key }}, { multi: true });
+                        
+                    await Comment.updateMany({"authorUserId": req.params.id}, {$set: {"authorImage": awsRes.Key}}, {multi: true });
 
-                    User.updateMany({"tweets.comments.authorUserId": req.params.id}, {$set: {"tweets.$.comments.$[comment].authorImage": awsRes.Key}}, {multi: true, "arrayFilters": [ {"comment.authorUserId": req.params.id} ]}, (err, updatedUsers) => {
-                        if (err) return res.status(500).json({error: err.message});
-
-                        User.updateMany({"messages.userId": req.params.id}, {$set: {"messages.$.profilePhoto": awsRes.Key} }, { multi: true }, (err, updatedUsers) => {
-                            if (err) return res.status(500).json({error: err.message});
-
-                            Tweet.updateMany({"authorId": req.params.id}, {$set: {"authorImage": awsRes.Key} }, (err, updatedTweets) => {
-                                if (err) return res.status(500).json({error: err.message});
-
-                                Tweet.updateMany({"comments.authorUserId": req.params.id}, {$set: {"comments.$[comment].authorImage": awsRes.Key} }, { multi:true, "arrayFilters": [ {"comment.authorUserId": req.params.id} ]}, (err, updatedTweets) => {
-                                    if (err) return res.status(500).json({error: err.message});
-
-                                    // returning the updated user
-                                    User.findById({"_id": req.params.id}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "messages": 0, "followers": 0, "following": 0 }, (err, foundUser) => {
-                                        if (err) return res.status(500).json({error: err.message});
-                                        
-                                        return res.status(200).json({user: foundUser});
-                                    })
-                                })
-                            })
-                        })
-                    })
-                    
-                })
-
+                    await Message.updateMany({"userId": req.params.id}, {$set: {"profilePhoto": awsRes.Key} }, { multi: true });
+                
+                    // returning the updated user
+                    const foundUser = await User.findById({"_id": req.params.id}, { "email": 0, "followers": 0, "following": 0 });
+                    return res.status(200).json({user: foundUser});
+                } catch (error) {
+                    return res.status(500).json({error: err.message});
+                }
             });
         }
-
     }).catch(err => {
         return res.status(500).json({error: "An error occurred while trying to upload your file."})
     });
@@ -248,7 +187,7 @@ exports.get_media_file = async (req, res) => {
 exports.get_user_follower_suggestions = async (req, res) => {
     const allUsers = await User.find({}).lean().exec();
 
-    User.findById({_id: req.params.id}, {"messages": 0}, (err, foundUser) => {
+    User.findById({_id: req.params.id}, async (err, foundUser) => {
         if (err) return res.status(404).json({error: err.message});
 
         if (!foundUser) return;
@@ -260,19 +199,28 @@ exports.get_user_follower_suggestions = async (req, res) => {
         const [ randomFollowingIndex, randomFollowersIndex ] = [ Math.floor( Math.random() * foundUser.following.length ), Math.floor( Math.random() * foundUser.followers.length ) ];
 
         // getting a list of the random user's followers and following
-        const suggestionsListOne = foundUser.following[randomFollowingIndex].following;
-        const suggestionsListTwo = foundUser.following[randomFollowingIndex].followers;
-        const suggestionsListThree = foundUser.followers[randomFollowersIndex].following;
-        const suggestionsListFour = foundUser.followers[randomFollowersIndex].followers;
+        const [ randomUserFollowing, randomUserFollower ] = [ foundUser.following[randomFollowingIndex], foundUser.followers[randomFollowersIndex] ];
+        
+        const suggestionsListOne = await (await User.findById({ _id: randomUserFollowing})).following;
+        const suggestionsListTwo = await (await User.findById({ _id: randomUserFollowing})).followers;
+        const suggestionsListThree = await (await User.findById({ _id: randomUserFollower})).following;
+        const suggestionsListFour = await (await User.findById({ _id: randomUserFollower})).followers;
         
         // concatenating all the lists together and removing the current user's profile(if among the list of the suggested users)
-        const newFollowersSuggestionList = suggestionsListOne.concat(suggestionsListTwo, suggestionsListThree, suggestionsListFour).filter(userSuggestion => userSuggestion._id.toString() !== req.params.id);
+        const newFollowersSuggestionList = suggestionsListOne.concat(suggestionsListTwo, suggestionsListThree, suggestionsListFour).filter(userSuggestion => userSuggestion !== req.params.id);
         
+        const profilesOfNewFollowersSuggestionList = []
+        newFollowersSuggestionList.forEach(async (suggestion) => {
+            const foundUserProfile = await User.findById({_id: suggestion});
+            if (!foundUserProfile) return
+            profilesOfNewFollowersSuggestionList.push(foundUserProfile)
+        });
+
         // if the suggestions list of people to follow is less than 3 then no need to shuffle it
-        if ( (newFollowersSuggestionList.length < 1) || (newFollowersSuggestionList.length < 3) ) return res.status(200).json({followerSuggestions: newFollowersSuggestionList});
+        if ( (newFollowersSuggestionList.length < 1) || (newFollowersSuggestionList.length < 3) ) return res.status(200).json({followerSuggestions: profilesOfNewFollowersSuggestionList});
         
         // shuffling the suggestions list of people to follow, removing duplicate entries and picking the first 3
-        const minifiedUniqueFollowersSuggestionList = [...new Set(shuffleArray(newFollowersSuggestionList).slice(0, 3))];
+        const minifiedUniqueFollowersSuggestionList = [...new Set(shuffleArray(profilesOfNewFollowersSuggestionList).slice(0, 3))];
 
         return res.status(200).json({followerSuggestions: minifiedUniqueFollowersSuggestionList});
     })
@@ -280,66 +228,57 @@ exports.get_user_follower_suggestions = async (req, res) => {
 
 // follow a user
 exports.user_follow_user = async (req, res) => {
+    if (!isMongooseIdValid(req.params.id) || !isMongooseIdValid(req.params.requestedUserId)) return res.status(400).json({ error: "Invalid mongoose id passed" });
+
     const newFollowerId = req.params.id;
     const userToFollowId = req.params.requestedUserId;
 
     const followerUserData = await User.findById({_id: newFollowerId});
+    const followingUserData = await User.findById({_id: userToFollowId});
 
-    // adding the new follower to the user's list of followers
-    User.findByIdAndUpdate({_id: userToFollowId}, {$push: {"followers": followerUserData} }, {new: true}, (err, userToFollow) => {
-        if (err) return res.status(500).json({error: err.message});
-        
-        // updating the user's(follower) list of following
-        User.findByIdAndUpdate({_id: newFollowerId}, {$push: {following: userToFollow} }, {new: true}, (err, newFollowerData) => {
-            if (err) return res.status(500).json({error: err.message});
+    if (!followerUserData || !followerUserData) return res.status(404).json({error: "User info not found"});
 
-            // also adding the new follower to wherever the 'user to be followed' is being followed in other users accounts
-            User.updateMany({"following._id": mongoose.Types.ObjectId(userToFollowId)}, {$push: {"following.$.followers": followerUserData}}, (err, updatedUsers) => {
-                if (err) return res.status(500).json({error: err.message});
+    try {
+        // adding the new follower to the user's list of followers
+        await User.findByIdAndUpdate({_id: userToFollowId}, {$push: {"followers": followerUserData._id.toString()} }, {new: true});
             
-                // adding the new follower to wherever the 'user to be followed' appears as a follower in other users accounts 
-                User.updateMany({"followers._id": mongoose.Types.ObjectId(userToFollowId)}, {$push: {"followers.$.followers": followerUserData} }, (err, updatedUsers) => {
-                    if (err) return res.status(500).json({error: err.message});
-
-                    // also updating the new follower's list of following wherever the new follower is being followed in other users accounts
-                    User.updateMany({"following._id": mongoose.Types.ObjectId(newFollowerId)}, {$push: {"following.$.following": userToFollow} }, (err, updatedUsers) => {
-                        if (err) return res.status(500).json({error: err.message});
-                        
-                        // also updating the new follower's list of following wherever the new follower appears as a follower in other users accounts
-                        User.updateMany({"followers._id": mongoose.Types.ObjectId(newFollowerId)}, {$push: {"followers.$.following": userToFollow}}, async (err, updatedUsers) => {
-                            if (err) return res.status(500).json({error: err.message});
-                    
-                            const userToFollowData = await User.findById({_id: userToFollowId}, { "email": 0, "tweets": 0, "retweets": 0, "likedTweets": 0, "savedTweets": 0, "messages": 0, "followers": 0, "following": 0 });
-                            
-                            // returning the updated data for both the follower and the followed
-                            return res.status(200).json({"newFollower": newFollowerData, "followedUser": userToFollowData});
-                            
-                        })
-                        
-                    });
-                })
-            })
-
-        })
-
-    });
+        // updating the user's(follower) list of following
+        await User.findByIdAndUpdate({_id: newFollowerId}, {$push: {"following": followingUserData._id.toString()} }, {new: true});
+        
+        const userToFollowData = await User.findById({_id: userToFollowId}, { "email": 0 });
+                                
+        // returning the updated data for both the follower and the followed
+        return res.status(200).json({"newFollower": followerUserData, "followedUser": userToFollowData});
+    } catch (err) {
+        return res.status(500).json({error: err.message});
+    }
 }
 
 // get user's followers
 exports.get_user_followers = async (req, res) => {
-    User.findById({_id: req.params.id}, {"messages": 0}, (err, currentUser) => {
-        if (err) return res.status(500).json({error: err.message});
+    const existingUser = await User.findById({_id: req.params.id});
+    if (!existingUser) return res.status(404).json({error: "User not found"});
 
-        return res.status(200).json({"followers": currentUser.followers});
-    });
+    const existingUserFollowersProfiles = await Promise.all(existingUser.followers.map(async (follower) => {
+        const foundUserProfile = await User.findById({_id: follower});
+        if (!foundUserProfile) return
+        return foundUserProfile;
+    }));
+
+    return res.status(200).json({"followers": existingUserFollowersProfiles});
 }
 
 // get user's following
 exports.get_user_following = async (req, res) => {
-    User.findById({_id: req.params.id}, {"messages": 0}, (err, currentUser) => {
-        if (err) return res.status(500).json({error: err.message});
+    const existingUser = await User.findById({_id: req.params.id});
+    if (!existingUser) return res.status(404).json({error: "User not found"});
 
-        return res.status(200).json({"following": currentUser.following});
-    });
+    const existingUserFollowingProfiles = await Promise.all(existingUser.following.map(async (following) => {
+        const foundUserProfile = await User.findById({_id: following});
+        if (!foundUserProfile) return
+        return foundUserProfile;
+    }));
+
+    return res.status(200).json({"following": existingUserFollowingProfiles});
 }
 

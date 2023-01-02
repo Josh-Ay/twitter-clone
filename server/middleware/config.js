@@ -1,10 +1,9 @@
-require("dotenv").config();
-
 // requiring the necessary packages
 const cors = require("cors");
 const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+const morgan = require("morgan");
 
 // to use 'url-extended'
 exports.use_urlextended = express.urlencoded({extended: true})
@@ -22,3 +21,6 @@ exports.create_session = session({
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_DB_URI }),
 })
+
+// to log requests
+exports.use_morgan = morgan("dev");

@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 // requiring the 'User' model and the 'Google Stategy' from passport
 const User = require("../../../models/user");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;

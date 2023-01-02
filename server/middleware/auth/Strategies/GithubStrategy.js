@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 // requiring the 'User' model and the 'Github Stategy' from passport
 const User = require("../../../models/user");
 const GithubStrategy = require("passport-github2").Strategy;

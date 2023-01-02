@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 // requiring the aws client sdk and the filestream module
 const S3 = require("aws-sdk/clients/s3");
 const fs = require("fs");

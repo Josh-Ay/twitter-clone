@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 // requiring the necessary packages
 const express = require("express");
 const passport = require("passport");

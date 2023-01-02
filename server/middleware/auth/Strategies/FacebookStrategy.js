@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 // requiring the 'User' model and the 'Facebook Stategy' from passport
 const User = require("../../../models/user");
 const FacebookStrategy = require("passport-facebook").Strategy;

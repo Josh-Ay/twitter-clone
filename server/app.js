@@ -53,13 +53,26 @@ io.on("connection", (socket) => {
 app.use(config.use_urlextended);
 app.use(config.use_cors);
 app.use(config.create_session);
+app.use(config.use_morgan);
 app.use(passport.initialize());
 app.use(passport.session());
 
 // connecting to the mongodb database
-// mongoose.connect("mongodb://localhost:27017/tweeterDB")     // local use
-mongoose.connect(process.env.MONGO_DB_URI);     // mongo atlas
+/* LOCAL USE */
+// mongoose.connect("mongodb://localhost:27017/tweeterDB").then(() => {
+//     console.log("Connected to db");
+// }).catch(err => {
+//     console.log("An error occurred while trying to connect to DB.");
+//     console.log(err);
+// })
 
+/* MONGO ATLAS */
+mongoose.connect(process.env.MONGO_DB_URI).then(() => {
+    console.log("connected to DB");
+}).catch(err => {
+    console.log("An error occurred while trying to connect to DB.");
+    console.log(err);
+})
 
 // test route
 app.use("/", testRoute);
