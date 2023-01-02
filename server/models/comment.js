@@ -7,11 +7,17 @@ const commentSchema = new Schema({
     author: String,
     authorImage: String,
     authorUsername: String,
-    authorUserId: String,
+    authorUserId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    },
     commentText: String,
     likes: {type: Number, default: 0},
     image: String,
-    usersThatLiked: []
+    tweetId: {
+        type: Schema.Types.ObjectId,
+        ref: "Tweet",
+    }
 },
 {timestamps: true}
 );

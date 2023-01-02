@@ -1,16 +1,21 @@
 // requiring the neccessary package: mongoose, messageContentSchema
 const mongoose = require("mongoose");
 const {Schema, model} = mongoose;
-const messageContentSchema = require("./messageContent").messageContentSchema;
 
 // defining the structure for the messages model
 const messageSchema = new Schema({
-    userId: String,
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    },
+    otherUserId: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    },
     socketId: String,
     username: String,
     displayName: String,
     profilePhoto: String,
-    messages: [messageContentSchema],
 },
 {timestamps: true},
 )

@@ -8,7 +8,10 @@ const tweetSchema = new Schema({
     author: String,
     authorImage: String,
     authorUsername: String,
-    authorId: String,
+    authorId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    },
     tweetText: String,
     tweetTextLowerCase: String,
     tweetScore: {type: Number, default: 0},
@@ -17,11 +20,22 @@ const tweetSchema = new Schema({
     retweets: {type: Number, default: 0},
     retweetAuthor: {type: String, default: ""},
     image: String,
-    comments: [commentSchema],
     saved: {type: Boolean, default: false},
     timesSaved: {type: Number, default: 0},
     visibility: String,
-    tags: String
+    tags: String,
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    },
+    tweetType: {
+        enum: ["originalContent", "userCopy"],
+        required: true,
+        type: String,
+    },
+    originalTweetId: {
+        type: String,
+    }
 },
 {timestamps: true}
 );

@@ -9,6 +9,10 @@ const messageContentSchema = new Schema({
     type: String,
     status: String || Boolean,
     encrypted: {default: true, type: Boolean},
+    refToMessageItem: {
+        type: Schema.Types.ObjectId,
+        ref: "message"
+    },
 },
     {timestamps: true}
 );

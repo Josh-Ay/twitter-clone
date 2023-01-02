@@ -1,12 +1,8 @@
-require('dotenv').config();
-
 // requiring the neccessary package: mongoose, passportLocalMongoose, mongoose-findorcreate,tweetSchema and messageSchema
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 const passportLocalMongoose = require("passport-local-mongoose");
 const findOrCreate = require("mongoose-findorcreate");
-const tweetSchema = require("../models/tweet").tweetSchema;
-const messageSchema = require("../models/message").messageSchema;
 
 // defining a new schema
 const userSchema = new Schema({
@@ -23,11 +19,6 @@ const userSchema = new Schema({
     coverPhoto: String,
     followers: [],
     following: [],
-    tweets: [tweetSchema],
-    retweets: [tweetSchema],
-    likedTweets: [tweetSchema],
-    savedTweets: [tweetSchema],
-    messages: [messageSchema],
     isVerified: {
         type: Boolean,
         default: false
