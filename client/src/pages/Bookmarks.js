@@ -18,7 +18,7 @@ const Bookmarks = ({ user }) => {
     
     useTitle("Bookmarks");
 
-    useOffsetFromElement(navBarRef, bookmarksContainerRef, 15);
+    // useOffsetFromElement(navBarRef, bookmarksContainerRef, 15);
     useChangeElementPropertyOnScroll(navBarRef, "position", "fixed", "absolute");
     useChangeElementPropertyOnScroll(mobileNavBarRef, "display", "flex", "none");
 
@@ -46,7 +46,7 @@ const Bookmarks = ({ user }) => {
     return <>
         <NavigationBar user={user} navigationBarReference={navBarRef} unreadMessagesIndicator={unreadMessages} />
         <main>
-            <div className="bookmarks-page-container" ref={bookmarksContainerRef} >
+            <div className="bookmarks-page-container" style={{ marginTop: "55px" }} ref={bookmarksContainerRef} >
                 <TweetNavigationSideBar
                     userId={user._id}
                     currentUserDisplayImage={user.profilePhoto}

@@ -1,8 +1,6 @@
 import axios from "axios";
 import qs from "qs";
 
-require("dotenv").config();
-
 // configuring the base url for all routes
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 

@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const SocialLogin = (props) => {
     let newWindow = null;
 

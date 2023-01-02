@@ -12,8 +12,6 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import CryptoJS from "crypto-js";
 import { useNavigate } from "react-router";
 
-require("dotenv").config();
-
 
 const SignUp = ( { setCurrentUser, socketInstance } ) => {
     useTitle("Tweeter | Sign Up");
@@ -46,7 +44,7 @@ const SignUp = ( { setCurrentUser, socketInstance } ) => {
         }).catch(err => { 
             setLoading(false);
             setValidationError(true);
-            setValidationErrMessage(err.response.data.error);
+            setValidationErrMessage(err.response ? err.response.data.error : err.message);
             setAllowClick(true);
         });
     };

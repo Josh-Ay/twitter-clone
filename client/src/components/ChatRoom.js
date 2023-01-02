@@ -78,7 +78,7 @@ const ChatRoom = ({currentUserDetailsRef, currentActiveUserChat, handleBackIconC
             </div>
             <div className="current-chat-user">
                 <div className="current-chat-user-display-name" onClick={() => navigate(`/${currentActiveUserChat.username}`)}>{currentActiveUserChat.displayName}</div>
-                <div className="current-chat-user-username" onClick={() => navigate(currentActiveUserChat.username)}>&#64;{currentActiveUserChat.username}</div>
+                <div className="current-chat-user-username" onClick={() => navigate(`/${currentActiveUserChat.username}`)}>&#64;{currentActiveUserChat.username}</div>
             </div>
             <div className="info-icon-container">
                 <InfoIcon className="info-icon" />

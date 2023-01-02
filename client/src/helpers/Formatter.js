@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 class Formatter{
     static formatImageStr = (imageStr) => {
         if (imageStr.includes("https://")) return imageStr;

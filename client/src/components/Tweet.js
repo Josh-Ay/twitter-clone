@@ -13,21 +13,7 @@ import { checkImageFile, checkIfItemInList, checkIfListIsEmpty } from '../valida
 import { useNavigate, useLocation } from 'react-router-dom';
 import TweetSkeletonScreen from './TweetSkeletonScreen';
 import UserItem from './UserItem';
-
-
-const reducerActions = {
-    updateUserTweets: "update-user-tweets",
-    updateUserRetweets: "update-user-retweets",
-    updateUserLikedTweets: "update-user-liked-tweets",
-    updateUserSavedTweets: "update-user-saved-tweets",
-    updateTweets: "update-tweets",
-    updateSearchPeopleResults: "update-search-people-results",
-    updateShowPeopleResults: "update-show-people-results",
-    updateCommentData: "update-comment-data",
-    updateCurrentTweetIndex: "update-current-tweet-index",
-    updatePageLoading: "update-page-loading",
-    updateTweetFetchError: "update-tweet-fetch-error",
-}
+import { tweetReducer, tweetReducerActions } from '../reducers/TweetReducer';
 
 
 const Tweet = (props) => {
@@ -57,44 +43,7 @@ const Tweet = (props) => {
         tweetFetchError: ""
     }
 
-    const reducer = (currentState, action) => {
-        switch (action.type) {
-            case reducerActions.updateTweetFetchError:
-                return {...currentState, tweetFetchError: action.payload.value }
-            case reducerActions.updateTweets:
-                if (action.newTweet) return { ...currentState, tweets: [ action.payload.value, ...currentState.tweets ] }
-                return { ...currentState, tweets: action.payload.value }
-            case reducerActions.updateSearchPeopleResults:
-                return { ...currentState, searchPeopleResults: action.payload.value }
-            case reducerActions.updateShowPeopleResults:
-                return { ...currentState, showPeopleResults: action.payload.value }
-            case reducerActions.updatePageLoading:
-                return { ...currentState, pageLoading: action.payload.value }
-            case reducerActions.updateUserTweets:
-                return { ...currentState, currentUserTweets: action.payload.value }
-            case reducerActions.updateUserRetweets:
-                return { ...currentState, currentUserRetweets: action.payload.value }
-            case reducerActions.updateUserLikedTweets:
-                return { ...currentState, currentUserLikedTweets: action.payload.value }
-            case reducerActions.updateUserSavedTweets:
-                return { ...currentState, currentUserSavedTweets: action.payload.value }
-            case reducerActions.updateCurrentTweetIndex:
-                return { ...currentState, currentTweetIndex: action.payload.value }                                                            
-            case reducerActions.updateCommentData:
-                if ( !action.objectField ){
-                    return { ...currentState, commentData: action.payload.value }
-                }
-                return { ...currentState, commentData: {
-                    ...currentState.commentData,
-                    [ action.objectField ]: action.payload.objectFieldValue,
-                    [ action.inputField ]: action.payload.inputValue
-                } }
-            default:
-                return currentState;
-        }
-    }
-
-    const [state, dispatch] = useReducer(reducer, initialPageState);
+    const [state, dispatch] = useReducer(tweetReducer, initialPageState);
     const commentImageFileRefs = useRef([]);
     const commentImagePreviewRefs = useRef([]);
     const commentUploadErrRefs = useRef([]);
@@ -109,21 +58,21 @@ const Tweet = (props) => {
     useEffect(() => {
         if (!props.userId) return;
 
-        dispatch({ type: reducerActions.updateTweetFetchError, payload: { value: "" } });
+        dispatch({ type: tweetReducerActions.updateTweetFetchError, payload: { value: "" } });
 
         // check if the user is trying to search for a tweet
         if (props.searchReceived){
-            dispatch({ type: reducerActions.updateTweets, payload: { value: props.searchTweetResults } });
-            dispatch({ type: reducerActions.updateSearchPeopleResults, payload: { value: props.searchPeopleResults } });
+            dispatch({ type: tweetReducerActions.updateTweets, payload: { value: props.searchTweetResults } });
+            dispatch({ type: tweetReducerActions.updateSearchPeopleResults, payload: { value: props.searchPeopleResults } });
             
             // check if the user accounts were returned that matched the search query
             if (props.searchPeopleResults.length > 1) {
-                dispatch({ type: reducerActions.updateShowPeopleResults, payload: { value: true } });
+                dispatch({ type: tweetReducerActions.updateShowPeopleResults, payload: { value: true } });
             }else{
-                dispatch({ type: reducerActions.updateShowPeopleResults, payload: { value: false } });
+                dispatch({ type: tweetReducerActions.updateShowPeopleResults, payload: { value: false } });
             };
 
-            dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
+            dispatch({ type: tweetReducerActions.updatePageLoading, payload: { value: false } });
 
             return
         }
@@ -133,18 +82,18 @@ const Tweet = (props) => {
 
             Request.makeGetRequest(`/users/${props.userId}/u/tweet/t/trends/${location.state.trendTag}`)
             .then(res => {
-                dispatch({ type: reducerActions.updateTweets, payload: { value: res.data.matchingTweets } });
-                dispatch({ type: reducerActions.updateUserTweets, payload: { value: res.data.userTweets } });
-                dispatch({ type: reducerActions.updateUserRetweets, payload: { value: res.data.userRetweets } });
-                dispatch({ type: reducerActions.updateUserLikedTweets, payload: { value: res.data.userLikedTweets } });
-                dispatch({ type: reducerActions.updateUserSavedTweets, payload: { value: res.data.userSavedTweets } });
+                dispatch({ type: tweetReducerActions.updateTweets, payload: { value: res.data.matchingTweets } });
+                dispatch({ type: tweetReducerActions.updateUserTweets, payload: { value: res.data.userTweets } });
+                dispatch({ type: tweetReducerActions.updateUserRetweets, payload: { value: res.data.userRetweets } });
+                dispatch({ type: tweetReducerActions.updateUserLikedTweets, payload: { value: res.data.userLikedTweets } });
+                dispatch({ type: tweetReducerActions.updateUserSavedTweets, payload: { value: res.data.userSavedTweets } });
                 
-                dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
+                dispatch({ type: tweetReducerActions.updatePageLoading, payload: { value: false } });
                 
             }).catch(err => {
-                dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
+                dispatch({ type: tweetReducerActions.updatePageLoading, payload: { value: false } });
                 
-                dispatch({ type: reducerActions.updateTweetFetchError, payload: { value: "An error occured while trying to fetch the requested resource" } });
+                dispatch({ type: tweetReducerActions.updateTweetFetchError, payload: { value: "An error occured while trying to fetch the requested resource" } });
                 console.log("An error occured while trying to fetch the resource")
             });
 
@@ -152,36 +101,36 @@ const Tweet = (props) => {
         }
 
         // show loading animation on category change
-        if (props.tweetCategory) dispatch({ type: reducerActions.updatePageLoading, payload: { value: true } });;
+        if (props.tweetCategory) dispatch({ type: tweetReducerActions.updatePageLoading, payload: { value: true } });;
 
         Request.makeGetRequest(`/users/${props.userId}/tweet/${props.tweetType ? `${props.tweetType}/` : ""}${props.tweetCategory ? props.tweetCategory : ""}`)
         .then(res => {
             if(props.tweetCategory && props.tweetCategory === "people"){
-                dispatch({ type: reducerActions.updateShowPeopleResults, payload: { value: true } });
-                dispatch({ type: reducerActions.updateSearchPeopleResults, payload: { value: res.data.users } });
-                dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
+                dispatch({ type: tweetReducerActions.updateShowPeopleResults, payload: { value: true } });
+                dispatch({ type: tweetReducerActions.updateSearchPeopleResults, payload: { value: res.data.users } });
+                dispatch({ type: tweetReducerActions.updatePageLoading, payload: { value: false } });
                 return;
             }
             
-            dispatch({ type: reducerActions.updateShowPeopleResults, payload: { value: false } });
+            dispatch({ type: tweetReducerActions.updateShowPeopleResults, payload: { value: false } });
             
-            dispatch({ type: reducerActions.updateTweets, payload: { value: res.data.tweets } });
-            dispatch({ type: reducerActions.updateUserTweets, payload: { value: res.data.userTweets } });
-            dispatch({ type: reducerActions.updateUserRetweets, payload: { value: res.data.userRetweets } });
-            dispatch({ type: reducerActions.updateUserLikedTweets, payload: { value: res.data.userLikedTweets } });
-            dispatch({ type: reducerActions.updateUserSavedTweets, payload: { value: res.data.userSavedTweets } });
+            dispatch({ type: tweetReducerActions.updateTweets, payload: { value: res.data.tweets } });
+            dispatch({ type: tweetReducerActions.updateUserTweets, payload: { value: res.data.userTweets } });
+            dispatch({ type: tweetReducerActions.updateUserRetweets, payload: { value: res.data.userRetweets } });
+            dispatch({ type: tweetReducerActions.updateUserLikedTweets, payload: { value: res.data.userLikedTweets } });
+            dispatch({ type: tweetReducerActions.updateUserSavedTweets, payload: { value: res.data.userSavedTweets } });
             
-            dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
+            dispatch({ type: tweetReducerActions.updatePageLoading, payload: { value: false } });
 
         }).catch( err => {
-            dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
-            dispatch({ type: reducerActions.updateTweetFetchError, payload: { value: "An error occured while trying to fetch the requested resource" } });
+            dispatch({ type: tweetReducerActions.updatePageLoading, payload: { value: false } });
+            dispatch({ type: tweetReducerActions.updateTweetFetchError, payload: { value: "An error occured while trying to fetch the requested resource" } });
             console.log("An error occured while trying to fetch the resource")
         });
 
         // checking if a new tweet was created and if so set the current user tweets to hold the updated list of tweets passed
         if (props.newTweetAdded) {
-            dispatch({ type: reducerActions.updateTweets, newTweet: true, payload: { value: props.newTweetAdded } });
+            dispatch({ type: tweetReducerActions.updateTweets, newTweet: true, payload: { value: props.newTweetAdded } });
         }
 
         
@@ -223,9 +172,9 @@ const Tweet = (props) => {
     // handle comment input change
     const handleCommentInputChange = (e, currentRefIndex, currentTweetId) => {
         const { name, value } = e.target;
-        dispatch({ type: reducerActions.updateCurrentTweetIndex, payload: { value: currentRefIndex } });
+        dispatch({ type: tweetReducerActions.updateCurrentTweetIndex, payload: { value: currentRefIndex } });
         
-        dispatch({ type: reducerActions.updateCommentData, objectField: "tweetId", inputField: name, payload: { objectFieldValue: currentTweetId, inputValue: value } });
+        dispatch({ type: tweetReducerActions.updateCommentData, objectField: "tweetId", inputField: name, payload: { objectFieldValue: currentTweetId, inputValue: value } });
     }
 
     // handle click on comment icon 
@@ -238,8 +187,8 @@ const Tweet = (props) => {
         commentImageFileRef.click();
 
         // updating the 'currentTweetIndex' and 'tweetId' in 'commentData' to keep track of the tweet selected
-        dispatch({ type: reducerActions.updateCurrentTweetIndex, payload: { value: currentArrayIndex } });
-        dispatch({ type: reducerActions.updateCommentData, objectField: "tweetId", payload: { objectFieldValue: currentTweetId } });
+        dispatch({ type: tweetReducerActions.updateCurrentTweetIndex, payload: { value: currentArrayIndex } });
+        dispatch({ type: tweetReducerActions.updateCommentData, objectField: "tweetId", payload: { objectFieldValue: currentTweetId } });
     }
 
     // handle comment image load
@@ -263,7 +212,7 @@ const Tweet = (props) => {
                 commentImagePreviewRefs.current[state.currentTweetIndex].src = resultingImageStr;
                 commentImagePreviewRefs.current[state.currentTweetIndex].style.display  = "block";
 
-                dispatch({ type: reducerActions.updateCommentData, objectField: "commentImage", payload: { objectFieldValue: e.target.files[0] } });
+                dispatch({ type: tweetReducerActions.updateCommentData, objectField: "commentImage", payload: { objectFieldValue: e.target.files[0] } });
            
             }).catch(err => {
                 // displaying an error message and making the div containing it to be visible
@@ -281,7 +230,7 @@ const Tweet = (props) => {
     const handleSubmitCommentIconClick = () => {
         commentInputTextRefs.current[state.currentTweetIndex].value = "";
 
-        dispatch({ type: reducerActions.updateCommentData, payload: { value: 
+        dispatch({ type: tweetReducerActions.updateCommentData, payload: { value: 
             {
                 commentText : "",
                 tweetId: "",
@@ -297,12 +246,12 @@ const Tweet = (props) => {
         Request.makePostRequest(`/users/${props.loggedInUserId ? props.loggedInUserId : props.userId}/tweet/${state.commentData.tweetId}/update`, state.commentData).then(res => {
             
             // updating the tweets
-            dispatch({ type: reducerActions.updateTweets, payload: { value: res.data.updatedTweets } });
+            dispatch({ type: tweetReducerActions.updateTweets, payload: { value: res.data.updatedTweets } });
 
         }).catch(err => {
 
             // displaying an error message and making the div containing it to be visible
-            commentUploadErrRefs.current[state.currentTweetIndex].innerText = err.response.data.error;
+            commentUploadErrRefs.current[state.currentTweetIndex].innerText = err.response ? err.response.data.error : err.message;
             commentUploadErrRefs.current[state.currentTweetIndex].style.display = "block";
                 
             // removing the error message and the div containing it after 4s
@@ -312,46 +261,76 @@ const Tweet = (props) => {
     }
 
     // handle click on tweet actions(like, retweet, comment, save)
-    const handleTweetActionClick = (tweetId, actionType, currentSpanIndex) => {
-        dispatch({ type: reducerActions.updateCurrentTweetIndex, payload: { value: currentSpanIndex } });
+    const handleTweetActionClick = async (tweetId, actionType, currentSpanIndex) => {
+        dispatch({ type: tweetReducerActions.updateCurrentTweetIndex, payload: { value: currentSpanIndex } });
         
-        Request.makePostRequest(`/users/${props.loggedInUserId ? props.loggedInUserId : props.userId}/tweet/${tweetId}/update`, {action: actionType, currentUserDisplayName: props.currentUserDisplayName ? props.currentUserDisplayName: props.currentUserUsername}).then(res => {
-            switch (actionType) {
-                case "like":
-                    dispatch({ type: reducerActions.updateUserLikedTweets, payload: { value: res.data.updatedLikedTweets } });
-                    break;
-                case "unlike":
-                    dispatch({ type: reducerActions.updateUserLikedTweets, payload: { value: res.data.updatedLikedTweets } });
-                    break;
-                case "save":
-                    dispatch({ type: reducerActions.updateUserSavedTweets, payload: { value: res.data.updatedSavedTweets } });
-                    savedSpanCountRefs.current[state.currentTweetIndex].innerText = parseInt(savedSpanCountRefs.current[state.currentTweetIndex].innerText) + 1;
-                    break;
-                case "unsave":
-                    dispatch({ type: reducerActions.updateUserSavedTweets, payload: { value: res.data.updatedSavedTweets } });
-                    savedSpanCountRefs.current[state.currentTweetIndex].innerText = parseInt(savedSpanCountRefs.current[state.currentTweetIndex].innerText) - 1;
-                    break;
-                case "retweet":
-                    dispatch({ type: reducerActions.updateUserRetweets, payload: { value: res.data.updatedRetweets } });
-                    retweetSpanCountRefs.current[state.currentTweetIndex].innerText = parseInt(retweetSpanCountRefs.current[state.currentTweetIndex].innerText) + 1;
-                    break;
-                case "unretweet":
-                    dispatch({ type: reducerActions.updateUserRetweets, payload: { value: res.data.updatedRetweets } });
-                    retweetSpanCountRefs.current[state.currentTweetIndex].innerText = parseInt(retweetSpanCountRefs.current[state.currentTweetIndex].innerText) - 1;
-                    break;
-                default:
-                    break;
-            }
-        }).catch(err => {
-            console.log("An error occurred while trying to process your request");
-        })
+        switch (actionType) {
+            case "like":
+                try {
+                    const updatedData = await (await Request.makePostRequest(`/users/${props.loggedInUserId ? props.loggedInUserId : props.userId}/tweet/${tweetId}/update`, {action: actionType, currentUserDisplayName: props.currentUserDisplayName ? props.currentUserDisplayName: props.currentUserUsername})).data;
+                    dispatch({ type: tweetReducerActions.updateUserLikedTweets, payload: { value: updatedData.updatedLikedTweets } });
+                } catch (error) {
+                    console.log("An error occurred while trying to process your request");
+                }
+                break;
+            case "unlike":
+                try {
+                    const updatedData = await (await Request.makePostRequest(`/users/${props.loggedInUserId ? props.loggedInUserId : props.userId}/tweet/${tweetId}/update`, {action: actionType, currentUserDisplayName: props.currentUserDisplayName ? props.currentUserDisplayName: props.currentUserUsername})).data;
+                    dispatch({ type: tweetReducerActions.updateUserLikedTweets, payload: { value: updatedData.updatedLikedTweets } });
+                } catch (error) {
+                    console.log("An error occurred while trying to process your request");
+                }
+                break;
+            case "save":
+                savedSpanCountRefs.current[currentSpanIndex].innerText = parseInt(savedSpanCountRefs.current[currentSpanIndex].innerText) + 1;
+                try {
+                    const updatedData = await (await Request.makePostRequest(`/users/${props.loggedInUserId ? props.loggedInUserId : props.userId}/tweet/${tweetId}/update`, {action: actionType, currentUserDisplayName: props.currentUserDisplayName ? props.currentUserDisplayName: props.currentUserUsername})).data;
+                    dispatch({ type: tweetReducerActions.updateUserSavedTweets, payload: { value: updatedData.updatedSavedTweets } });
+                } catch (error) {
+                    console.log("An error occurred while trying to process your request");
+                    savedSpanCountRefs.current[currentSpanIndex].innerText = parseInt(savedSpanCountRefs.current[currentSpanIndex].innerText) - 1;
+                }
+                break;
+            case "unsave":
+                savedSpanCountRefs.current[currentSpanIndex].innerText = parseInt(savedSpanCountRefs.current[currentSpanIndex].innerText) - 1;
+                try {
+                    const updatedData = await (await Request.makePostRequest(`/users/${props.loggedInUserId ? props.loggedInUserId : props.userId}/tweet/${tweetId}/update`, {action: actionType, currentUserDisplayName: props.currentUserDisplayName ? props.currentUserDisplayName: props.currentUserUsername})).data;
+                    dispatch({ type: tweetReducerActions.updateUserSavedTweets, payload: { value: updatedData.updatedSavedTweets } });
+                } catch (error) {
+                    console.log("An error occurred while trying to process your request");
+                    savedSpanCountRefs.current[currentSpanIndex].innerText = parseInt(savedSpanCountRefs.current[currentSpanIndex].innerText) + 1;
+                }
+                break;
+            case "retweet":
+                retweetSpanCountRefs.current[currentSpanIndex].innerText = parseInt(retweetSpanCountRefs.current[currentSpanIndex].innerText) + 1;
+                try {
+                    const updatedData = await (await Request.makePostRequest(`/users/${props.loggedInUserId ? props.loggedInUserId : props.userId}/tweet/${tweetId}/update`, {action: actionType, currentUserDisplayName: props.currentUserDisplayName ? props.currentUserDisplayName: props.currentUserUsername})).data;
+                    dispatch({ type: tweetReducerActions.updateUserRetweets, payload: { value: updatedData.updatedRetweets } });
+                } catch (error) {
+                    console.log("An error occurred while trying to process your request");
+                    retweetSpanCountRefs.current[currentSpanIndex].innerText = parseInt(retweetSpanCountRefs.current[currentSpanIndex].innerText) - 1;
+                }
+                break;
+            case "unretweet":
+                retweetSpanCountRefs.current[currentSpanIndex].innerText = parseInt(retweetSpanCountRefs.current[currentSpanIndex].innerText) - 1;
+                try {
+                    const updatedData = await (await Request.makePostRequest(`/users/${props.loggedInUserId ? props.loggedInUserId : props.userId}/tweet/${tweetId}/update`, {action: actionType, currentUserDisplayName: props.currentUserDisplayName ? props.currentUserDisplayName: props.currentUserUsername})).data;
+                    dispatch({ type: tweetReducerActions.updateUserRetweets, payload: { value: updatedData.updatedRetweets } });
+                } catch (error) {
+                    console.log("An error occurred while trying to process your request");
+                    retweetSpanCountRefs.current[currentSpanIndex].innerText = parseInt(retweetSpanCountRefs.current[currentSpanIndex].innerText) + 1;
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     // handle like on a comment
     const handleCommentActionClick = (commentId, tweetId, actionType, index) => {
         
         Request.makePostRequest(`/users/${props.userId}/tweet/${tweetId}/update`, {action: actionType, commentId: commentId}).then(res => {
-            dispatch({ type: reducerActions.updateTweets, payload: { value: res.data.updatedTweets } });
+            dispatch({ type: tweetReducerActions.updateTweets, payload: { value: res.data.updatedTweets } });
         }).catch(err => {
             console.log("An error occurred while trying to process your request");
         })
@@ -361,9 +340,9 @@ const Tweet = (props) => {
         if (Array.isArray(tweet) && tweet.length === 0) return <></>
 
         return (
-        <div className="user-tweet-container" style={{ marginTop: checkIfItemInList(state.currentUserRetweets, tweet._id, "_id") ? isSmallScreen ? "20%" : props.changeMargin ? "5.8%" : "7.8%" : ""}} >
+        <div className="user-tweet-container" style={{ marginTop: state.currentUserRetweets.find(retweet => retweet.originalTweetId === tweet._id.toString()) ? isSmallScreen ? "20%" : props.changeMargin ? "5.8%" : "7.8%" : ""}} >
             <div className="tweet-author-details-container">
-                {checkIfItemInList(state.currentUserRetweets, tweet._id, "_id") ? <span className="retweet-author-name"><AutorenewIcon className="autorenew-icon" />{props.currentUserDisplayName ? props.currentUserDisplayName: props.currentUserUsername} Retweeted</span> : <></>}
+                {state.currentUserRetweets.find(retweet => retweet.originalTweetId === tweet._id.toString()) ? <span className="retweet-author-name"><AutorenewIcon className="autorenew-icon" />{props.currentUserDisplayName ? props.currentUserDisplayName: props.currentUserUsername} Retweeted</span> : <></>}
                 <UserPicture className="tweet-author-image" location={tweet.authorUsername} displayPicture={tweet.authorImage} />
                 <div className="tweet-author-details">
                     <h4 style={{cursor: "pointer"}} onClick={() => { navigate(`/${tweet.authorUsername}`)} }>{tweet.author !== "undefined" ? tweet.author : tweet.authorUsername}</h4>
@@ -389,17 +368,17 @@ const Tweet = (props) => {
                     <ChatBubbleOutlineIcon />
                     {!isSmallScreen && <span>Comment</span>}
                 </div>
-                <div className={`tweet-action-item ${checkIfItemInList(state.currentUserRetweets, tweet._id, "_id") ? "retweeted" : ""}`} onClick={() => handleTweetActionClick(tweet._id, checkIfItemInList(state.currentUserRetweets, tweet._id, "_id") ? "unretweet" : "retweet", index)}>
+                <div className={`tweet-action-item ${state.currentUserRetweets.find(retweet => retweet.originalTweetId === tweet._id.toString()) ? "retweeted" : ""}`} onClick={() => handleTweetActionClick(tweet._id, state.currentUserRetweets.find(retweet => retweet.originalTweetId === tweet._id.toString()) ? "unretweet" : "retweet", index)}>
                     <AutorenewIcon />
-                    {!isSmallScreen && <span>{checkIfItemInList(state.currentUserRetweets, tweet._id, "_id") ? "Retweeted" : "Retweet"}</span>}
+                    {!isSmallScreen && <span>{state.currentUserRetweets.find(retweet => retweet.originalTweetId === tweet._id.toString()) ? "Retweeted" : "Retweet"}</span>}
                 </div>
-                <div className={`tweet-action-item ${checkIfItemInList(state.currentUserLikedTweets, tweet._id, "_id") ? "liked" : ""}`} onClick={() => handleTweetActionClick(tweet._id, checkIfItemInList(state.currentUserLikedTweets, tweet._id, "_id") ? "unlike" : "like", index)}>
+                <div className={`tweet-action-item ${state.currentUserLikedTweets.find(likedTweet => likedTweet.originalTweetId === tweet._id.toString()) ? "liked" : ""}`} onClick={() => handleTweetActionClick(tweet._id, state.currentUserLikedTweets.find(likedTweet => likedTweet.originalTweetId === tweet._id.toString()) ? "unlike" : "like", index)}>
                     <FavoriteBorderIcon />
-                    {!isSmallScreen && <span>{checkIfItemInList(state.currentUserLikedTweets, tweet._id, "_id") ? "Liked" : "Like"}</span>}
+                    {!isSmallScreen && <span>{state.currentUserLikedTweets.find(likedTweet => likedTweet.originalTweetId === tweet._id.toString()) ? "Liked" : "Like"}</span>}
                 </div>
-                <div className={`tweet-action-item ${checkIfItemInList(state.currentUserSavedTweets, tweet._id, "_id") ? "saved" : ""}`} onClick={() => handleTweetActionClick(tweet._id, checkIfItemInList(state.currentUserSavedTweets, tweet._id, "_id") ? "unsave" : "save", index)}>
+                <div className={`tweet-action-item ${state.currentUserSavedTweets.find(savedTweet => savedTweet.originalTweetId === tweet._id.toString()) ? "saved" : ""}`} onClick={() => handleTweetActionClick(tweet._id, state.currentUserSavedTweets.find(savedTweet => savedTweet.originalTweetId === tweet._id.toString()) ? "unsave" : "save", index)}>
                     <BookmarkBorderIcon />
-                    {!isSmallScreen && <span>{checkIfItemInList(state.currentUserSavedTweets, tweet._id, "_id")? "Saved" : "Save"}</span>}
+                    {!isSmallScreen && <span>{state.currentUserSavedTweets.find(savedTweet => savedTweet.originalTweetId === tweet._id.toString()) ? "Saved" : "Save"}</span>}
                 </div>
             </div>
             <hr className="custom-hr"/>
@@ -425,8 +404,8 @@ const Tweet = (props) => {
             <SendIcon className="send-comment-icon" onClick={handleSubmitCommentIconClick} ref={elem => addToRefsArray(elem, sendCommentRefs)} />
                             
             {/** ALL COMMENTS */}
+            <hr className="custom-hr" />
             <div className="user-replies-container">
-                <hr className="custom-hr" />
                 {tweet.comments.map(comment => {
                     return <div className="user-reply-item" key={comment._id}>
                         <UserPicture className="tweet-author-image" location={comment.authorUsername} displayPicture={comment.authorImage} />

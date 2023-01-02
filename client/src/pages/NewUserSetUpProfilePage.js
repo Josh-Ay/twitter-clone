@@ -9,8 +9,6 @@ import { useNavigate, useLocation } from "react-router";
 import CryptoJS from "crypto-js";
 import useTitle from "../hooks/useTitle";
 
-require("dotenv").config();
-
 
 const NewUser = ({ user, updateCurrentUser, notSocialUser }) => {
     useTitle("Tweeter | Set Up Profile");
@@ -67,7 +65,7 @@ const NewUser = ({ user, updateCurrentUser, notSocialUser }) => {
                 navigate("/");
             }
         }).catch(err => {
-            setErrorMessage(err.response.data.error);
+            setErrorMessage(err.response ? err.response.data.error : err.message);
         });
     }
 
@@ -101,7 +99,7 @@ const NewUser = ({ user, updateCurrentUser, notSocialUser }) => {
             setAllowClick(true);
 
         }).catch(err => {
-            setErrorMessage(err.response.data.error);
+            setErrorMessage(err.response ? err.response.data.error : err.message);
         })
     
     }, [userDetails.username])

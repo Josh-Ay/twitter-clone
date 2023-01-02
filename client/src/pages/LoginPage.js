@@ -76,7 +76,7 @@ const Login = ( { setCurrentUser, socketInstance } ) => {
         }).catch(err => {
             setLoading(false);
             setValidationError(true);
-            setValidationErrMessage(err.response.data.error);
+            setValidationErrMessage(err.response ? err.response.data.error : err.message);
             setAllowClick(true);
         });
 

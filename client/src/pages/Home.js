@@ -35,7 +35,7 @@ const Home = ( {user, updateCurrentUser} ) => {
     const [unreadMessages, setUnreadMessages] = useState(false);
     
     useTitle("Tweeter");
-    useOffsetFromElement(largeScreenNavRef, homepageContainerRef, isSmallScreen ? 12 : "");
+    // useOffsetFromElement(largeScreenNavRef, homepageContainerRef, isSmallScreen ? 12 : "");
     useChangeElementPropertyOnScroll(largeScreenNavRef, "position", "fixed", "absolute");
     useChangeElementPropertyOnScroll(mobileNavRef, "display", "flex", "none");
 
@@ -142,7 +142,7 @@ const Home = ( {user, updateCurrentUser} ) => {
         <NavigationBar user={user} navigationBarReference={largeScreenNavRef} unreadMessagesIndicator={unreadMessages} />
 
         <main>
-            <div className="main-container homepage-container" ref={homepageContainerRef}>
+            <div className="main-container homepage-container" style={{ marginTop: "75px" }} ref={homepageContainerRef}>
                 <NewTweet 
                     username={user.username}
                     userPicture={user.profilePhoto}

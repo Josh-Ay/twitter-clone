@@ -20,7 +20,7 @@ const ExplorePage = ({ user }) => {
     
     useTitle("Tweeter | Explore");
 
-    useOffsetFromElement(ref, ref2, 15);
+    // useOffsetFromElement(ref, ref2, 15);
     useChangeElementPropertyOnScroll(ref, "position", "fixed", "absolute");
     useChangeElementPropertyOnScroll(ref3, "display", "flex", "none");
 
@@ -46,7 +46,7 @@ const ExplorePage = ({ user }) => {
     return <>
         <NavigationBar user={user} navigationBarReference={ref} unreadMessagesIndicator={unreadMessages} />
         <main>
-            <div className="explore-page-container" ref={ref2} >
+            <div className="explore-page-container" style={{ marginTop: "55px" }} ref={ref2} >
                 <TweetNavigationSideBar
                     userId={user._id}
                     currentUserDisplayImage={user.profilePhoto}

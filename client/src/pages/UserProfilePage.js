@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
 import { Request } from "../requests/Request";
 import { checkIfItemInList } from "../validators/Validators";
@@ -16,33 +16,9 @@ import UsersPopup from "../components/UsersPopup";
 import useClickOutside from "../hooks/useClickOutside";
 import { useNavigate } from 'react-router';
 import UserProfile from "../components/UserProfile";
+import { useUserContext } from "../contexts/UserContext";
+import { userReducerActions } from "../reducers/UserReducer";
 
-
-require("dotenv").config();
-
-const reducerActions = {
-    updateDivActive: "update-div-active",
-    updatePageLoading: "update-page-loading",
-    updateUserRegistered: "update-user-registered",
-    updateUserRequestedData: "update-requested-user-data",
-    updateUserDetails: "update-user-details",
-    updateLoggedIn: "update-logged-in",
-    updateGroupsParameter: "update-groups-parameter",
-    updateSettingsParameter: "update-settings-parameter",
-    updateFollowing: "update-following",
-    updateIsSearchQueryEmpty: "update-is-search-query-empty",
-    updateUserSearchQuery: "update-user-search-query",
-    updateSearchResults: "update-search-results",
-    updateUserDetailsError: "update-user-details-error",
-    updateAllowClick: "update-allow-click",
-    updateTweetCategory: "update-tweet-category",
-    updateTweetCategoryLocation: "update-tweet-category-location",
-    updateIsRequestLoading: "update-is-request-loading",
-    updateIsUsersLoading: "update-is-users-loading",
-    updateFetchedUsers: "update-fetched-users",
-    updateFetchUsersError: "update-fetch-users-error",
-    updateUnreadMessages: "update-unread-messages"
-}
 
 const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => {
     const requestedUser = useParams();
@@ -54,100 +30,8 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
     const params = new URLSearchParams(parameterPassed);
     const query = params.get("tab");
 
-    const initialPageState = {
-        isUserRegistered: null,
-        requestedUserData: null,
-        isLoggedIn: null,
-        pageLoading: true,
-        isRequestLoading: false,
-        isFollowing: false,
-        tweetCategory: "Tweets",
-        tweetCategoryLocation: "tweets",
-        settingsParameterPassed: false,
-        groupsParameterPassed: false,
-        allowClick: false,
-        isActive: false,
-        fetchedUsersData: [],
-        searchResults: [],
-        fetchUsersDataError: "",
-        userSearchQuery: "",
-        isSearchQueryEmpty: true,
-        isUsersLoading: true,
-        userDetails: {
-            displayName: "",
-            username: "",
-            userBio: "",
-            type: "update"
-        },
-        userDetailsError: "",
-        unreadMessages: false,
-    }
-
-
-    const reducer = (currentState, action) => {
-        switch (action.type) {
-            case reducerActions.updateDivActive:
-                return { ...currentState, isActive: action.payload.value }
-            case reducerActions.updatePageLoading:
-                return { ...currentState, pageLoading: action.payload.value }
-            case reducerActions.updateUserRegistered:
-                return { ...currentState, isUserRegistered: action.payload.value }
-            case reducerActions.updateUserRequestedData:
-                return { ...currentState, requestedUserData: action.payload.value }
-            case reducerActions.updateUserDetails:
-                if ( action.field ) return {
-                    ...currentState, userDetails: 
-                    { 
-                        ...currentState.userDetails,
-                        [ action.field ]: action.payload.value
-                    }
-                }
-                return { ...currentState, userDetails: 
-                    { 
-                        ...currentState.userDetails, 
-                        displayName: action.payload.value.displayName,
-                        username: action.payload.value.username,
-                        userBio: action.payload.value.userBio 
-                    } 
-                }
-            case reducerActions.updateLoggedIn:
-                return { ...currentState, isLoggedIn: action.payload.value }
-            case reducerActions.updateGroupsParameter:
-                return { ...currentState, groupsParameterPassed: action.payload.value, settingsParameterPassed: action.payload.settingsParameterValue }
-            case reducerActions.updateSettingsParameter:
-                return { ...currentState, settingsParameterPassed: action.payload.value, groupsParameterPassed: action.payload.groupsParameterValue }
-            case reducerActions.updateFollowing:
-                return { ...currentState, isFollowing: action.payload.value }
-            case reducerActions.updateIsSearchQueryEmpty:
-                return { ...currentState, isSearchQueryEmpty: action.payload.value }
-            case reducerActions.updateUserSearchQuery:
-                return { ...currentState, userSearchQuery: action.payload.value }
-            case reducerActions.updateSearchResults:
-                return { ...currentState, searchResults: action.payload.value }
-            case reducerActions.updateUserDetailsError:
-                return { ...currentState, userDetailsError: action.payload.value }
-            case reducerActions.updateAllowClick:
-                return { ...currentState, allowClick: action.payload.value }
-            case reducerActions.updateTweetCategory:
-                return { ...currentState, tweetCategory: action.payload.value }
-            case reducerActions.updateTweetCategoryLocation:
-                return { ...currentState, tweetCategoryLocation: action.payload.value }
-            case reducerActions.updateIsRequestLoading:
-                return { ...currentState, isRequestLoading: action.payload.value }
-            case reducerActions.updateIsUsersLoading:
-                return { ...currentState, isUsersLoading: action.payload.value }
-            case reducerActions.updateFetchedUsers:
-                return { ...currentState, fetchedUsersData: action.payload.value }
-            case reducerActions.updateFetchUsersError:
-                return { ...currentState, fetchUsersDataError: action.payload.value }
-            case reducerActions.updateUnreadMessages:
-                return { ...currentState, unreadMessages: action.payload.value }
-            default:
-                return currentState;
-        }
-    }
-
-    const [state, dispatch] =  useReducer(reducer, initialPageState);
+    
+    const { state, dispatch } =  useUserContext();
     
     const navigate = useNavigate()
     
@@ -155,7 +39,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
     useTitle(`${requestedUser.user} | Tweeter`);
     useChangeElementPropertyOnScroll(navBarRef, "position", "fixed", "absolute");
     useChangeElementPropertyOnScroll(mobileNavRef, "display", "flex", "none");
-    useClickOutside(userPopupRef, () => dispatch({ type: reducerActions.updateDivActive, payload: { value: false } }));
+    useClickOutside(userPopupRef, () => dispatch({ type: userReducerActions.updateDivActive, payload: { value: false } }));
 
 
     useEffect(() => {
@@ -164,14 +48,14 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
             
             // if the user does not exist
             if (!res.data.user[0]){
-                dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
-                dispatch({ type: reducerActions.updateUserRegistered, payload: { value: false } });
+                dispatch({ type: userReducerActions.updatePageLoading, payload: { value: false } });
+                dispatch({ type: userReducerActions.updateUserRegistered, payload: { value: false } });
                 return;
             }
 
             // the user exists
-            dispatch({ type: reducerActions.updateUserRegistered, payload: { value: true } });
-            dispatch({ type: reducerActions.updateUserDetails, payload: 
+            dispatch({ type: userReducerActions.updateUserRegistered, payload: { value: true } });
+            dispatch({ type: userReducerActions.updateUserDetails, payload: 
                 { 
                     value: {
                         displayName: loggedInUser.displayName,
@@ -181,14 +65,14 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
                 } 
             });
 
-            dispatch({ type: reducerActions.updateUserRequestedData, payload: { value: res.data.user[0] } });
-            dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
+            dispatch({ type: userReducerActions.updateUserRequestedData, payload: { value: res.data.user[0] } });
+            dispatch({ type: userReducerActions.updatePageLoading, payload: { value: false } });
             
             return;
 
         }).catch(err => {
             console.log("An error occured while trying to connect to the server.");
-            dispatch({ type: reducerActions.updatePageLoading, payload: { value: false } });
+            dispatch({ type: userReducerActions.updatePageLoading, payload: { value: false } });
         })
 
     }, [requestedUser.user, loggedInUser.username, loggedInUser.about, loggedInUser.displayName]);
@@ -197,22 +81,22 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
     // 'useEffect' hook to check if there's a currently logged-in user
     useEffect(() => {
         if (loggedInUser !== "undefined"){ 
-            dispatch({ type: reducerActions.updateLoggedIn, payload: { value: true } });
+            dispatch({ type: userReducerActions.updateLoggedIn, payload: { value: true } });
             
             if (query) {
-                if (query === "groups") return dispatch({ type: reducerActions.updateGroupsParameter, payload: { value: true, settingsParameterValue: false } });
-                if (query === "settings") return dispatch({ type: reducerActions.updateSettingsParameter, payload: { value: true, groupsParameterValue: false } });
+                if (query === "groups") return dispatch({ type: userReducerActions.updateGroupsParameter, payload: { value: true, settingsParameterValue: false } });
+                if (query === "settings") return dispatch({ type: userReducerActions.updateSettingsParameter, payload: { value: true, groupsParameterValue: false } });
                 
                 return <PageNotFound user={loggedInUser} navigationBarReference={navBarRef} />
             };
 
-            dispatch({ type: reducerActions.updateGroupsParameter, payload: { value: false } });
-            dispatch({ type: reducerActions.updateSettingsParameter, payload: { value: false } });
+            dispatch({ type: userReducerActions.updateGroupsParameter, payload: { value: false } });
+            dispatch({ type: userReducerActions.updateSettingsParameter, payload: { value: false } });
 
             return;
         }
 
-        dispatch({ type: reducerActions.updateLoggedIn, payload: { value: false } });
+        dispatch({ type: userReducerActions.updateLoggedIn, payload: { value: false } });
         
     }, [loggedInUser, query]);
 
@@ -222,22 +106,22 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
 
         if((!state.requestedUserData) || (!loggedInUser)) return;
 
-        const isUserAlreadyFollowingRequestedProfile = checkIfItemInList(state.requestedUserData.followers, loggedInUser._id, "_id");
+        const isUserAlreadyFollowingRequestedProfile = checkIfItemInList(state.requestedUserData.followers, loggedInUser._id);
 
-        if (!isUserAlreadyFollowingRequestedProfile) return dispatch({ type: reducerActions.updateFollowing, payload: { value: false } });
+        if (!isUserAlreadyFollowingRequestedProfile) return dispatch({ type: userReducerActions.updateFollowing, payload: { value: false } });
 
-        dispatch({ type: reducerActions.updateFollowing, payload: { value: true } });
+        dispatch({ type: userReducerActions.updateFollowing, payload: { value: true } });
         
     }, [state.requestedUserData, loggedInUser._id, loggedInUser]);
 
 
     // useEffect hook to monitor searching through either the user's following or followers
     useEffect(() => {
-        if (state.userSearchQuery.length < 1) return dispatch({ type: reducerActions.updateIsSearchQueryEmpty, payload: { value: true } });
+        if (state.userSearchQuery.length < 1) return dispatch({ type: userReducerActions.updateIsSearchQueryEmpty, payload: { value: true } });
 
-        dispatch({ type: reducerActions.updateIsSearchQueryEmpty, payload: { value: false }});
+        dispatch({ type: userReducerActions.updateIsSearchQueryEmpty, payload: { value: false }});
         
-        dispatch( {type: reducerActions.updateSearchResults, payload: { value: state.fetchedUsersData.filter(user => user.username.toLocaleLowerCase().includes(state.userSearchQuery.toLocaleLowerCase()) || user.displayName.toLocaleLowerCase().includes(state.userSearchQuery.toLocaleLowerCase())) } } );
+        dispatch( {type: userReducerActions.updateSearchResults, payload: { value: state.fetchedUsersData.filter(user => user.username.toLocaleLowerCase().includes(state.userSearchQuery.toLocaleLowerCase()) || user.displayName.toLocaleLowerCase().includes(state.userSearchQuery.toLocaleLowerCase())) } } );
         
     }, [state.userSearchQuery, state.fetchedUsersData]);
 
@@ -247,15 +131,15 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
         if (state.pageLoading) return;
 
         if (state.userDetails.username.length < 1 ) {
-            dispatch({ type: reducerActions.updateUserDetailsError, payload: { value: "Please enter a username" } });
-            dispatch({ type: reducerActions.updateAllowClick, payload: { value: false } });
+            dispatch({ type: userReducerActions.updateUserDetailsError, payload: { value: "Please enter a username" } });
+            dispatch({ type: userReducerActions.updateAllowClick, payload: { value: false } });
             return;
         }
 
         // no spaces in username
         if(state.userDetails.username.includes(" ")) {
-            dispatch({type: reducerActions.updateUserDetailsError, payload: { value: "Please do not spaces in your username" }});
-            dispatch({ type: reducerActions.updateAllowClick, payload: { value: false }});
+            dispatch({type: userReducerActions.updateUserDetailsError, payload: { value: "Please do not spaces in your username" }});
+            dispatch({ type: userReducerActions.updateAllowClick, payload: { value: false }});
             return;
         }
         
@@ -265,15 +149,15 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
             const usernameIsTaken = checkIfItemInList(allUsernames, state.userDetails.username, "username");
             
             if ( (state.userDetails.username !== loggedInUser.username) && (usernameIsTaken)) {
-                dispatch({ type: reducerActions.updateUserDetailsError, payload: { value: "Username already taken" }});
-                dispatch({ type: reducerActions.updateAllowClick, payload: { value: false }});
+                dispatch({ type: userReducerActions.updateUserDetailsError, payload: { value: "Username already taken" }});
+                dispatch({ type: userReducerActions.updateAllowClick, payload: { value: false }});
                 return;
             };
 
-            dispatch({ type: reducerActions.updateAllowClick, payload: { value: true }});
+            dispatch({ type: userReducerActions.updateAllowClick, payload: { value: true }});
             
         }).catch(err => {
-            dispatch({ type: reducerActions.updateUserDetailsError, payload: { value: "An error occurred while trying to fetch the requested resource." }});
+            dispatch({ type: userReducerActions.updateUserDetailsError, payload: { value: "An error occurred while trying to fetch the requested resource." }});
         })
     
     }, [state.userDetails.username, loggedInUser.username, state.pageLoading])
@@ -281,9 +165,9 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
     // useEffect hook to check if the current user has any unread messages
     useEffect(() => {
         Request.makeGetRequest(`/messages/${loggedInUser._id}`).then(res => {
-            if(res.data.userMessages.map(messageItem => messageItem.messages.filter(message => message.status === "1")).flat().length >= 1 ) return dispatch({ type: reducerActions.updateUnreadMessages, payload: { value: true }});
+            if(res.data.userMessages.map(messageItem => messageItem.messages.filter(message => message.status === "1")).flat().length >= 1 ) return dispatch({ type: userReducerActions.updateUnreadMessages, payload: { value: true }});
 
-            dispatch({ type: reducerActions.updateUnreadMessages, payload: { value: false } });
+            dispatch({ type: userReducerActions.updateUnreadMessages, payload: { value: false } });
 
         }).catch(err => {
             console.log("An error occured while trying to fetch current user's messages")
@@ -299,66 +183,66 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
 
     // handle click on tweet category
     const handleTweetCategoryChange = (category) => {
-        dispatch({ type: reducerActions.updateTweetCategory, payload: { value: category }});
-        dispatch({ type: reducerActions.updateTweetCategoryLocation, payload: { value: category.toLocaleLowerCase().replace(" ", "").replace(" ", "").replace("&", "+") }});
+        dispatch({ type: userReducerActions.updateTweetCategory, payload: { value: category }});
+        dispatch({ type: userReducerActions.updateTweetCategoryLocation, payload: { value: category.toLocaleLowerCase().replace(" ", "").replace(" ", "").replace("&", "+") }});
     };
 
     // handle click on follow button
     const handleFollowButtonClick = () => {
         if (state.isFollowing) return;
 
-        dispatch({ type: reducerActions.updateIsRequestLoading, payload: { value: true }});
+        dispatch({ type: userReducerActions.updateIsRequestLoading, payload: { value: true }});
         
         Request.makePostRequest(`/users/${loggedInUser._id}/follow/${state.requestedUserData._id}`)
         .then(res => {
-            dispatch({ type: reducerActions.updateIsRequestLoading, payload: { value: false }});
+            dispatch({ type: userReducerActions.updateIsRequestLoading, payload: { value: false }});
             updateCurrentUser(res.data.newFollower);
-            dispatch({ type: reducerActions.updateUserRequestedData, payload: { value: res.data.followedUser }});
+            dispatch({ type: userReducerActions.updateUserRequestedData, payload: { value: res.data.followedUser }});
         })
         .catch(err => {
-            dispatch({ type: reducerActions.updateIsRequestLoading, payload: { value: false }});
+            dispatch({ type: userReducerActions.updateIsRequestLoading, payload: { value: false }});
         });
     };
 
     // handle search input change
-    const handleUserSearchInputChange = (e) => dispatch({ type: reducerActions.updateUserSearchQuery, payload: { value: e.target.value } });
+    const handleUserSearchInputChange = (e) => dispatch({ type: userReducerActions.updateUserSearchQuery, payload: { value: e.target.value } });
 
     // handle click on following or followers count span
     const handleUserFollowCountClick = (followerCategory) => {
-        dispatch({ type: reducerActions.updateDivActive, payload: { value: true }});
+        dispatch({ type: userReducerActions.updateDivActive, payload: { value: true }});
         
         Request.makeGetRequest(`/users/${state.requestedUserData._id}/${followerCategory}`)
         .then(res => {
-            dispatch({ type: reducerActions.updateIsUsersLoading, payload: { value: false }});
+            dispatch({ type: userReducerActions.updateIsUsersLoading, payload: { value: false }});
             
-            dispatch({ type: reducerActions.updateFetchedUsers, payload: { value: res.data[`${followerCategory}`] }})
+            dispatch({ type: userReducerActions.updateFetchedUsers, payload: { value: res.data[`${followerCategory}`] }})
         })
         .catch(err => {
-            dispatch({ type: reducerActions.updateIsUsersLoading, payload: { value: false }});
+            dispatch({ type: userReducerActions.updateIsUsersLoading, payload: { value: false }});
             
-            dispatch({ type: reducerActions.updateFetchUsersError, payload: { value: "An error occurred while trying to fetch the requested resource" }});
+            dispatch({ type: userReducerActions.updateFetchUsersError, payload: { value: "An error occurred while trying to fetch the requested resource" }});
         });
     };
 
     // handle click on user item
     const handleUserItemClick = (...params) => {
-        dispatch({ type: reducerActions.updateDivActive, payload: { value: false }})
+        dispatch({ type: userReducerActions.updateDivActive, payload: { value: false }})
         navigate(`/${params[1]}`);
     }
 
     // handle change in user details
     const handleChangeInUserDetailsInput = (e) => {
         const { name, value } = e.target;
-        dispatch({ type: reducerActions.updateUserDetails, field: name, payload: { value: value }});
+        dispatch({ type: userReducerActions.updateUserDetails, field: name, payload: { value: value }});
         
-        if( name === "username" ) dispatch({ type: reducerActions.updateUserDetailsError, payload: { value: "" }});
+        if( name === "username" ) dispatch({ type: userReducerActions.updateUserDetailsError, payload: { value: "" }});
     }
 
     // handle update on user details
     const handleUserDetailsSubmitClick = (e) => {
         e.preventDefault();
 
-        if (state.userDetails.username.length < 1) return dispatch({ type: reducerActions.updateUserDetailsError, payload: { value: "Please enter a username" } });
+        if (state.userDetails.username.length < 1) return dispatch({ type: userReducerActions.updateUserDetailsError, payload: { value: "Please enter a username" } });
         
         if (!state.allowClick) return;
 
@@ -368,7 +252,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
             if (notSocialUser) localStorage.setItem("userData", JSON.stringify(res.data.user));
             navigate(-1);
         }).catch(err => {
-            dispatch({ type: reducerActions.updateUserDetailsError, payload: { value: err.response.data.error }});
+            dispatch({ type: userReducerActions.updateUserDetailsError, payload: { value: err.response ? err.response.data.error : err.message }});
         });
 
     }
@@ -403,7 +287,7 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
                                 updateCurrentUser={
                                     (userData) => {
                                         updateCurrentUser(userData);
-                                        dispatch({ type: reducerActions.updateAllowClick, payload: { value: true } });
+                                        dispatch({ type: userReducerActions.updateAllowClick, payload: { value: true } });
                                     }
                                 }
                             />
@@ -453,11 +337,11 @@ const UserProfilePage = ({ loggedInUser, updateCurrentUser, notSocialUser }) => 
                                         user={loggedInUser}
                                         usersDataToShow={state.fetchedUsersData}
                                         fetchError={state.fetchUsersDataError}
-                                        setActive={(passedValue) => dispatch({ type: reducerActions.updateDivActive, payload: { value: passedValue } })}
+                                        setActive={(passedValue) => dispatch({ type: userReducerActions.updateDivActive, payload: { value: passedValue } })}
                                         userSearchQuery={state.userSearchQuery}
                                         handleUserSearchInputChange={handleUserSearchInputChange}
                                         isSearchQueryEmpty={state.isSearchQueryEmpty}
-                                        setUserSearchQuery={ (valuePassed) => dispatch({ type: reducerActions.updateUserSearchQuery, payload: { value: valuePassed } }) }
+                                        setUserSearchQuery={ (valuePassed) => dispatch({ type: userReducerActions.updateUserSearchQuery, payload: { value: valuePassed } }) }
                                         searchResults={state.searchResults}
                                         handleUserItemClick={handleUserItemClick}
                                         isUsersLoading={state.isUsersLoading}

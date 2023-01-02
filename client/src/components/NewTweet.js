@@ -109,7 +109,7 @@ const NewTweet = ( {username, userPicture, tweet, updateTweetText, handleSubmit,
         
         <div className="new-tweet-textarea">
             <UserPicture className="user-picture" location={username} displayPicture={userPicture}/>
-            <textarea placeholder="What's happening?" name="tweetText" value={tweet.tweetText} onChange={updateTweetText} onKeyUp={resizeTextArea} autoFocus />
+            <textarea placeholder="What's happening?" name="tweetText" value={tweet.tweetText} onChange={updateTweetText} autoFocus />
         </div>
         
         {tweetImgUploadErrMsg && <div className="tweet-upload-error-msg">{tweetImgUploadErrMsg}</div>}

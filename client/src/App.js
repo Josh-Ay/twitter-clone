@@ -12,8 +12,7 @@ import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { Request } from "./requests/Request";
-
-require("dotenv").config();
+import { UserContextProvider } from "./contexts/UserContext";
 
 const socket = io(process.env.REACT_APP_API_URL);
 
@@ -64,7 +63,7 @@ const App = () => {
       // if there is no saved(logged-in) user
       if (!currentUser) return;
 
-      socket.emit("user-update-socket-id", currentUser._id, socket.id, currentUser.username, (response) => {
+      socket.emit("user-update-socket-id", currentUser._id, socket.id, (response) => {
         // if there was an error while trying to update the current user's socket id
         if (response.error) return console.log(response.error);
 
@@ -107,7 +106,13 @@ const App = () => {
       </Route>
       
       <Route path="/bookmarks" element={currentUser ? <Bookmarks user={currentUser} /> : <Login setCurrentUser={setCurrentUser} socketInstance={socket} />} />
-      <Route path="/:user" element={currentUser ? <UserProfilePage loggedInUser={currentUser} updateCurrentUser={setCurrentUser} notSocialUser={socialAuthError} /> : <Login setCurrentUser={setCurrentUser} socketInstance={socket} /> } />
+      <Route path="/:user" element={
+        currentUser ? 
+        <UserContextProvider>
+          <UserProfilePage loggedInUser={currentUser} updateCurrentUser={setCurrentUser} notSocialUser={socialAuthError} />
+        </UserContextProvider> : 
+        <Login setCurrentUser={setCurrentUser} socketInstance={socket} /> 
+      } />
       
       <Route path="/messages" element={currentUser ? <MessagesPage user={currentUser} socketInstance={socket} /> : <Login setCurrentUser={setCurrentUser} socketInstance={socket} />} />
 

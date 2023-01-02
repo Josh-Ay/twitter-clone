@@ -25,7 +25,7 @@ const UsersPopup = ({userPopupRef, user, userSearchQuery, handleUserSearchInputC
                         currentUser._id === user._id ? <></> : 
                         <button className="follow-btn">
                             { 
-                                checkIfItemInList(currentUser.followers, user._id, "_id") ? <span>Following</span> : 
+                                checkIfItemInList(currentUser.followers, user._id) ? <span>Following</span> : 
                                 <><PersonAddIcon className="follow-user-icon" /><span>Follow</span></>
                             }
                         </button>

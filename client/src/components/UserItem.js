@@ -1,7 +1,7 @@
 import UserPicture from "./UserPicture"
 
 const UserItem = ( { user, handleUserItemClick } ) => {
-    return <div className={`user-message-item ${user.messages.filter(message => message.status === "1").length >= 1 ? "unread-present" : "" }`} onClick={() => { handleUserItemClick(user.displayName ? user.displayName : user.username, user.username, user.userId, user.socketId) } }>
+    return <div className={`user-message-item ${user.messages && user.messages.filter(message => message.status === "1").length >= 1 ? "unread-present" : "" }`} onClick={() => { handleUserItemClick(user.displayName ? user.displayName : user.username, user.username, user.otherUserId, user.socketId) } }>
         <UserPicture 
             className="user-img"
             displayPicture={user.profilePhoto}
@@ -10,7 +10,7 @@ const UserItem = ( { user, handleUserItemClick } ) => {
             <div className="current-user-display-name">{user.displayName}</div>
             <div className="current-user-username">&#64;{user.username}</div>
         </div>
-        {user.messages.filter(message => message.status === "1").length >= 1 && <div className="blue-dot"></div>}
+        {user.messages && user.messages.filter(message => message.status === "1").length >= 1 && <div className="blue-dot"></div>}
     </div>
 }
 
