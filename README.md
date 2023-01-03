@@ -192,16 +192,28 @@ $ npm install
 ```
 - Go to line 60 in the 'app.js'
 ```bash
-# line 60
-// mongoose.connect("mongodb://localhost:27017/tweeterDB")    // localuse
+# line 61-67
+/* LOCAL USE */
+// mongoose.connect("mongodb://localhost:27017/tweeterDB").then(() => {
+//     console.log("Connected to db");
+// }).catch(err => {
+//     console.log("An error occurred while trying to connect to DB.");
+//     console.log(err);
+// })
 ```
-- uncomment it and comment out line 61
+- uncomment it and comment out lines 69-75
 ```bash
-# line 61
-mongoose.connect(process.env.MONGO_DB_URI);     // mongo atlas
+# lines 69-75
+/* MONGO ATLAS */
+mongoose.connect(process.env.MONGO_DB_URI).then(() => {
+    console.log("connected to DB");
+}).catch(err => {
+    console.log("An error occurred while trying to connect to DB.");
+    console.log(err);
+})
 ```
 
-- copy the mongo url on line 60 i.e `"mongodb://localhost:27017/tweeterDB"`
+- copy the mongo url on line 62 i.e `"mongodb://localhost:27017/tweeterDB"`
 - navigate to 'middleware' folder and locate the 'config.js' file
 - now, replace the 'process.env.MONGO_DB_URI' on line 23 with what you copied above
 
