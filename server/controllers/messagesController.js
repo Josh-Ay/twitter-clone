@@ -182,9 +182,8 @@ exports.mark_all_messages_read = async (req, res) => {
     
     // updating all the unread messages(with a status of '1') in the receiver's messages list status from '1'(unread) to '0'(read)
     const allMessageContents = await MessageContent.find({ "refToMessageItem": existingMessageListWithSender._id });
-    console.log(allMessageContents)
+    
     await Promise.all(allMessageContents.map(async (content) => {
-        console.log(content)
         if (content.type === "received") {
             content.status = "0";
             await content.save()
