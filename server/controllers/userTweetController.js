@@ -123,7 +123,7 @@ exports.user_get_follow_tweet = (req, res) => {
                 userRetweets: userTweets.filter(tweet => tweet.retweeted),
                 userLikedTweets: userTweets.filter(tweet => tweet.liked),
                 userSavedTweets: userTweets.filter(tweet => tweet.saved),
-                tweets: get_unique_items_in_list_of_objects(userTweets.filter(tweet => tweet.authorId.toString() === user._id.toString()).concat(userTweets.filter(tweet => tweet.retweeted), allTweets), "_id").reverse(),
+                tweets: get_unique_items_in_list_of_objects(userTweets.filter(tweet => tweet.authorId.toString() === user._id.toString()).concat(userTweets.filter(tweet => tweet.retweeted), allTweets), "_id"),
             })
         }
 
@@ -144,7 +144,7 @@ exports.user_get_follow_tweet = (req, res) => {
                 return tweet
             }))
 
-            followersTweets.push(userTweets.filter(tweet => tweet.authorId === follower))
+            followersTweets.push(userTweets.filter(tweet => tweet.authorId.toString() === follower))
             followersRetweets.push(userTweets.filter(tweet => tweet.retweeted))
         })
         user.following.forEach(async (following) => {
