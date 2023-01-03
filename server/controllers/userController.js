@@ -51,7 +51,7 @@ exports.user_update_detail = async (req, res) => {
         await User.findByIdAndUpdate(req.params.id, {$set: { displayName: displayName, username: username, about: userBio }}, {new: true});
         
         // updating the user's details(user with _id of req.params.id) for all messages between the user and other users
-        await Message.updateMany({"userId":  req.params.id}, { $set: {"displayName": displayName, "username": username }  }, {multi: true });
+        await Message.updateMany({"owner":  req.params.id}, { $set: {"displayName": displayName, "username": username }  }, {multi: true });
         
         // also updating the user's details(user with _id of req.params.id) in tweets the user has created
         await Tweet.updateMany({"authorId":  req.params.id}, { $set: {"author": displayName, "authorUsername": username }  }, { multi: true });
@@ -128,7 +128,7 @@ exports.user_update_display_photo = async (req, res) => {
                     
                         await Comment.updateMany({"authorUserId": req.params.id}, {$set: {"authorImage": awsRes.Key}}, {multi: true });
                                 
-                        await Message.updateMany({"userId": req.params.id}, {$set: {"profilePhoto": awsRes.Key} }, { multi: true });
+                        await Message.updateMany({"owner": req.params.id}, {$set: {"profilePhoto": awsRes.Key} }, { multi: true });
                                     
                         const foundUser = await User.findById({"_id": req.params.id}, { "email": 0, "followers": 0, "following": 0 });
                         return res.status(200).json({user: foundUser});
@@ -151,7 +151,7 @@ exports.user_update_display_photo = async (req, res) => {
                         
                     await Comment.updateMany({"authorUserId": req.params.id}, {$set: {"authorImage": awsRes.Key}}, {multi: true });
 
-                    await Message.updateMany({"userId": req.params.id}, {$set: {"profilePhoto": awsRes.Key} }, { multi: true });
+                    await Message.updateMany({"owner": req.params.id}, {$set: {"profilePhoto": awsRes.Key} }, { multi: true });
                 
                     // returning the updated user
                     const foundUser = await User.findById({"_id": req.params.id}, { "email": 0, "followers": 0, "following": 0 });
