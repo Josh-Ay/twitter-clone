@@ -10,7 +10,7 @@ exports.login_user = (req, res, next) => {
         req.login(user, (err) => {
             if (err) { return next(err); };
 
-            User.findByIdAndUpdate({ _id: req.user._id }, {$set: { socketId: req.body.socketId }  }, {new: true, fields: { "email": 0, "followers": 0, "following": 0 }}, (err, loggedInUser) => {
+            User.findById({ _id: req.user._id }, {fields: { "email": 0, "followers": 0, "following": 0 }}, (err, loggedInUser) => {
                 if (err) { return next(err); }
                 return res.status(200).json({user: loggedInUser});
             });
